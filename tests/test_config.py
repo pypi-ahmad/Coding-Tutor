@@ -1,4 +1,5 @@
 """Tests for app configuration and core module imports."""
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -112,10 +113,15 @@ def test_gemini_model_verification_matches_official_documentation():
     from coding_tutor.providers.config import GEMINI_MODELS
 
     models = {model.model_id: model for model in GEMINI_MODELS}
+    assert set(models) == {"gemini-3.5-flash-lite", "gemini-3.7-flash"}
     assert models["gemini-3.5-flash-lite"].verified is True
     assert models["gemini-3.7-flash"].verified is True
+    assert all(
+        model.extra_params == {"thinking_level": "medium"}
+        for model in models.values()
+    )
     assert models["gemini-3.7-flash"].documentation_url == (
-        "https://ai.google.dev/gemini-api/docs/models"
+        "https://ai.google.dev/gemini-api/docs/thinking"
     )
 
 
@@ -128,3 +134,60 @@ def test_streamlit_config_exists():
         cfg = tomllib.load(f)
     assert cfg["server"]["port"] == 8551
     assert cfg["server"]["address"] == "127.0.0.1"
+
+
+def test_windows_launcher_bootstraps_root_venv_and_starts_app():
+    launcher = (ROOT / "launch_app.cmd").read_text(encoding="utf-8")
+
+    assert 'cd /d "%~dp0"' in launcher
+    assert "https://astral.sh/uv/install.ps1" in launcher
+    assert 'set "UV_PROJECT_ENVIRONMENT=%CD%\\.venv"' in launcher
+    assert 'call "%UV_EXE%" sync --locked' in launcher
+    assert (
+        'call "%UV_EXE%" run --locked streamlit run app.py '
+        "--server.address 127.0.0.1 --server.port 8551"
+    ) in launcher
+    assert all(
+        secret_name not in launcher
+        for secret_name in (
+            "OPENAI_API_KEY",
+            "OPENAI_BASE_URL",
+            "AGNES_API_KEY",
+            "GOOGLE_API_KEY",
+        )
+    )
+
+
+@pytest.mark.skipif(sys.platform != "win32", reason="Windows launcher test")
+def test_windows_launcher_runs_expected_uv_commands(tmp_path):
+    log_path = tmp_path / "uv-commands.log"
+    fake_uv = tmp_path / "uv.cmd"
+    fake_uv.write_text(
+        "@echo off\n"
+        '>>"%UV_LAUNCH_LOG%" echo ARGS:%*\n'
+        '>>"%UV_LAUNCH_LOG%" echo VENV:%UV_PROJECT_ENVIRONMENT%\n'
+        "exit /b 0\n",
+        encoding="utf-8",
+    )
+    env = os.environ.copy()
+    env["PATH"] = f"{tmp_path}{os.pathsep}{env['PATH']}"
+    env["UV_LAUNCH_LOG"] = str(log_path)
+
+    result = subprocess.run(
+        ["cmd.exe", "/d", "/c", str(ROOT / "launch_app.cmd")],
+        cwd=tmp_path,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=30,
+    )
+
+    assert result.returncode == 0, result.stdout + result.stderr
+    log = log_path.read_text(encoding="utf-8")
+    assert "ARGS:sync --locked" in log
+    assert (
+        "ARGS:run --locked streamlit run app.py "
+        "--server.address 127.0.0.1 --server.port 8551"
+    ) in log
+    assert f"VENV:{ROOT}\\.venv" in log

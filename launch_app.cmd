@@ -1,60 +1,70 @@
 @echo off
-setlocal EnableDelayedExpansion
+setlocal
+title Coding Tutor
 
-echo ============================================================
-echo  Coding Tutor — Local Launcher
-echo ============================================================
-echo.
-
-:: ── 1. Verify uv is installed ────────────────────────────────
-where uv >nul 2>&1
-if errorlevel 1 (
-    echo  ERROR: uv is not installed or not on PATH.
-    echo.
-    echo  Install uv from the official installer:
-    echo    https://docs.astral.sh/uv/getting-started/installation/
-    echo.
-    echo  On Windows you can run:
-    echo    powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-    echo.
-    echo  After installing, open a new terminal and run this launcher again.
-    echo.
-    pause
-    exit /b 1
-)
-
-echo  uv found:
-uv --version
-echo.
-
-:: ── 2. Move into the script directory ────────────────────────
 cd /d "%~dp0"
 
-:: ── 3. Sync / install dependencies ───────────────────────────
-echo  Installing / synchronising dependencies...
-uv sync --frozen 2>&1
-if errorlevel 1 (
-    echo.
-    echo  ERROR: Dependency installation failed.
-    echo  Check the error above and ensure pyproject.toml is present.
-    echo.
-    pause
-    exit /b 1
-)
+echo ============================================================
+echo  Coding Tutor - local setup and launcher
+echo ============================================================
 echo.
 
-:: ── 4. Launch Streamlit ───────────────────────────────────────
+set "UV_EXE=uv"
+where uv >nul 2>&1
+if errorlevel 1 (
+    set "UV_EXE=%USERPROFILE%\.local\bin\uv.exe"
+    if not exist "%UV_EXE%" (
+        echo  uv was not found. Installing it for the current user...
+        powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference = 'Stop'; $env:UV_INSTALL_DIR = Join-Path $env:USERPROFILE '.local\bin'; Invoke-RestMethod 'https://astral.sh/uv/install.ps1' | Invoke-Expression"
+        if errorlevel 1 goto :uv_install_failed
+    )
+)
+
+echo  Using:
+call "%UV_EXE%" --version
+if errorlevel 1 goto :uv_not_found
+echo.
+
+set "UV_PROJECT_ENVIRONMENT=%CD%\.venv"
+echo  Creating or updating %UV_PROJECT_ENVIRONMENT% ...
+call "%UV_EXE%" sync --locked
+if errorlevel 1 goto :sync_failed
+echo.
+
 echo  Starting Coding Tutor at http://127.0.0.1:8551 ...
 echo  Press Ctrl+C to stop the server.
 echo.
-uv run streamlit run app.py --server.address 127.0.0.1 --server.port 8551
-if errorlevel 1 (
-    echo.
-    echo  ERROR: Streamlit failed to start.
-    echo  Check the output above for details.
-    echo.
-    pause
-    exit /b 1
-)
+call "%UV_EXE%" run --locked streamlit run app.py --server.address 127.0.0.1 --server.port 8551
+if errorlevel 1 goto :launch_failed
 
 endlocal
+exit /b 0
+
+:uv_install_failed
+echo.
+echo  ERROR: uv installation failed.
+echo  Check your internet connection, then run this launcher again.
+goto :failed
+
+:uv_not_found
+echo.
+echo  ERROR: uv could not be found after setup.
+echo  See https://docs.astral.sh/uv/getting-started/installation/
+goto :failed
+
+:sync_failed
+echo.
+echo  ERROR: Dependency setup failed.
+echo  Check the output above and confirm pyproject.toml and uv.lock are present.
+goto :failed
+
+:launch_failed
+echo.
+echo  ERROR: Streamlit failed to start.
+echo  Check the output above for details.
+
+:failed
+echo.
+pause
+endlocal
+exit /b 1
