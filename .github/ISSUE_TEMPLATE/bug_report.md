@@ -1,39 +1,40 @@
 ---
 name: Bug report
-about: Report something that is not working correctly
+about: Report a reproducible problem
 title: "[Bug] "
 labels: bug
-assignees: ''
+assignees: ""
 ---
 
-## Describe the bug
+## Checklist
 
-A clear and concise description of what went wrong.
+- [ ] I searched existing issues.
+- [ ] I removed keys, personal data, proprietary code, database contents, and private dataset records.
 
-## Steps to reproduce
+## Problem
 
-1. Go to '...'
-2. Click on '...'
-3. See error
+Describe expected and actual behavior. Include the exact sanitized error text.
 
-## Expected behaviour
+## Reproduction
 
-What did you expect to happen?
-
-## Actual behaviour
-
-What actually happened? Include any error messages, stack traces, or screenshots.
+1. Provide the smallest sequence of steps.
+2. State the learning mode, source, type, difficulty, method, and provider/model when relevant.
+3. State whether it reproduces with a new `CODING_TUTOR_DB` path.
 
 ## Environment
 
-- OS: [e.g. Windows 11]
-- Python version: `python --version`
-- uv version: `uv --version`
-- Streamlit version: `uv run python -c "import streamlit; print(streamlit.__version__)"`
-- AI provider and model used (if applicable)
+- Coding Tutor commit/tag:
+- OS:
+- `python --version`:
+- `uv --version`:
+- `uv run python -c "import streamlit; print(streamlit.__version__)"`:
 
-## Additional context
+## Evidence
 
-Anything else that might help — configuration, dataset being imported, `.env.example` setup, etc.
+Add sanitized logs/screenshots and a minimal fixture only when safe to share. Do not attach a real DuckDB database or downloaded dataset.
 
-> Do not include real API keys, passwords, or personal credentials in this report.
+## Regression, documentation, and dataset impact
+
+- Does an existing automated test cover this behavior, or can you suggest a focused regression test?
+- Is any documentation now inaccurate?
+- If a dataset is involved, name the source/revision and describe the license or provenance concern without attaching source records.

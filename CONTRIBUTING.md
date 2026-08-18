@@ -1,91 +1,43 @@
-# Contributing to Coding Tutor
+# Contributing
 
-Thank you for your interest in contributing! This project is free and community-driven. All meaningful contributions — bug reports, documentation improvements, code fixes, new features — are welcome.
+Thank you for helping Coding Tutor. This is a free, community-driven project, and focused bug reports, tests, documentation, dataset corrections, and code improvements are welcome. No donation, sponsorship, or financial contribution is required or requested.
 
-> **No financial contribution is needed or expected.** This project does not accept donations, sponsorships, or any form of payment.
+## Local setup
 
----
-
-## Getting started
-
-### 1. Fork and clone
-
-```bash
+```powershell
 git clone https://github.com/pypi-ahmad/Coding-Tutor.git
 cd Coding-Tutor
-```
-
-### 2. Set up the environment
-
-```bash
-uv sync
-# Set at least one AI provider key in the Windows system environment
-```
-
-### 3. Run the tests
-
-```bash
-uv run pytest
-```
-
-All tests must pass before you open a pull request. No API keys are required to run the test suite.
-
-### 4. Start the app
-
-```bash
+uv sync --locked
+uv run pytest -q
 uv run streamlit run app.py
 ```
 
----
+Tests require no real provider key and must not make live provider calls.
 
-## Ways to contribute
+## Before opening a pull request
 
-| Contribution type | Where to start |
-|---|---|
-| Bug report | [Open an issue](https://github.com/pypi-ahmad/Coding-Tutor/issues/new?template=bug_report.md) |
-| Feature request | [Open an issue](https://github.com/pypi-ahmad/Coding-Tutor/issues/new?template=feature_request.md) |
-| Code fix or improvement | Fork → branch → PR |
-| Documentation improvement | Fork → branch → PR |
-| Dataset or question quality | Fork → branch → PR |
+- Discuss substantial features in an issue first.
+- Keep one small, coherent change per pull request and preserve unrelated work.
+- Add the narrowest tests for changed behavior and run the full suite.
+- Update the relevant tutorial, how-to, reference, or explanation document.
+- Describe manual verification and anything not tested.
 
----
+## Secrets and local data
 
-## Code guidelines
+Never commit or post `.env`, credentials, provider responses containing private data, `*.duckdb`, `Dataset/`, `.venv/`, or logs with user content. `.env.example` must contain supported names with blank values only. Check `git diff --staged` before committing.
 
-- Keep changes focused: one logical change per pull request.
-- Follow existing code style; run `uv run pytest` before submitting.
-- Add or update tests for any behaviour change.
-- Write clear commit messages that explain the **why**, not just the what.
+## Providers
 
----
+Do not add a model ID, endpoint, SDK parameter, or verification flag without current official provider documentation. Tests must mock network access. Distinguish request-construction coverage from live availability.
 
-## Important rules
+## Datasets and licenses
 
-### No secrets in commits
-- Never commit `.env`, API keys, tokens, passwords, or any credentials.
-- Never commit database files (`*.duckdb`), raw dataset files, or `.venv/`.
-- Check your diff before committing: `git diff --staged`.
+- Keep downloaded source files untouched and outside Git.
+- Add catalog metadata, format inspection, provenance, idempotency, fixture tests, and documentation for any adapter.
+- Verify licenses and attribution against the official dataset card/upstream repository.
+- Do not infer exercise completeness from a folder name or invent fixture data.
+- Treat absent or unclear redistribution permission as unresolved.
 
-### Dataset and data responsibility
-- Respect the license and provenance of each bundled dataset. See the Acknowledgements section of the README.
-- Do not add datasets that you do not have the right to redistribute.
-- Users are fully responsible for the data they choose to use with this application. See `DISCLAIMER.md`.
+## Pull request content
 
-### AI provider accuracy
-- Do not add model IDs or provider parameters unless they are confirmed in official provider documentation.
-- Unverified models must be marked `verified=False` in `src/coding_tutor/providers/config.py` with a reason.
-
----
-
-## Pull request process
-
-1. Ensure all tests pass.
-2. Reference the related issue in your PR description (e.g. `Closes #42`).
-3. Describe what you changed and why.
-4. A maintainer will review and merge, or ask for changes.
-
----
-
-## Code of Conduct
-
-Be respectful and constructive. Harassment, discrimination, and personal attacks are not tolerated.
+Explain the problem, scope, implementation, tests, documentation impact, privacy/security impact, and dataset/license impact. Link the relevant issue when one exists. Follow the [Code of Conduct](CODE_OF_CONDUCT.md) and report vulnerabilities through [SECURITY.md](SECURITY.md), not a public issue.

@@ -1,25 +1,27 @@
 ## Summary
 
-<!-- Describe what this PR does and why. Link to the related issue if one exists (e.g. Closes #42). -->
+<!-- What problem does this focused PR solve? Link an issue when available. -->
 
-## Changes
+## Verification
 
-- <!-- What was added, changed, or removed? -->
+- [ ] `uv run pytest -q` passes, or failures are explained below.
+- [ ] New/changed behavior has focused automated tests.
+- [ ] Relevant manual path was checked.
+- [ ] No live provider call was added to tests.
 
-## Testing
+## Documentation and compatibility
 
-- [ ] All existing tests pass: `uv run pytest`
-- [ ] New tests added or updated where relevant
-- [ ] Manually tested the affected feature in the running app
+- [ ] User/developer documentation reflects the change.
+- [ ] Environment variables, DuckDB migrations, and limitations are documented where relevant.
+- [ ] Provider models/parameters cite current official documentation.
 
-## Checklist
+## Data, security, and licensing
 
-- [ ] No secrets, API keys, or credentials are included in this PR
-- [ ] No `.env`, `.venv/`, `*.duckdb`, or `Dataset/` files are staged
-- [ ] Any new dataset source respects its license and provenance
-- [ ] Documentation updated if needed (README, docstrings, comments)
-- [ ] If adding a new AI model, it is confirmed in official provider documentation and set appropriately in `config.py`
+- [ ] No secrets, `.env`, database, raw dataset, private learner content, or generated local artifacts are included.
+- [ ] Learner code remains non-executing unless a separately reviewed isolation design is explicitly in scope.
+- [ ] Dataset provenance, license, attribution, and redistribution impact are documented.
+- [ ] Unrelated files and user work are unchanged.
 
-## Notes for reviewer
+## Results and remaining limitations
 
-<!-- Anything the reviewer should know: tricky decisions, known limitations, follow-up tasks. -->
+<!-- Commands/results, skipped checks, screenshots if useful, and known limitations. -->

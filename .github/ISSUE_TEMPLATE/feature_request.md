@@ -1,27 +1,27 @@
 ---
 name: Feature request
-about: Suggest an improvement or new capability
+about: Propose a focused improvement
 title: "[Feature] "
 labels: enhancement
-assignees: ''
+assignees: ""
 ---
 
-## Summary
+## Problem and outcome
 
-A clear one-sentence description of the feature you'd like.
+Who needs this, what problem exists, and what observable outcome would solve it?
 
-## Motivation
+## Proposed behavior
 
-Why would this feature be useful? What problem does it solve or what workflow does it improve?
+Describe the smallest useful workflow and alternatives considered.
 
-## Proposed solution
+## Verification
 
-Describe how you imagine the feature working. Include any relevant details about the UI, behaviour, or configuration.
+What tests or manual checks would demonstrate success?
 
-## Alternatives considered
+## Documentation impact
 
-Are there other ways to solve the same problem? Why is the proposed solution better?
+Which tutorial, how-to, reference, or explanation pages need updating?
 
-## Additional context
+## Data, privacy, provider, and license impact
 
-Any other context, mockups, or examples that might help evaluate this request.
+State whether this stores/transmits new data, adds provider behavior, executes code, changes DuckDB, or uses a dataset/dependency with license or attribution requirements. Write “None” where applicable. Do not include secrets or private data.

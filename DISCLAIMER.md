@@ -10,16 +10,16 @@ This application sends user-provided inputs (code, prompts, and questions) to th
 
 ## User responsibility
 
-You are fully responsible for:
+You are fully responsible for all data you process, store, import, generate, or transmit with the application, including:
 
 - The data and code you submit through this application, including anything sent to external AI provider APIs.
 - Compliance with the terms of service of any AI provider whose API key you supply.
 - Any consequences arising from relying on AI-estimated assessments or suggested code.
-- Ensuring that your use of the bundled datasets complies with their respective licenses (see Acknowledgements in README.md).
+- Ensuring that your use of downloaded or imported datasets complies with their respective licenses and source terms (see `docs/DATASETS.md`).
 
 ## Third-party datasets
 
-Practice questions are sourced from public research datasets with the licenses described in the README. The authors of Coding Tutor make no additional claims about the accuracy or completeness of dataset content. Users are responsible for verifying that their use of these datasets is consistent with the applicable license terms.
+Optional practice questions can be imported from separately downloaded datasets. The authors of Coding Tutor make no additional claims about their accuracy, completeness, or redistribution rights. Users must verify the current official source terms; missing license metadata is not permission.
 
 ## AI assessment limitation
 
