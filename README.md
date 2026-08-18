@@ -69,7 +69,7 @@ Coding Tutor combines a local question bank, on-demand AI question generation, a
 | Language | Python 3.11+ |
 | Local storage | DuckDB |
 | Data handling | pandas and PyArrow |
-| AI SDKs | OpenAI Python SDK and Google Gen AI SDK |
+| AI SDKs | OpenAI Python SDK (OpenAI and Agnes AI) and Google Gen AI SDK (Gemini) |
 | Dataset downloads | Hugging Face Hub |
 | Dependency management | uv |
 | Packaging | Hatchling |
@@ -92,11 +92,12 @@ Coding-Tutor/
 ├── src/coding_tutor/
 │   ├── database/                  # DuckDB connection, schema, migrations, progress
 │   ├── dataset/                   # Dataset-specific normalization and importers
-│   ├── evaluation/                # Structured AI assessment and persistence
-│   ├── generation/                # AI question prompts, validation, and storage
+│   ├── evaluation/                # Static AI assessment, teaching solutions, and persistence
+│   ├── generation/                # AI question prompt builders, validation, and storage
+│   ├── prompts/                   # Markdown prompt templates for quiz MCQ and teaching content
 │   ├── providers/                 # OpenAI, Agnes AI, and Gemini adapters
-│   ├── quiz/                      # Current-question session state
-│   └── ui/                        # Practice, assessment, solution, and progress views
+│   ├── quiz/                      # Session state, Quiz Mode business rules, and persistence
+│   └── ui/                        # Practice, quiz, assessment, solution, and progress views
 ├── tests/                         # Unit, integration, and Streamlit AppTest coverage
 └── .github/                       # Issue and pull-request templates
 ```
@@ -122,11 +123,20 @@ The downloader preserves each source repository's internal subdirectories. See t
 
 Windows 11 is the tested platform. Linux and macOS users can use the command-line workflow on a community best-effort basis.
 
+### One-click Windows setup and launch
+
+After cloning or downloading the repository and setting any provider environment variables, double-click `launch_app.cmd` in the project root. This single file:
+
+1. Installs `uv` for the current Windows user from Astral's official installer when `uv` is unavailable.
+2. Creates or updates `.venv` in the project root from the committed `uv.lock`.
+3. Starts Coding Tutor at <http://127.0.0.1:8551>.
+
+The first run requires an internet connection to download missing setup files and dependencies. The launcher does not create a `.env` file, store credentials, or require manual virtual-environment activation.
+
 ### Prerequisites
 
 - [Git](https://git-scm.com/)
-- Python 3.11 or later
-- [uv](https://docs.astral.sh/uv/)
+- [uv](https://docs.astral.sh/uv/) for the manual command-line workflow (the Windows launcher installs it when needed)
 - An API key for at least one supported provider to generate questions or assess solutions
 
 ### 1. Clone the repository
@@ -168,7 +178,7 @@ uv run streamlit run app.py
 
 Then open <http://127.0.0.1:8551>.
 
-On Windows, you can instead double-click `launch_app.cmd`. The launcher verifies `uv`, installs the locked dependencies, and starts Streamlit at the same address.
+On Windows, the one-click `launch_app.cmd` workflow above performs these setup and launch steps for you.
 
 ## Environment Variables
 
@@ -303,7 +313,7 @@ Verified model options are defined centrally in `src/coding_tutor/providers/conf
 | --- | --- |
 | OpenAI | [`gpt-5.6-luna`](https://developers.openai.com/api/docs/models/gpt-5.6-luna) with medium reasoning effort |
 | Agnes AI | [`agnes-2.5-flash`](https://www.agnes-ai.com/en/docs/agnes-25-flash) |
-| Google Gemini | [`gemini-3.5-flash-lite`](https://ai.google.dev/gemini-api/docs/models/gemini-3.5-flash-lite) and [`gemini-3.7-flash`](https://ai.google.dev/gemini-api/docs/models) |
+| Google Gemini | [`gemini-3.5-flash-lite`](https://ai.google.dev/gemini-api/docs/models/gemini-3.5-flash-lite) and [`gemini-3.7-flash`](https://ai.google.dev/gemini-api/docs/thinking), both with medium thinking |
 
 Model identifiers and provider parameters are intentionally accepted only after verification against official provider documentation.
 The sidebar configuration status checks environment-variable presence only; it does not contact a provider or validate credentials.
@@ -317,6 +327,16 @@ uv run pytest -q
 ```
 
 Tests use mocked provider calls and in-memory DuckDB databases; real API keys and downloaded datasets are not required.
+
+### AI prompt templates
+
+Version-controlled prompts live in `src/coding_tutor/prompts/*.md`. Question generation,
+static assessment, teaching solutions, and quiz MCQ generation load these files at runtime;
+`shared_rules.md` supplies their common system rules. Keep each documented JSON response
+shape aligned with its strict Python validator and update the prompt version when changing a
+generation contract. `dataset_record_converter.md` is available to the prompt loader for a
+future AI-assisted import path, but current dataset imports remain deterministic and do not
+call an AI provider.
 
 ## Data Responsibility and Limitations
 
@@ -345,6 +365,7 @@ Read the full [disclaimer](DISCLAIMER.md) and [security policy](SECURITY.md) bef
 | Document | Description |
 | --- | --- |
 | [README.md](README.md) | Project overview, installation, usage, and configuration |
+| [CHANGELOG.md](CHANGELOG.md) | Curated user-facing release history |
 | [docs/dataset-setup.md](docs/dataset-setup.md) | How to download and import the seven supported Hugging Face datasets |
 | [Project_Architecture_Blueprint.md](Project_Architecture_Blueprint.md) | Comprehensive architecture reference: component map, sequence diagrams, ER diagram, ADRs, and extension guides |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | How to contribute: bug reports, feature requests, and pull requests |

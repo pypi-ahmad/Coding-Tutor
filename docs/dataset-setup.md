@@ -135,6 +135,9 @@ Available keys are `leetcode`, `apps`, `codecontests`, `taco`, `spider`, `sqlctx
 
 The importer never renames, moves, overwrites, or extracts into the downloaded source directories. Provenance stores the relative source path, original ID where available, Hugging Face revision metadata where present, license, attribution, and import timestamp.
 
+> [!NOTE]
+> A full import can take well over an hour and require several gigabytes of local disk space, especially on Windows. Importing one dataset at a time with `--datasets` makes progress and failures easier to monitor. If the process is interrupted, already committed source records remain protected by the idempotency key, but the interrupted `import_runs` row may remain marked `running`; rerun the same dataset to continue without duplicating those records.
+
 ### Check import status
 
 ```python
@@ -158,6 +161,8 @@ conn.execute("""
 | `No parquet files found` | TACO files are in a different subdirectory | Ensure `Dataset/algorithm_problems/TACO/ALL/*.parquet` exists |
 | `No source files match ...` | A download is missing or has a different layout | Re-run the downloader for that dataset or pass the correct `--dataset-root`; do not rename downloaded source files |
 | `missing required fields` | The downloaded revision has a schema the adapter does not support | Keep the source untouched and report the dataset, revision, and error message |
+| Import remains active for a long time | Large sources are normalized and persisted record by record | Allow substantial time and disk space, or import one dataset key at a time |
+| An interrupted run still shows `running` | The process ended before it could finalize its import-run record | Rerun that dataset; existing source records are skipped idempotently |
 | `huggingface_hub not found` | Dependency not installed | Run `uv sync` to install dependencies |
 | Download rate-limited or slow | No HF token | Set `HF_TOKEN` environment variable |
 | `401 Unauthorized` | Dataset requires login | Log in at huggingface.co and set `HF_TOKEN` |

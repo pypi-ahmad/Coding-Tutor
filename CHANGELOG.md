@@ -1,0 +1,24 @@
+# Changelog
+
+All notable user-facing changes to Coding Tutor are documented here. Versions follow [Semantic Versioning](https://semver.org/).
+
+## [0.1.0] - 2026-08-19
+
+### Added
+
+- Local Streamlit learning interface for algorithm and data-analysis practice.
+- Curated dataset, AI-generated, and mixed question-source modes.
+- SQL, Pandas, PySpark, Polars, and Python solution-method support without local learner-code execution.
+- AI-estimated static assessment, teaching solutions, Quiz Mode, and local progress history.
+- DuckDB persistence with schema migrations and source provenance.
+- OpenAI, Agnes AI, and Google Gemini provider configuration through system environment variables.
+- Version-controlled Markdown prompts with strict structured-response validation.
+- One-click Windows setup and launch through `launch_app.cmd`.
+
+### Security and privacy
+
+- API credentials remain in the user's system environment and are never rendered by the app.
+- Learner code is sent only to the explicitly selected AI provider and is never executed locally.
+- Questions and progress remain in the local DuckDB database unless the user chooses an AI-backed action.
+
+[0.1.0]: https://github.com/pypi-ahmad/Coding-Tutor/releases/tag/v0.1.0
