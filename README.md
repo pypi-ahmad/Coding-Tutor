@@ -164,21 +164,16 @@ Copy `.env.example` to `.env` and fill in the values for the AI providers you wa
 
 ## Dataset Setup
 
-The raw datasets are not included in the repository (they total ~8 GB). Download them from Hugging Face and place them under `Dataset/algorithm_problems/` and `Dataset/data_analysis_problems/`. Then import them into the local DuckDB database:
-
-**Download links**
-
-| Dataset | Destination folder | Hugging Face URL |
-|---|---|---|
-| LeetCodeDataset | `Dataset/algorithm_problems/LeetCodeDataset/` | https://huggingface.co/datasets/newfacade/LeetCodeDataset |
-| APPS | `Dataset/algorithm_problems/APPS/` | https://huggingface.co/datasets/codeparrot/apps |
-| TACO | `Dataset/algorithm_problems/TACO/` | https://huggingface.co/datasets/BAAI/TACO |
-| CodeContests | `Dataset/algorithm_problems/CodeContests/` | https://huggingface.co/datasets/open-thoughts/CodeContests |
-| Spider | `Dataset/data_analysis_problems/spider/` | https://huggingface.co/datasets/xlangai/spider |
-| sql-create-context | `Dataset/data_analysis_problems/sql-create-context/` | https://huggingface.co/datasets/b-mc2/sql-create-context |
-| querypls | `Dataset/data_analysis_problems/querypls/` | https://huggingface.co/datasets/samadpls/querypls-prompt2sql-dataset |
+The raw datasets are not included in the repository (they total ~8 GB). A downloader script fetches them directly from Hugging Face. See [docs/dataset-setup.md](docs/dataset-setup.md) for the full guide including troubleshooting and license notes.
 
 ```bash
+# Download all datasets (CodeContests excluded by default — 7 GB, binary)
+uv run python scripts/download_datasets.py
+
+# Download specific datasets only
+uv run python scripts/download_datasets.py --datasets leetcode taco spider
+
+# Then import into DuckDB
 uv run python -c "
 from coding_tutor.database.connection import get_db
 from coding_tutor.dataset.importer import run_import
@@ -243,6 +238,14 @@ Submitted code runs in a child process with `env={}` (empty environment), an iso
 All data is persisted in `coding_tutor.duckdb`. The schema is applied idempotently at startup via a version-tracked migration runner. Every submission is stored as a new row — previous attempts are never overwritten.
 
 **Tables:** `schema_versions`, `import_runs`, `question_sources`, `questions`, `question_assets`, `reference_solutions`, `question_test_cases`, `ai_generated_questions`, `attempts`, `solution_views`
+
+---
+
+## Documentation
+
+| Document | Description |
+|---|---|
+| [docs/dataset-setup.md](docs/dataset-setup.md) | Full dataset download guide — downloader script, expected directory structure, import API, troubleshooting |
 
 ---
 
