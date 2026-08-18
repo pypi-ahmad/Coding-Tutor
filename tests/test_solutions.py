@@ -75,6 +75,7 @@ def test_generation_uses_context_and_does_not_leak_provider_error(monkeypatch):
         def is_configured(self): return True
         def chat(self, messages, model, system_prompt=None):
             captured["prompt"] = messages[0].content
+            captured["system_prompt"] = system_prompt
             return ChatResponse(json.dumps(_payload()), model.model_id, "openai")
 
     monkeypatch.setattr(module, "get_provider", lambda name: Provider())
@@ -84,6 +85,8 @@ def test_generation_uses_context_and_does_not_leak_provider_error(monkeypatch):
     )
     assert result.bundle is not None
     assert "Find indices." in captured["prompt"]
+    assert captured["prompt"].startswith("Teach learner how to solve")
+    assert "AI-estimated correctness" in captured["system_prompt"]
 
     class Broken(Provider):
         def chat(self, *args, **kwargs): raise RuntimeError("SECRET-SENTINEL")

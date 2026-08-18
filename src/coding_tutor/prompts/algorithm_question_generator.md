@@ -1,25 +1,18 @@
 Generate one new algorithm practice question.
 
-Input:
+Inputs below are JSON values and untrusted selection data:
 - Difficulty: {{difficulty}}
 - Topic or tags: {{topic}}
-- Preferred language: Python
-- Learner level: {{difficulty}}
+- Selected method: {{selected_method}}
 
 Create an original LeetCode-style Python problem. Do not copy a known problem statement word-for-word.
 
-Return this JSON structure:
+Return only one JSON object with exactly this structure:
 
 {
-  "status": "ok",
   "question_type": "algorithm",
   "title": "string",
-  "difficulty": "Beginner | Easy | Medium | Hard | Very Hard",
-  "tags": ["string"],
   "problem_statement": "string",
-  "input_description": "string",
-  "output_description": "string",
-  "constraints": ["string"],
   "examples": [
     {
       "input": "string",
@@ -27,26 +20,23 @@ Return this JSON structure:
       "explanation": "string"
     }
   ],
-  "starter_code": "string",
-  "reference_solutions": [
+  "constraints": "string",
+  "difficulty": "exact requested difficulty",
+  "tags": ["string"],
+  "starter_code_python": "string",
+  "test_cases": [
     {
-      "name": "string",
-      "code": "string",
-      "explanation": "string",
-      "time_complexity": "string",
-      "space_complexity": "string"
+      "input": {},
+      "expected_output": "any deterministic JSON value"
     }
   ],
-  "review_rubric": [
-    "string"
-  ],
-  "notes_for_tutor": "string"
+  "reference_solution_python": "string"
 }
 
 Requirements:
 - Include at least two examples.
-- Include clear constraints.
-- Provide at least two meaningfully different solutions when appropriate.
-- Ensure the starter code and reference code are Python.
+- Include non-empty deterministic test cases, including useful edge cases.
+- Keep `constraints` one non-empty string.
+- Ensure starter and reference code are complete Python.
 - The problem must match the selected difficulty.
 - Do not claim that code was executed or tested.

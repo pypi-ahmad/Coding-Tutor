@@ -85,6 +85,7 @@ def test_assessment_prompt_contains_verbatim_submission_and_question_context(mon
 
     class Provider:
         captured = None
+        captured_system = None
 
         def is_configured(self):
             return True
@@ -94,6 +95,7 @@ def test_assessment_prompt_contains_verbatim_submission_and_question_context(mon
 
         def chat(self, messages, selected_model, system_prompt=None):
             self.captured = messages[0].content
+            self.captured_system = system_prompt
             return ChatResponse(
                 json.dumps({
                     "estimated_percentage_correct": 75,
@@ -123,12 +125,19 @@ def test_assessment_prompt_contains_verbatim_submission_and_question_context(mon
 
     assess_solution(question, submitted, "python", "openai", model)
 
-    context = json.loads(provider.captured.split("\n\n", 1)[1])
-    assert context["submitted_code"] == submitted
-    assert context["method"] == "python"
-    assert context["question"]["constraints"] == "Keep order."
-    assert context["question"]["examples"] == [{"input": [1]}]
-    assert "Do not claim to have run code or tests" in provider.captured
+    def prompt_value(name):
+        marked = provider.captured.split(f"<{name}>\n", 1)[1].split(
+            f"\n</{name}>", 1
+        )[0]
+        return json.loads(marked)
+
+    assert prompt_value("learner_submission") == submitted
+    assert prompt_value("selected_method") == "python"
+    question_context = prompt_value("question")
+    assert question_context["constraints"] == "Keep order."
+    assert question_context["examples"] == [{"input": [1]}]
+    assert "static analysis only" in provider.captured
+    assert "AI-estimated correctness" in provider.captured_system
 
 
 def test_attempt_lifecycle_preserves_original(monkeypatch):

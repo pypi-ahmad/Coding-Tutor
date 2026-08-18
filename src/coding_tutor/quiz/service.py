@@ -3,9 +3,9 @@ from __future__ import annotations
 
 import json
 import random
-from importlib.resources import files
 
 from coding_tutor.database.connection import get_db
+from coding_tutor.prompts import load_prompt, render_prompt
 from coding_tutor.quiz import persistence
 
 
@@ -152,10 +152,6 @@ def _select_questions(settings: dict, model) -> list[dict]:
     return questions
 
 
-def _prompt_text(name: str) -> str:
-    return files("coding_tutor").joinpath("prompts", name).read_text(encoding="utf-8")
-
-
 def _prepare_mcqs(attempt_id: str, items: list[dict], provider_name: str, model) -> None:
     mcq_items = [item for item in items if item["answer_format"] == "mcq"]
     if not mcq_items:
@@ -168,13 +164,15 @@ def _prepare_mcqs(attempt_id: str, items: list[dict], provider_name: str, model)
         "constraints": (item.get("constraints") or "")[:3000],
         "examples": (item.get("examples") or [])[:5], "method": item["method"],
     } for item in mcq_items]
-    template = _prompt_text("quiz_generator.md")
-    prompt = template.replace("{{question_contexts}}", json.dumps(contexts, ensure_ascii=False))
+    prompt = render_prompt(
+        "quiz_generator.md",
+        question_contexts=json.dumps(contexts, ensure_ascii=False),
+    )
     from coding_tutor.providers.base import ChatMessage
     try:
         response = provider.chat(
             [ChatMessage(role="user", content=prompt)], model,
-            system_prompt=_prompt_text("shared_rules.md"),
+            system_prompt=load_prompt("shared_rules.md"),
         )
     except Exception as exc:
         raise QuizError("The provider could not generate quiz choices. Retry is available.") from exc

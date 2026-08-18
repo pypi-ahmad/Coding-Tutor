@@ -92,6 +92,55 @@ def test_mcq_validator_requires_exact_ids_four_unique_options_and_one_correct():
             _validate_mcq_response(json.dumps(broken), {"q1"})
 
 
+def test_mcq_generation_uses_file_backed_prompt_and_shared_rules(monkeypatch):
+    from coding_tutor.providers.base import ChatResponse
+    import coding_tutor.quiz.service as service
+
+    captured = {}
+
+    class Provider:
+        def chat(self, messages, model, system_prompt=None):
+            captured["prompt"] = messages[0].content
+            captured["system_prompt"] = system_prompt
+            payload = {
+                "status": "ok",
+                "questions": [{
+                    "question_id": "q1",
+                    "prompt": "Which option is correct?",
+                    "options": [
+                        {"id": key, "text": f"Option {key}"} for key in "abcd"
+                    ],
+                    "correct_option_id": "a",
+                    "explanation": "A follows the question requirements.",
+                }],
+            }
+            return ChatResponse(json.dumps(payload), model.model_id, "openai")
+
+    saved = {}
+    monkeypatch.setattr(service, "_provider", lambda *_args: Provider())
+    monkeypatch.setattr(
+        service.persistence,
+        "save_mcq_content",
+        lambda attempt_id, content: saved.update(content),
+    )
+    model = SimpleNamespace(model_id="model")
+    service._prepare_mcqs("attempt", [{
+        "answer_format": "mcq",
+        "question_id": "q1",
+        "title": "Question",
+        "problem_statement": "Solve this.",
+        "constraints": "",
+        "examples": [],
+        "method": "python",
+    }], "openai", model)
+
+    assert captured["prompt"].startswith(
+        "Create one four-option, single-answer multiple-choice item"
+    )
+    assert "AI-estimated correctness" in captured["system_prompt"]
+    assert saved["q1"]["model_id"] == "model"
+
+
 def test_quiz_scoring_equal_weights_and_delays_completion_until_ai_succeeds(monkeypatch):
     from coding_tutor.database.connection import get_test_db
     from coding_tutor.evaluation.feedback import AIAssessment

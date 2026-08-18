@@ -162,6 +162,8 @@ def test_validate_data_analysis_question_rejects_incomplete_content(change, mess
 
 
 def test_generate_algorithm_sends_selections_and_saves_provenance(monkeypatch):
+    from coding_tutor.prompts import load_prompt
+
     result, conn, provider = _generate(monkeypatch, json.dumps(VALID_ALGORITHM))
 
     assert result.ok
@@ -178,7 +180,7 @@ def test_generate_algorithm_sends_selections_and_saves_provenance(monkeypatch):
     ).fetchone()
     assert generated[:2] == ("agnes", "agnes-2.5-flash")
     assert generated[2] is True
-    assert generated[3] == "v2"
+    assert generated[3] == "v3"
     assert json.loads(generated[4]) == {
         "prompt_template": "algorithm_question",
         "question_type": "algorithm",
@@ -190,6 +192,8 @@ def test_generate_algorithm_sends_selections_and_saves_provenance(monkeypatch):
     call = provider.chat.call_args
     prompt = call.kwargs["messages"][0].content
     assert all(value in prompt for value in ["algorithm", "Easy", "python", "arrays"])
+    assert prompt.startswith("Generate one new algorithm practice question.")
+    assert call.kwargs["system_prompt"] == load_prompt("shared_rules.md")
 
 
 def test_generate_data_analysis_saves_all_method_assets(monkeypatch):
