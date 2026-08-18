@@ -22,16 +22,16 @@ Configuration status is only a local presence check: the provider reports config
 
 The sidebar first selects a provider and then shows that provider's model options marked `verified=True` in the application registry.
 
-| Provider | Model ID | Request setting |
-| --- | --- | --- |
-| OpenAI | `gpt-5.6-luna` | `reasoning_effort=medium` |
-| Agnes AI | `agnes-2.5-flash` | Fixed Agnes model |
-| Google Gemini | `gemini-3.5-flash-lite` | `thinking_level=medium` |
-| Google Gemini | `gemini-3.7-flash` | `thinking_level=medium` |
+| Provider | Sidebar label | Model ID | Request setting |
+| --- | --- | --- | --- |
+| OpenAI | GPT-5.6 Luna (medium reasoning) | `gpt-5.6-luna` | `reasoning_effort="medium"` |
+| Agnes AI | Agnes 2.5 Flash | `agnes-2.5-flash` | Fixed Agnes model; no extra model parameter |
+| Google Gemini | Gemini 3.5 Flash Lite | `gemini-3.5-flash-lite` | `thinking_level="medium"` |
+| Google Gemini | Gemini 3.7 Flash | `gemini-3.7-flash` | `thinking_level="medium"` |
 
-Gemini requests also set provider-side interaction storage to false. The request shapes and settings above are covered by mocked tests; the test suite does not make live provider calls. A model being listed does not guarantee that a particular account can access it.
+Gemini requests also pass `store=False`. This is a request parameter, not a guarantee about all provider-side retention or logging. The request shapes and settings above are covered by mocked tests; the test suite does not make live provider calls. A model being listed does not guarantee that a particular account can access it.
 
-The UI does not offer registry entries marked unverified. Provider-backed assessment, teaching-solution, and quiz paths also confirm that the selected model belongs to the provider's verified option list. Question generation checks the selected model's verified flag and provider association; normal UI use supplies that model from the same registry.
+The model selector includes only registry entries marked verified. If an unverified entry exists, the sidebar can show its reason and documentation link, but it is not selectable. Provider-backed assessment, teaching-solution, and quiz paths also confirm that the selected model belongs to the provider's verified option list. Question generation checks the selected model's verified flag and provider association; normal UI use supplies that model from the same registry.
 
 ## Implemented AI actions
 
@@ -173,6 +173,8 @@ Raw provider responses are not stored as a general audit log. Validated fields a
 | Generated-question storage failure | The transaction is rolled back and a storage failure is reported. |
 | Assessment persistence failure | The original attempt remains saved with an error status when that status update succeeds. |
 | Quiz preparation or scoring failure | The durable quiz records an error state and exposes a retry path. |
+
+The application does not silently switch to another provider or model after a failure.
 
 ## Known limitations
 

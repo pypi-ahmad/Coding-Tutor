@@ -6,6 +6,7 @@ Coding Tutor is designed for a single user running the Streamlit application on 
 
 - Streamlit is configured to listen on `127.0.0.1:8551`.
 - The application has no user-account or authentication system.
+- The Streamlit UI has no file-upload control.
 - Questions, attempts, feedback, quizzes, and progress are stored in a local DuckDB file.
 - AI-backed actions send selected question and learner context to the configured external provider.
 - Learner Python, SQL, Pandas, PySpark, and Polars text is never executed by the application.
@@ -54,7 +55,7 @@ Automated configuration tests verify these ignore patterns and verify that `.env
 
 ## Local storage
 
-DuckDB is the only application database. By default, the app opens `coding_tutor.duckdb` in its working directory. `CODING_TUTOR_DB` can select a different path. Startup creates a missing parent directory and applies schema migrations.
+DuckDB is the only application database. By default, the app opens `coding_tutor.duckdb` in its working directory. `CODING_TUTOR_DB` can select a different path when it is present before the application process imports the database configuration. Startup creates a missing parent directory and applies schema migrations.
 
 The database can contain:
 
@@ -107,6 +108,8 @@ The implemented request builders do not add environment-variable values or trans
 
 These statements describe Coding Tutor's request construction. They do not make guarantees about provider-side retention, logging, training, subprocesses, SDK behavior, or policies. Review the selected provider's terms and settings before sending content. See [AI Behavior](AI_BEHAVIOR.md) for the exact request and persistence contracts.
 
+The Gemini request builder sets `store=False`. This is a request setting, not a guarantee about all provider-side processing or logging. The application does not implement its own outbound network allowlist or traffic inspection.
+
 ## Dataset handling and provenance
 
 Datasets are optional. The application has no Streamlit file-upload control. Raw source data enters the workflow only through files placed under the expected dataset directories, commonly by explicitly running the separate download script.
@@ -139,9 +142,11 @@ AI-corrected code and teaching solutions are also unexecuted. Review them before
 
 Project provider paths use user-facing generic errors for unexpected provider failures. Question generation logs the exception type rather than the provider exception text. The code does not intentionally add API-key values to its log messages.
 
+The dataset downloader configures informational console logging. The Streamlit application does not configure a separate application-wide log destination or security audit log.
+
 Dataset command-line paths are less private: downloader/importer output can contain dataset names, destination or source paths, discovered field names, record indices or task identifiers, and exception messages. Import failures are also recorded in DuckDB. Avoid sharing terminal output or database files without reviewing them.
 
-The downloader configures console logging. The application does not configure a dedicated encrypted or access-controlled audit log. Third-party SDK and hosting-process logging is outside the guarantees of this repository.
+Logs are not encrypted or access-controlled by the application. Third-party SDK and hosting-process logging is outside the guarantees of this repository.
 
 ## User responsibility
 
