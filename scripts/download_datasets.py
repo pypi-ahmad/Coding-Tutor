@@ -48,7 +48,7 @@ DA_ROOT = DATASET_ROOT / "data_analysis_problems"
 #   leetcode   → local_dir / "*.jsonl"
 #   apps       → local_dir / "*.jsonl"
 #   taco       → local_dir / "ALL" / "*.parquet"
-#   codecont   → local_dir / "*.parquet"  (skipped by importer — binary)
+#   codecontests → local_dir / "tasks.parquet" (archives are read in memory)
 #   spider     → local_dir / "spider" / "*.parquet"
 #   sqlctx     → local_dir / "sql_create_context_v4.json"
 #   querypls   → local_dir / "data" / "*.parquet"
@@ -80,8 +80,8 @@ DATASETS: list[dict] = [
         "key": "codecontests",
         "hf_repo": "open-thoughts/CodeContests",
         "local_dir": ALGO_ROOT / "CodeContests",
-        "size_hint": "~7 GB",
-        "note": "Binary archive format — downloaded but skipped by importer",
+        "size_hint": "~45 MB",
+        "note": "Parquet-wrapped task archives; importer reads them without extraction",
     },
     # ── Data analysis (SQL) ─────────────────────────────────────────────────
     {
@@ -193,7 +193,7 @@ def main() -> None:
         "--skip-codecontests",
         action="store_true",
         default=True,
-        help="Skip CodeContests (7 GB, binary archive — skipped by importer anyway). Default: True.",
+        help="Skip the optional CodeContests archive dataset. Default: True.",
     )
     parser.add_argument(
         "--include-codecontests",
@@ -229,7 +229,7 @@ def main() -> None:
     if not args.include_codecontests:
         targets = [d for d in targets if d["key"] != "codecontests"]
         if not args.datasets:
-            log.info("CodeContests skipped by default (7 GB, binary — use --include-codecontests to download).")
+            log.info("CodeContests skipped by default; use --include-codecontests to download it.")
 
     if not targets:
         log.info("Nothing to download.")
@@ -257,10 +257,7 @@ def main() -> None:
     if not args.dry_run and ok:
         print()
         log.info("Next step: run the import pipeline to load questions into DuckDB:")
-        log.info("  uv run python -c \"")
-        log.info("    from coding_tutor.database.connection import get_db")
-        log.info("    from coding_tutor.dataset.importer import run_import")
-        log.info("    run_import(get_db())\"")
+        log.info("  uv run python scripts/import_datasets.py")
 
     if failed:
         sys.exit(1)

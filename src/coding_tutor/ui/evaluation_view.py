@@ -1,70 +1,62 @@
-"""Renders the evaluation result and teacher feedback in the UI."""
-from __future__ import annotations
+"""Render explicitly labelled AI-estimated assessment results."""
 import streamlit as st
-from typing import Optional
 
 
-def render_evaluation(
-    question: dict,
-    run_result,
-    feedback,
-    attempt_id: str,
-    submitted_code: str,
-    method: str,
-):
-    """Display test results and AI teacher feedback."""
-    st.subheader("📊 Evaluation Results")
+def _apply_correction(
+    editor_key: str, backup_key: str, applied_key: str, code: str
+) -> None:
+    st.session_state[backup_key] = st.session_state.get(editor_key, "")
+    st.session_state[editor_key] = code
+    st.session_state[applied_key] = True
 
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.metric("Tests Passed", f"{run_result.tests_passed}/{run_result.tests_total}")
-    with col2:
-        st.metric("Correctness", f"{run_result.percentage_correct:.1f}%")
-    with col3:
-        if feedback:
-            st.metric("Marks (AI)", f"{feedback.marks:.1f}/10")
 
-    status_icons = {"passed": "✅", "failed": "❌", "error": "⚠️", "timeout": "⏱️"}
-    icon = status_icons.get(run_result.status, "❓")
-    st.markdown(f"**Status:** {icon} {run_result.status.upper()}")
+def _restore_correction(editor_key: str, backup_key: str, applied_key: str) -> None:
+    if backup_key in st.session_state:
+        st.session_state[editor_key] = st.session_state[backup_key]
+    st.session_state[applied_key] = False
 
-    if run_result.error_details:
-        with st.expander("Error Details"):
-            st.code(run_result.error_details, language="text")
 
-    st.caption("Correctness % and marks are based on deterministic test execution.")
+def render_evaluation(question: dict, assessment, attempt_id: str, method: str) -> None:
+    st.subheader("📊 AI Teacher Assessment")
+    left, right = st.columns(2)
+    left.metric("AI-estimated correctness", f"{assessment.estimated_percentage_correct:.1f}%")
+    right.metric("AI-estimated marks", f"{assessment.marks:.1f}/10")
+    st.caption(f"Static AI review by {assessment.provider}/{assessment.model_id}. No code or tests were executed.")
+    if assessment.identified_mistakes:
+        st.markdown("**Identified issues**")
+        for mistake in assessment.identified_mistakes:
+            st.markdown(f"- {mistake}")
+    st.markdown("**Explanation**")
+    st.markdown(assessment.explanation)
+    if assessment.suggested_correction:
+        st.info(assessment.suggested_correction)
+    if assessment.corrected_code:
+        st.code(assessment.corrected_code, language="sql" if method == "sql" else "python")
+        editor_key = f"editor_{question['id']}_{method}"
+        backup_key = f"editor_pre_correction_{attempt_id}"
+        applied_key = f"correction_applied_{attempt_id}"
+        applied = st.session_state.get(applied_key, False)
+        current_code = st.session_state.get(editor_key, "")
 
-    if feedback:
-        st.divider()
-        st.subheader("🎓 Teacher Feedback")
-        st.caption(
-            f"_AI feedback from {feedback.provider}/{feedback.model_id} — "
-            "this is teaching guidance, not authoritative scoring._"
-        )
-
-        if feedback.identified_mistakes:
-            st.markdown("**Identified Issues:**")
-            for m in feedback.identified_mistakes:
-                st.markdown(f"- {m}")
-
-        if feedback.explanation:
-            st.markdown("**Explanation:**")
-            st.markdown(feedback.explanation)
-
-        if feedback.recommended_correction:
-            st.markdown("**Recommendation:**")
-            st.info(feedback.recommended_correction)
-
-        if feedback.corrected_code:
-            with st.expander("💡 Suggested Correction (click to apply)"):
-                lang = "sql" if method == "sql" else "python"
-                st.code(feedback.corrected_code, language=lang)
-                if st.button("Apply Correction to Editor", key=f"apply_corr_{attempt_id}"):
-                    q_id = question["id"]
-                    editor_key = f"editor_{q_id}_{method}"
-                    original_key = f"editor_original_{q_id}_{method}"
-                    if original_key not in st.session_state:
-                        st.session_state[original_key] = st.session_state.get(editor_key, "")
-                    st.session_state[editor_key] = feedback.corrected_code
-                    st.success("Correction applied. Your original code is preserved in session state.")
-                    st.rerun()
+        if applied:
+            if current_code == assessment.corrected_code:
+                st.success("AI correction applied. Your submitted attempt remains saved unchanged.")
+                restore_label = "Restore pre-correction code"
+            else:
+                st.warning(
+                    "You edited the AI correction. Restoring will replace those newer editor changes."
+                )
+                restore_label = "Restore pre-correction code and replace current edits"
+            st.button(
+                restore_label,
+                key=f"restore_corr_{attempt_id}",
+                on_click=_restore_correction,
+                args=(editor_key, backup_key, applied_key),
+            )
+        else:
+            st.button(
+                "Apply correction to editor",
+                key=f"apply_corr_{attempt_id}",
+                on_click=_apply_correction,
+                args=(editor_key, backup_key, applied_key, assessment.corrected_code),
+            )

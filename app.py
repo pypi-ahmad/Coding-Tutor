@@ -1,10 +1,8 @@
 """Coding Tutor — main Streamlit entry point."""
 import streamlit as st
-from dotenv import load_dotenv
 
-load_dotenv()  # loads .env if present locally; safe if file absent
-
-from coding_tutor.ui.sidebar import render_sidebar
+from coding_tutor.quiz.session import initialize_session_state
+from coding_tutor.ui.sidebar import render_sidebar, render_pending_learning_change_dialog
 from coding_tutor.ui.main_page import render_main_page
 
 
@@ -16,31 +14,26 @@ def main():
         initial_sidebar_state="expanded",
     )
 
-    if "initialized" not in st.session_state:
-        st.session_state.initialized = True
-        st.session_state.provider = None
-        st.session_state.model = None
-        st.session_state.current_question = None
-        st.session_state.editor_content = ""
-        st.session_state.question_type = "algorithm"
-        st.session_state.method = "python"
-        st.session_state.difficulty = "Easy"
-        st.session_state.question_source = "curated"
-        st.session_state.submit_trigger = False
-        st.session_state.show_solution_trigger = False
+    initialize_session_state()
 
     # Top navigation
     page = st.sidebar.radio(
         "Navigation",
-        ["🎓 Practice", "📈 Progress"],
+        ["🎓 Practice", "🧠 Quiz", "📈 Progress"],
         key="nav_page",
         label_visibility="collapsed",
     )
 
     render_sidebar()
 
+    if st.session_state.get("pending_learning_change"):
+        render_pending_learning_change_dialog()
+
     if page == "🎓 Practice":
         render_main_page()
+    elif page == "🧠 Quiz":
+        from coding_tutor.ui.quiz_page import render_quiz_page
+        render_quiz_page()
     else:
         from coding_tutor.ui.progress_page import render_progress_page
         render_progress_page()
