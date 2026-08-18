@@ -53,7 +53,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - API credentials remain in the user's system environment and are never rendered by the app.
 - Learner code is sent only to the explicitly selected AI provider and is never executed locally.
-- Questions and progress remain in the local DuckDB database unless the user chooses an AI-backed action.
+- Questions and progress are stored in the local DuckDB database. Explicit AI-backed actions send only the relevant question and learner context assembled for that request.
 
 [Unreleased]: https://github.com/pypi-ahmad/Coding-Tutor/compare/v0.1.2...HEAD
 [0.1.2]: https://github.com/pypi-ahmad/Coding-Tutor/compare/v0.1.1...v0.1.2

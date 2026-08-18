@@ -4,9 +4,11 @@ A local AI-powered Streamlit coding tutor for algorithm and data-analysis practi
 
 **Repository:** [github.com/pypi-ahmad/Coding-Tutor](https://github.com/pypi-ahmad/Coding-Tutor)
 
+## Overview
+
 Coding Tutor provides a local question bank, structured AI question generation, a browser editor, teacher-style AI feedback, guided solutions, quizzes, and DuckDB progress history. It is a learning aid, not a code judge: learner Python, SQL, Pandas, PySpark, and Polars submissions are never executed.
 
-## What is implemented
+## Features
 
 - Python algorithm practice.
 - Data-analysis authoring templates for SQL, Pandas, PySpark, and Polars.
@@ -82,12 +84,12 @@ Open <http://127.0.0.1:8551>. The tracked Streamlit configuration fixes the addr
 
 Set credentials in the environment that launches Streamlit. `.env.example` is a names-only reference and is not loaded by the application. Never put real values in that file.
 
-```powershell
-$env:OPENAI_API_KEY = "<your-key>"
-$env:OPENAI_BASE_URL = "<optional-compatible-endpoint>"
-$env:AGNES_API_KEY = "<your-key>"
-$env:GOOGLE_API_KEY = "<your-key>"
-```
+| Variable | Purpose |
+| --- | --- |
+| `OPENAI_API_KEY` | OpenAI provider credential |
+| `OPENAI_BASE_URL` | Optional OpenAI-compatible base URL |
+| `AGNES_API_KEY` | Agnes AI provider credential |
+| `GOOGLE_API_KEY` | Google Gemini provider credential |
 
 Only one provider key is needed. `OPENAI_BASE_URL` is optional; blank uses the OpenAI SDK default. Additional implemented variables are documented in [the technical reference](docs/TECHNICAL_REFERENCE.md#environment-variables).
 
@@ -180,7 +182,6 @@ Tests mock network calls and use in-memory or temporary DuckDB databases; they d
 - Pandas is installed for the app UI, but learner Pandas code is not run. Polars is not installed.
 - Dataset licenses belong to their sources. CodeContests has no license declared on the supported Hugging Face card; treat redistribution as unresolved.
 - AI output can be wrong, incomplete, or unsafe. Generated corrections and solutions are validated for structure, not executed for correctness.
-- No live provider call or full seven-dataset import was performed during this documentation review.
 
 ## Documentation
 
@@ -191,6 +192,7 @@ Tests mock network calls and use in-memory or temporary DuckDB databases; they d
 - [Technical Reference](docs/TECHNICAL_REFERENCE.md)
 - [Contributor and maintainer reference](docs/technical-reference.md)
 - [Architecture explanation](docs/ARCHITECTURE.md)
+- [Architecture blueprint](Project_Architecture_Blueprint.md)
 - [Architecture decisions](docs/ARCHITECTURE_DECISIONS.md)
 - [AI behavior](docs/AI_BEHAVIOR.md)
 - [Security and privacy](docs/SECURITY_AND_PRIVACY.md)
@@ -198,6 +200,7 @@ Tests mock network calls and use in-memory or temporary DuckDB databases; they d
 - [Datasets and attribution](docs/DATASETS.md)
 - [Detailed dataset setup](docs/dataset-setup.md)
 - [Open-source checklist](docs/OPEN_SOURCE_CHECKLIST.md)
+- [Release history](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md), [Support](SUPPORT.md), [Security](SECURITY.md), [Disclaimer](DISCLAIMER.md), and [Code of Conduct](CODE_OF_CONDUCT.md)
 
 ## Contributing
