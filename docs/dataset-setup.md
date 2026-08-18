@@ -80,11 +80,11 @@ Authenticated requests use higher rate limits. Set `HF_TOKEN` before running:
 
 ```bash
 # Windows
-set HF_TOKEN=hf_...
+set HF_TOKEN=<your-token>
 uv run python scripts/download_datasets.py
 
 # PowerShell
-$env:HF_TOKEN = "hf_..."
+$env:HF_TOKEN = "<your-token>"
 uv run python scripts/download_datasets.py
 ```
 
@@ -136,7 +136,7 @@ Available keys are `leetcode`, `apps`, `codecontests`, `taco`, `spider`, `sqlctx
 The importer never renames, moves, overwrites, or extracts into the downloaded source directories. Provenance stores the relative source path, original ID where available, Hugging Face revision metadata where present, license, attribution, and import timestamp.
 
 > [!NOTE]
-> A full import can take well over an hour and require several gigabytes of local disk space, especially on Windows. Importing one dataset at a time with `--datasets` makes progress and failures easier to monitor. If the process is interrupted, already committed source records remain protected by the idempotency key, but the interrupted `import_runs` row may remain marked `running`; rerun the same dataset to continue without duplicating those records.
+> Full-import duration and disk use depend on the downloaded revisions and machine. Importing one dataset at a time with `--datasets` makes progress and failures easier to monitor. If the process is interrupted, already committed source records remain protected by the idempotency key, but the interrupted `import_runs` row may remain marked `running`; rerun the same dataset to continue without duplicating those records.
 
 ### Check import status
 
