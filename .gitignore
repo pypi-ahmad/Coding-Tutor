@@ -1,5 +1,8 @@
 # Environment secrets — never commit real .env
 .env
+.env.*
+!.env.example
+.streamlit/secrets.toml
 
 # DuckDB database files
 *.db
@@ -7,7 +10,7 @@
 *.duckdb.wal
 
 # Raw datasets (large binary/Parquet files — not part of source distribution)
-Dataset/
+/Dataset/
 
 # Python
 __pycache__/
@@ -29,11 +32,19 @@ build/
 # Test caches
 .pytest_cache/
 .coverage
+.coverage.*
 htmlcov/
+.hypothesis/
+
+# Development tool caches
+.ruff_cache/
+.mypy_cache/
+.ty_cache/
 
 # Runner temp files
 runner_tmp/
 *.tmp
+*.log
 
 # OS artifacts
 .DS_Store
@@ -48,3 +59,6 @@ node_modules/
 .codegraph/
 .code-review-graph/
 skills-lock.json
+
+# Generated knowledge-graph output (graphify)
+graphify-out/

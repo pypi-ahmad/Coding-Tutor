@@ -25,12 +25,18 @@ CREATE TABLE IF NOT EXISTS question_sources (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     dataset_name    TEXT NOT NULL,
     original_id     TEXT,
+    source_key      TEXT,
     source_file     TEXT,
+    source_revision TEXT,
+    source_record_index BIGINT,
     license         TEXT,
     attribution     TEXT,
     import_run_id   UUID REFERENCES import_runs(id),
     imported_at     TIMESTAMPTZ DEFAULT now()
 );
+
+CREATE UNIQUE INDEX IF NOT EXISTS question_sources_identity_idx
+    ON question_sources (dataset_name, source_key);
 
 -- Normalized question model
 CREATE TABLE IF NOT EXISTS questions (
@@ -97,6 +103,7 @@ CREATE TABLE IF NOT EXISTS attempts (
     attempted_at        TIMESTAMPTZ DEFAULT now(),
     method              TEXT NOT NULL,
     submitted_code      TEXT NOT NULL,
+    deterministic_test_result TEXT NOT NULL DEFAULT 'not_run',
     test_result         TEXT CHECK (test_result IN ('passed','failed','error','timeout','pending')),
     tests_passed        INTEGER,
     tests_total         INTEGER,
@@ -116,5 +123,51 @@ CREATE TABLE IF NOT EXISTS solution_views (
     attempt_id      UUID REFERENCES attempts(id),
     viewed_at       TIMESTAMPTZ DEFAULT now(),
     methods_viewed  JSON DEFAULT '[]'
+);
+
+-- Quiz attempts are intentionally separate from normal practice attempts
+CREATE TABLE IF NOT EXISTS quiz_attempts (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    started_at      TIMESTAMPTZ DEFAULT now(),
+    completed_at    TIMESTAMPTZ,
+    status          TEXT NOT NULL DEFAULT 'preparing',
+    question_source TEXT NOT NULL,
+    question_type   TEXT NOT NULL,
+    difficulty      TEXT NOT NULL,
+    topic           TEXT NOT NULL DEFAULT 'general',
+    method          TEXT NOT NULL,
+    total_items     INTEGER NOT NULL,
+    coding_items    INTEGER NOT NULL,
+    mcq_items       INTEGER NOT NULL,
+    percentage_correct DOUBLE,
+    marks           DOUBLE,
+    passed          BOOLEAN,
+    provider        TEXT,
+    model_id        TEXT,
+    error_details   TEXT
+);
+
+CREATE TABLE IF NOT EXISTS quiz_items (
+    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    quiz_attempt_id     UUID NOT NULL REFERENCES quiz_attempts(id),
+    position            INTEGER NOT NULL,
+    question_id         UUID NOT NULL REFERENCES questions(id),
+    answer_format       TEXT NOT NULL,
+    method              TEXT NOT NULL,
+    prompt_snapshot     TEXT,
+    options             JSON,
+    correct_option_id   TEXT,
+    explanation         TEXT,
+    answer_text         TEXT,
+    selected_option_id  TEXT,
+    item_status         TEXT NOT NULL DEFAULT 'pending',
+    percentage_correct  DOUBLE,
+    marks               DOUBLE,
+    ai_feedback         TEXT,
+    provider            TEXT,
+    model_id            TEXT,
+    error_details       TEXT,
+    UNIQUE (quiz_attempt_id, position),
+    UNIQUE (quiz_attempt_id, question_id)
 );
 """
