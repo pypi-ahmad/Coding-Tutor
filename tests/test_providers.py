@@ -90,6 +90,31 @@ def test_agnes_configured_when_key_present(monkeypatch):
     assert p.is_configured()
 
 
+def test_agnes_uses_fixed_model_and_official_base_url_without_network(monkeypatch):
+    monkeypatch.setenv("AGNES_API_KEY", "secret-agnes")
+    from coding_tutor.providers.agnes_provider import AGNES_BASE_URL, AgnesProvider
+    from coding_tutor.providers.base import ChatMessage
+    from coding_tutor.providers.config import AGNES_MODELS
+    import openai
+
+    client = MagicMock()
+    client.chat.completions.create.return_value = SimpleNamespace(
+        choices=[SimpleNamespace(message=SimpleNamespace(content="ok"))]
+    )
+    client_factory = MagicMock(return_value=client)
+    monkeypatch.setattr(openai, "OpenAI", client_factory)
+
+    AgnesProvider().chat([ChatMessage(role="user", content="hello")], AGNES_MODELS[0])
+
+    client_factory.assert_called_once_with(
+        api_key="secret-agnes",
+        base_url=AGNES_BASE_URL,
+    )
+    assert client.chat.completions.create.call_args.kwargs["model"] == (
+        "agnes-2.5-flash"
+    )
+
+
 def test_gemini_not_configured_when_no_key():
     from coding_tutor.providers.gemini_provider import GeminiProvider
     p = GeminiProvider()
@@ -101,6 +126,35 @@ def test_gemini_configured_when_key_present(monkeypatch):
     from coding_tutor.providers.gemini_provider import GeminiProvider
     p = GeminiProvider()
     assert p.is_configured()
+
+
+@pytest.mark.parametrize("model_index", [0, 1])
+def test_gemini_passes_medium_thinking_without_network(monkeypatch, model_index):
+    monkeypatch.setenv("GOOGLE_API_KEY", "secret-google")
+    from coding_tutor.providers.base import ChatMessage
+    from coding_tutor.providers.config import GEMINI_MODELS
+    from coding_tutor.providers.gemini_provider import GeminiProvider
+    from google import genai
+
+    client = MagicMock()
+    client.interactions.create.return_value = SimpleNamespace(output_text="ok")
+    client_factory = MagicMock(return_value=client)
+    monkeypatch.setattr(genai, "Client", client_factory)
+
+    response = GeminiProvider().chat(
+        [ChatMessage(role="user", content="hello")],
+        GEMINI_MODELS[model_index],
+        system_prompt="system",
+    )
+
+    client_factory.assert_called_once_with(api_key="secret-google")
+    call = client.interactions.create.call_args
+    assert call.kwargs["model"] == GEMINI_MODELS[model_index].model_id
+    assert call.kwargs["input"] == "hello"
+    assert call.kwargs["system_instruction"] == "system"
+    assert call.kwargs["generation_config"] == {"thinking_level": "medium"}
+    assert call.kwargs["store"] is False
+    assert response.content == "ok"
 
 
 def test_gemini_ignores_gemini_api_key(monkeypatch):

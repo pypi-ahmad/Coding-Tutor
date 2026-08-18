@@ -25,9 +25,22 @@ class GeminiProvider(BaseProvider):
         if not self.is_configured():
             raise RuntimeError("GOOGLE_API_KEY is not set.")
         from google import genai
-        from google.genai import types
         client = genai.Client(api_key=self._key())
-        contents = [types.Content(role="model" if m.role == "assistant" else "user", parts=[types.Part(text=m.content)]) for m in messages if m.role != "system"]
-        config = types.GenerateContentConfig(system_instruction=system_prompt)
-        response = client.models.generate_content(model=model.model_id, contents=contents, config=config)
-        return ChatResponse(content=response.text, model=model.model_id, provider="gemini")
+        thinking_level = model.extra_params.get("thinking_level")
+        user_input = "\n\n".join(
+            message.content for message in messages if message.role == "user"
+        )
+        if not user_input:
+            raise ValueError("Gemini requires at least one user message.")
+        interaction = client.interactions.create(
+            model=model.model_id,
+            input=user_input,
+            system_instruction=system_prompt,
+            generation_config={"thinking_level": thinking_level},
+            store=False,
+        )
+        return ChatResponse(
+            content=interaction.output_text,
+            model=model.model_id,
+            provider="gemini",
+        )

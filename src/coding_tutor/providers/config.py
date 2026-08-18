@@ -32,13 +32,15 @@ GEMINI_MODELS: list[ModelOption] = [
         documentation_url=(
             "https://ai.google.dev/gemini-api/docs/models/gemini-3.5-flash-lite"
         ),
+        extra_params={"thinking_level": "medium"},
     ),
     ModelOption(
         provider="gemini",
         model_id="gemini-3.7-flash",
         display_name="Gemini 3.7 Flash",
         verified=True,
-        documentation_url="https://ai.google.dev/gemini-api/docs/models",
+        documentation_url="https://ai.google.dev/gemini-api/docs/thinking",
+        extra_params={"thinking_level": "medium"},
     ),
 ]
 
