@@ -11,6 +11,7 @@ class ModelOption:
     display_name: str
     verified: bool  # True only when confirmed from official docs
     unverified_reason: str = ""  # shown when verified=False
+    documentation_url: str = ""
     extra_params: dict = field(default_factory=dict)
 
 

@@ -10,11 +10,10 @@ class AgnesProvider(BaseProvider):
 
     OpenAI-compatible API at https://apihub.agnes-ai.com/v1.
     Model: agnes-2.5-flash (verified).
-    Thinking mode enabled via chat_template_kwargs.
     """
 
     def is_configured(self) -> bool:
-        return bool(os.environ.get("AGNES_API_KEY"))
+        return bool(os.environ.get("AGNES_API_KEY", "").strip())
 
     def get_model_options(self) -> list[ModelOption]:
         from coding_tutor.providers.config import AGNES_MODELS
@@ -26,6 +25,11 @@ class AgnesProvider(BaseProvider):
         model: ModelOption,
         system_prompt: Optional[str] = None,
     ) -> ChatResponse:
+        if not model.verified:
+            raise ValueError(
+                f"Model {model.model_id} is not verified and cannot be used. "
+                f"Reason: {model.unverified_reason}"
+            )
         if not self.is_configured():
             raise RuntimeError("AGNES_API_KEY is not set.")
 

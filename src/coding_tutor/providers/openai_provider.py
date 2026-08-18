@@ -4,10 +4,10 @@ from coding_tutor.providers.base import BaseProvider, ChatMessage, ChatResponse,
 
 
 class OpenAIProvider(BaseProvider):
-    """OpenAI provider — uses OPENAI_API_KEY and OPENAI_BASE_URL env vars."""
+    """OpenAI provider configured only from the system environment."""
 
     def is_configured(self) -> bool:
-        return bool(os.environ.get("OPENAI_API_KEY"))
+        return bool(os.environ.get("OPENAI_API_KEY", "").strip())
 
     def get_model_options(self) -> list[ModelOption]:
         from coding_tutor.providers.config import OPENAI_MODELS
@@ -29,9 +29,10 @@ class OpenAIProvider(BaseProvider):
 
         from openai import OpenAI
 
+        base_url = os.environ.get("OPENAI_BASE_URL", "").strip() or None
         client = OpenAI(
             api_key=os.environ["OPENAI_API_KEY"],
-            base_url=os.environ.get("OPENAI_BASE_URL"),
+            base_url=base_url,
         )
 
         formatted = []

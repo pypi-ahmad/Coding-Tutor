@@ -6,11 +6,8 @@ OPENAI_MODELS: list[ModelOption] = [
         provider="openai",
         model_id="gpt-5.6-luna",
         display_name="GPT-5.6 Luna (medium reasoning)",
-        verified=False,
-        unverified_reason=(
-            "gpt-5.6-luna could not be verified in official OpenAI documentation "
-            "as of the implementation date. This option is disabled until verified."
-        ),
+        verified=True,
+        documentation_url="https://developers.openai.com/api/docs/models/gpt-5.6-luna",
         extra_params={"reasoning_effort": "medium"},
     ),
 ]
@@ -21,6 +18,7 @@ AGNES_MODELS: list[ModelOption] = [
         model_id="agnes-2.5-flash",
         display_name="Agnes 2.5 Flash",
         verified=True,
+        documentation_url="https://www.agnes-ai.com/en/docs/agnes-25-flash",
         extra_params={},
     ),
 ]
@@ -30,21 +28,17 @@ GEMINI_MODELS: list[ModelOption] = [
         provider="gemini",
         model_id="gemini-3.5-flash-lite",
         display_name="Gemini 3.5 Flash Lite",
-        verified=False,
-        unverified_reason=(
-            "gemini-3.5-flash-lite could not be verified in official Google Gemini "
-            "documentation as of the implementation date. This option is disabled until verified."
+        verified=True,
+        documentation_url=(
+            "https://ai.google.dev/gemini-api/docs/models/gemini-3.5-flash-lite"
         ),
     ),
     ModelOption(
         provider="gemini",
         model_id="gemini-3.7-flash",
         display_name="Gemini 3.7 Flash",
-        verified=False,
-        unverified_reason=(
-            "gemini-3.7-flash could not be verified in official Google Gemini "
-            "documentation as of the implementation date. This option is disabled until verified."
-        ),
+        verified=True,
+        documentation_url="https://ai.google.dev/gemini-api/docs/models",
     ),
 ]
 
