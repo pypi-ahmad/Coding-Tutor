@@ -24,15 +24,9 @@ Instead:
 
 This application is designed to run **locally on your own machine** for personal use. It is not hardened for multi-user, public, or production deployment.
 
-### Code execution isolation
+### Learner submissions
 
-Learner-submitted code runs in an isolated child process with:
-- An empty environment (`env={}`) — no inherited secrets, paths, or credentials.
-- A dedicated temporary working directory, deleted after each run.
-- A strict timeout (10 seconds by default).
-- SQL evaluated against an isolated in-memory DuckDB instance separate from the app database.
-
-**Windows limitation:** On Windows, isolation is at the process level only. Linux namespace isolation, seccomp filtering, and cgroup memory limits are not available. Do not expose this application to untrusted code submitted by other users.
+The application does not execute learner-submitted Python, SQL, Pandas, PySpark, or Polars code. When the learner requests assessment, the question, selected method, and editor text are sent to the selected external AI provider for static review.
 
 ### API keys
 

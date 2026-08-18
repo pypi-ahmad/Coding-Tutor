@@ -10,12 +10,8 @@ Coding Tutor imports practice questions from seven public Hugging Face datasets.
 # 1. Download all datasets (CodeContests is skipped by default — see below)
 uv run python scripts/download_datasets.py
 
-# 2. Import questions into DuckDB
-uv run python -c "
-from coding_tutor.database.connection import get_db
-from coding_tutor.dataset.importer import run_import
-run_import(get_db())
-"
+# 2. Inspect, normalize, and import questions into DuckDB
+uv run python scripts/import_datasets.py
 ```
 
 The import command is idempotent — re-running it skips already-imported records.
@@ -29,14 +25,15 @@ The import command is idempotent — re-running it skips already-imported record
 | `leetcode` | [newfacade/LeetCodeDataset](https://huggingface.co/datasets/newfacade/LeetCodeDataset) | Algorithm (Python) | Apache-2.0 | ~60 MB | ✅ Complete |
 | `apps` | [codeparrot/apps](https://huggingface.co/datasets/codeparrot/apps) | Algorithm (Python) | MIT | ~130 MB | ✅ Complete |
 | `taco` | [BAAI/TACO](https://huggingface.co/datasets/BAAI/TACO) | Algorithm (Python) | Apache-2.0 | ~400 MB | ✅ Complete |
-| `codecontests` | [open-thoughts/CodeContests](https://huggingface.co/datasets/open-thoughts/CodeContests) | Algorithm | MIT | ~7 GB | ⏭ Skipped (binary archive) |
+| `codecontests` | [open-thoughts/CodeContests](https://huggingface.co/datasets/open-thoughts/CodeContests) | Algorithm | Not stated in the downloaded card | ~45 MB | ✅ Complete |
 | `spider` | [xlangai/spider](https://huggingface.co/datasets/xlangai/spider) | Data Analysis | CC BY-SA 4.0 | ~4 MB | ⚠ Schema only |
 | `sqlctx` | [b-mc2/sql-create-context](https://huggingface.co/datasets/b-mc2/sql-create-context) | Data Analysis | CC BY 4.0 | ~30 MB | ⚠ Schema only |
 | `querypls` | [samadpls/querypls-prompt2sql-dataset](https://huggingface.co/datasets/samadpls/querypls-prompt2sql-dataset) | Data Analysis | Apache-2.0 | ~15 MB | ⚠ Schema only |
 
 **Complete** — includes reference solutions and executable test cases.  
-**Schema only** — provides CREATE TABLE schema and a reference SQL answer but no fixture data rows. Questions are imported as `is_complete = false` and support reference study but not automated test execution.  
-**Skipped** — the CodeContests repo contains binary archives; the importer logs a clear skip message and does not block the rest of the pipeline.
+**Schema only** — provides a schema and/or reference SQL but no shared fixture rows and expected result. These records are retained with `is_complete=false` and are not offered as learner tasks.
+
+Before reading records, the importer validates each file's real format and required fields. JSONL, JSON arrays, ordinary Parquet files, and CodeContests' Parquet-wrapped task archives are handled by separate adapters.
 
 ---
 
@@ -65,7 +62,7 @@ uv run python scripts/download_datasets.py --datasets leetcode taco
 # Available keys: leetcode, apps, taco, codecontests, spider, sqlctx, querypls
 ```
 
-### Include CodeContests (7 GB, binary — skipped by importer)
+### Include CodeContests (archive records supported by the importer)
 
 ```bash
 uv run python scripts/download_datasets.py --include-codecontests
@@ -106,7 +103,7 @@ Dataset/
 │   ├── apps/                  ← apps: *.jsonl files
 │   ├── TACO/
 │   │   └── ALL/               ← taco: *.parquet files here
-│   └── CodeContests/          ← codecontests: (skipped by importer)
+│   └── CodeContests/          ← codecontests: tasks.parquet
 └── data_analysis_problems/
     ├── spider/
     │   └── spider/            ← spider: *.parquet files here
@@ -122,27 +119,21 @@ Dataset/
 
 ## Running the import
 
-Once datasets are downloaded, import them into DuckDB:
+Once datasets are downloaded, inspect and import them into DuckDB:
 
 ```bash
-uv run python -c "
-from coding_tutor.database.connection import get_db
-from coding_tutor.dataset.importer import run_import
-run_import(get_db())
-"
+uv run python scripts/import_datasets.py
 ```
 
 ### Import specific datasets only
 
-```python
-from coding_tutor.database.connection import get_db
-from coding_tutor.dataset.importer import run_import
-
-# Import only leetcode and spider
-results = run_import(get_db(), datasets=["leetcode", "spider"])
-for r in results:
-    print(r.dataset_name, r.status, r.imported, "imported,", r.skipped, "skipped")
+```bash
+uv run python scripts/import_datasets.py --datasets leetcode spider
 ```
+
+Available keys are `leetcode`, `apps`, `codecontests`, `taco`, `spider`, `sqlctx`, and `querypls`. Use `--dataset-root PATH` for a different read-only source location or `--database PATH` for a different DuckDB file. Omitting `--database` respects `CODING_TUTOR_DB` and otherwise uses `coding_tutor.duckdb`.
+
+The importer never renames, moves, overwrites, or extracts into the downloaded source directories. Provenance stores the relative source path, original ID where available, Hugging Face revision metadata where present, license, attribution, and import timestamp.
 
 ### Check import status
 
@@ -165,7 +156,8 @@ conn.execute("""
 |---|---|---|
 | `No .jsonl files found` | LeetCode or APPS download didn't land in the right folder | Check that `Dataset/algorithm_problems/LeetCodeDataset/*.jsonl` exists |
 | `No parquet files found` | TACO files are in a different subdirectory | Ensure `Dataset/algorithm_problems/TACO/ALL/*.parquet` exists |
-| `File not found: sql_create_context_v4.json` | sql-create-context downloaded to a different name | Look for the JSON file in `Dataset/data_analysis_problems/sql-create-context/` and rename if needed |
+| `No source files match ...` | A download is missing or has a different layout | Re-run the downloader for that dataset or pass the correct `--dataset-root`; do not rename downloaded source files |
+| `missing required fields` | The downloaded revision has a schema the adapter does not support | Keep the source untouched and report the dataset, revision, and error message |
 | `huggingface_hub not found` | Dependency not installed | Run `uv sync` to install dependencies |
 | Download rate-limited or slow | No HF token | Set `HF_TOKEN` environment variable |
 | `401 Unauthorized` | Dataset requires login | Log in at huggingface.co and set `HF_TOKEN` |
@@ -181,9 +173,18 @@ By downloading and using these datasets you agree to their respective licenses:
 | LeetCodeDataset | Apache-2.0 | newfacade |
 | APPS | MIT | Hendrycks et al., 2021 |
 | TACO | Apache-2.0 | BAAI |
-| CodeContests | MIT | open-thoughts |
+| CodeContests | Not stated in the downloaded dataset card | open-thoughts repackaging of DeepMind CodeContests |
 | Spider | CC BY-SA 4.0 | Yu et al., 2018 |
 | sql-create-context | CC BY 4.0 | b-mc2 |
 | querypls | Apache-2.0 | samadpls |
 
-See each dataset's Hugging Face page for full license terms.
+The Coding Tutor MIT license applies only to this project's source code. It does not relicense, replace, or expand the permissions granted by any imported dataset.
+
+Before importing, sharing, publishing, or redistributing dataset-derived questions:
+
+1. Review the current dataset card, upstream source, license text, and usage restrictions.
+2. Preserve all required copyright notices, attribution, share-alike terms, and citations.
+3. Keep the dataset name, original record identifier, source file/revision, license, and attribution metadata recorded by the importer.
+4. Treat absent or unclear license information as unresolved; it is not permission to use or redistribute the material.
+
+CodeContests is intentionally documented as having no license stated in the downloaded dataset card. Users must resolve its applicable terms for their own use. See each dataset's Hugging Face page and upstream project for authoritative, current license terms.

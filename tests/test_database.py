@@ -11,7 +11,7 @@ def test_migrations_create_all_tables():
         "schema_versions", "import_runs", "question_sources",
         "questions", "question_assets", "reference_solutions",
         "question_test_cases", "ai_generated_questions",
-        "attempts", "solution_views",
+        "attempts", "solution_views", "quiz_attempts", "quiz_items",
     }
     assert expected.issubset(tables), f"Missing tables: {expected - tables}"
 
@@ -27,6 +27,14 @@ def test_migrations_idempotent():
 def test_schema_version_is_positive():
     conn = get_test_db()
     assert get_schema_version(conn) >= 1
+
+
+def test_source_identity_is_unique_per_dataset():
+    conn = get_test_db()
+    conn.execute("INSERT INTO question_sources (dataset_name, source_key) VALUES ('one', 'same')")
+    with pytest.raises(Exception):
+        conn.execute("INSERT INTO question_sources (dataset_name, source_key) VALUES ('one', 'same')")
+    conn.execute("INSERT INTO question_sources (dataset_name, source_key) VALUES ('two', 'same')")
 
 
 def test_insert_question():

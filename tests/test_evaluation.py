@@ -1,147 +1,286 @@
-"""Tests for code evaluation runner and progress persistence."""
+"""Tests for strict AI assessment parsing and persistence."""
+from contextlib import nullcontext
+import json
 import pytest
-from unittest.mock import patch, MagicMock
 
 
-def test_python_runner_passes_correct_solution():
-    from coding_tutor.evaluation.runner import run_python
-    code = "def solution(nums):\n    return sum(nums)\n"
-    test_cases = [
-        {"input": {"nums": [1, 2, 3]}, "expected_output": 6},
-        {"input": {"nums": []}, "expected_output": 0},
-    ]
-    result = run_python(code, test_cases, entry_point="solution")
-    assert result.status == "passed"
-    assert result.tests_passed == 2
-    assert result.percentage_correct == 100.0
+def test_parse_assessment_derives_marks():
+    from coding_tutor.evaluation.feedback import _parse_assessment
+    result = _parse_assessment(json.dumps({
+        "estimated_percentage_correct": 83,
+        "identified_mistakes": ["edge case"],
+        "explanation": "Mostly correct.",
+        "suggested_correction": "Handle empty input.",
+        "corrected_code": None,
+    }), "model", "provider")
+    assert result.estimated_percentage_correct == 83
+    assert result.marks == 8.3
 
 
-def test_python_runner_fails_wrong_solution():
-    from coding_tutor.evaluation.runner import run_python
-    code = "def solution(nums):\n    return 0\n"
-    test_cases = [{"input": {"nums": [1, 2, 3]}, "expected_output": 6}]
-    result = run_python(code, test_cases, entry_point="solution")
-    assert result.status == "failed"
-    assert result.tests_passed == 0
+def test_parse_assessment_rejects_malformed_json():
+    from coding_tutor.evaluation.feedback import AssessmentError, _parse_assessment
+    with pytest.raises(AssessmentError, match="malformed"):
+        _parse_assessment("not json", "model", "provider")
 
 
-def test_python_runner_timeout():
-    from coding_tutor.evaluation import runner as runner_mod
-    original = runner_mod.TIMEOUT_SECONDS
-    runner_mod.TIMEOUT_SECONDS = 2
-    try:
-        from coding_tutor.evaluation.runner import run_python
-        code = "def solution(nums):\n    while True: pass\n"
-        test_cases = [{"input": {"nums": [1]}, "expected_output": 1}]
-        result = run_python(code, test_cases, entry_point="solution")
-        assert result.status == "timeout"
-    finally:
-        runner_mod.TIMEOUT_SECONDS = original
+@pytest.mark.parametrize(
+    "payload",
+    [
+        [],
+        {
+            "estimated_percentage_correct": 101,
+            "identified_mistakes": [],
+            "explanation": "Explanation",
+            "suggested_correction": "",
+            "corrected_code": None,
+        },
+        {
+            "estimated_percentage_correct": 50,
+            "identified_mistakes": ["issue"] * 21,
+            "explanation": "Explanation",
+            "suggested_correction": "",
+            "corrected_code": None,
+        },
+        {
+            "estimated_percentage_correct": 50,
+            "identified_mistakes": [],
+            "explanation": "",
+            "suggested_correction": "",
+            "corrected_code": None,
+        },
+        {
+            "estimated_percentage_correct": 50,
+            "identified_mistakes": [],
+            "explanation": "x" * 8_001,
+            "suggested_correction": "",
+            "corrected_code": None,
+        },
+    ],
+)
+def test_parse_assessment_rejects_invalid_or_unbounded_payloads(payload):
+    from coding_tutor.evaluation.feedback import AssessmentError, _parse_assessment
+
+    with pytest.raises(AssessmentError):
+        _parse_assessment(json.dumps(payload), "model", "provider")
 
 
-def test_sql_runner_runs_without_crash():
-    from coding_tutor.evaluation.runner import run_sql
-    result = run_sql(
-        sql_code="SELECT * FROM emp WHERE salary > 80000",
-        schema_sql="CREATE TABLE emp (id INT, name TEXT, salary INT);",
-        fixture_data=[
-            {"id": 1, "name": "Alice", "salary": 90000},
-            {"id": 2, "name": "Bob", "salary": 70000},
-        ],
-        table_name="emp",
-        expected_result=[{"id": 1, "name": "Alice", "salary": 90000}],
-    )
-    assert result.status in ("passed", "failed", "error")
-
-
-def test_pyspark_unavailable_returns_clear_message(monkeypatch):
-    """PySpark unavailable must not silently fall back to another method."""
-    from coding_tutor.evaluation import runner as runner_mod
-    monkeypatch.setattr(runner_mod, "_pyspark_available", lambda: False)
-    from coding_tutor.evaluation.runner import run_pyspark
-    result = run_pyspark("def solution(spark, df): return df", [], [])
-    assert result.status == "error"
-    assert "PySpark" in (result.error_details or "")
-    assert "not available" in (result.error_details or "").lower()
-
-
-def test_no_test_cases_returns_error():
-    from coding_tutor.evaluation.runner import run_python
-    result = run_python("def solution(): pass", [], entry_point="solution")
-    assert result.status == "error"
-    assert "No test cases" in (result.error_details or "")
-
-
-def test_save_attempt_stores_record():
-    from coding_tutor.evaluation.runner import RunResult
-    from coding_tutor.evaluation.persistence import save_attempt
+def test_assessment_prompt_contains_verbatim_submission_and_question_context(monkeypatch):
     from coding_tutor.database.connection import get_test_db
-    import coding_tutor.database.connection as conn_mod
-    import unittest.mock as mock
+    import coding_tutor.database.connection as connection
+    import coding_tutor.providers.registry as registry
+    from coding_tutor.evaluation.feedback import assess_solution
+    from coding_tutor.providers.base import ChatResponse, ModelOption
 
     conn = get_test_db()
-    conn.execute(
+    question_id = str(conn.execute(
         """INSERT INTO questions
-               (id, title, question_type, difficulty, problem_statement, supported_methods)
-           VALUES (gen_random_uuid(), 'Test Q', 'algorithm', 'Easy', 'Test', '["python"]')"""
+           (title, question_type, difficulty, problem_statement, constraints,
+            examples, supported_methods, tags)
+           VALUES ('Q', 'algorithm', 'Easy', 'Solve it.', 'Keep order.',
+                   '[{\"input\": [1]}]', '[\"python\"]', '[\"arrays\"]')
+           RETURNING id"""
+    ).fetchone()[0])
+    monkeypatch.setattr(connection, "get_db", lambda: conn)
+    model = ModelOption("openai", "verified-model", "Verified", True)
+
+    class Provider:
+        captured = None
+
+        def is_configured(self):
+            return True
+
+        def get_model_options(self):
+            return [model]
+
+        def chat(self, messages, selected_model, system_prompt=None):
+            self.captured = messages[0].content
+            return ChatResponse(
+                json.dumps({
+                    "estimated_percentage_correct": 75,
+                    "identified_mistakes": ["Missing an edge case."],
+                    "explanation": "The main approach is sound.",
+                    "suggested_correction": "Handle empty input.",
+                    "corrected_code": None,
+                }),
+                selected_model.model_id,
+                "openai",
+            )
+
+    provider = Provider()
+    monkeypatch.setattr(registry, "get_provider", lambda _name: provider)
+    question = {
+        "id": question_id,
+        "title": "Q",
+        "question_type": "algorithm",
+        "difficulty": "Easy",
+        "problem_statement": "Solve it.",
+        "constraints": "Keep order.",
+        "examples": [{"input": [1]}],
+        "tags": ["arrays"],
+        "supported_methods": ["python"],
+    }
+    submitted = "\n  def solution():\n      return 1\n"
+
+    assess_solution(question, submitted, "python", "openai", model)
+
+    context = json.loads(provider.captured.split("\n\n", 1)[1])
+    assert context["submitted_code"] == submitted
+    assert context["method"] == "python"
+    assert context["question"]["constraints"] == "Keep order."
+    assert context["question"]["examples"] == [{"input": [1]}]
+    assert "Do not claim to have run code or tests" in provider.captured
+
+
+def test_attempt_lifecycle_preserves_original(monkeypatch):
+    from coding_tutor.database.connection import get_test_db
+    import coding_tutor.evaluation.persistence as persistence_mod
+    from coding_tutor.evaluation.feedback import AIAssessment
+    from coding_tutor.evaluation.persistence import create_attempt, complete_attempt
+    conn = get_test_db()
+    q_id = str(conn.execute("INSERT INTO questions (title, question_type, difficulty, problem_statement, supported_methods) VALUES ('Q','algorithm','Easy','P','[\"python\"]') RETURNING id").fetchone()[0])
+    monkeypatch.setattr(persistence_mod, "get_db", lambda: conn)
+    attempt_id = create_attempt(q_id, "python", "\n  original  \n", "openai", "model")
+    complete_attempt(attempt_id, AIAssessment(90, 9, [], "ok", "none", "replacement", "model", "openai"))
+    row = conn.execute("SELECT submitted_code, assessment_status, percentage_correct FROM attempts WHERE id=?", [attempt_id]).fetchone()
+    assert row == ("\n  original  \n", "completed", 90.0)
+
+
+def test_provider_failure_is_sanitized_in_ui_and_database(monkeypatch):
+    from coding_tutor.database.connection import get_test_db
+    import coding_tutor.database.connection as connection
+    import coding_tutor.evaluation.persistence as persistence
+    import coding_tutor.providers.registry as registry
+    import coding_tutor.ui.submit_handler as submit_handler
+    from coding_tutor.providers.base import ModelOption
+
+    class State(dict):
+        __getattr__ = dict.__getitem__
+        __setattr__ = dict.__setitem__
+
+    class FakeStreamlit:
+        def __init__(self, state):
+            self.session_state = state
+            self.errors = []
+            self.warnings = []
+
+        def error(self, message):
+            self.errors.append(message)
+
+        def warning(self, message):
+            self.warnings.append(message)
+
+        def spinner(self, _message):
+            return nullcontext()
+
+    conn = get_test_db()
+    question_id = str(conn.execute(
+        """INSERT INTO questions
+           (title, question_type, difficulty, problem_statement, supported_methods)
+           VALUES ('Q', 'algorithm', 'Easy', 'P', '[\"python\"]') RETURNING id"""
+    ).fetchone()[0])
+    model = ModelOption("openai", "verified-model", "Verified", True)
+    secret = "sentinel-provider-secret"
+
+    class Provider:
+        def is_configured(self):
+            return True
+
+        def get_model_options(self):
+            return [model]
+
+        def chat(self, *_args, **_kwargs):
+            raise RuntimeError(f"request failed with {secret}")
+
+    state = State({
+        f"editor_{question_id}_python": "\n  original  \n",
+        "provider": "openai",
+        "model": model,
+        "submit_trigger": True,
+    })
+    fake_st = FakeStreamlit(state)
+    monkeypatch.setattr(connection, "get_db", lambda: conn)
+    monkeypatch.setattr(persistence, "get_db", lambda: conn)
+    monkeypatch.setattr(registry, "get_provider", lambda _name: Provider())
+    monkeypatch.setattr(submit_handler, "st", fake_st)
+
+    attempt_id = submit_handler.handle_submit(
+        {
+            "id": question_id,
+            "supported_methods": ["python"],
+            "title": "Q",
+            "problem_statement": "P",
+        },
+        "python",
     )
-    q_id = str(conn.execute("SELECT id FROM questions LIMIT 1").fetchone()[0])
 
-    with mock.patch.object(conn_mod, "get_db", return_value=conn):
-        attempt_id = save_attempt(
-            question_id=q_id,
-            method="python",
-            submitted_code="def solution(): return 1",
-            run_result=RunResult(
-                status="passed", tests_passed=1, tests_total=1, percentage_correct=100.0
-            ),
-            feedback=None,
-        )
-
-    assert attempt_id
     row = conn.execute(
-        "SELECT test_result FROM attempts WHERE id = ?", [attempt_id]
+        "SELECT submitted_code, assessment_status, error_details FROM attempts WHERE id=?",
+        [attempt_id],
     ).fetchone()
-    assert row[0] == "passed"
+    rendered = "\n".join(fake_st.errors + fake_st.warnings)
+    assert row[0] == "\n  original  \n"
+    assert row[1] == "error"
+    assert secret not in row[2]
+    assert secret not in rendered
 
 
-def test_repeated_attempts_stored_separately():
-    from coding_tutor.evaluation.runner import RunResult
-    from coding_tutor.evaluation.persistence import save_attempt
-    from coding_tutor.database.connection import get_test_db
-    import coding_tutor.database.connection as conn_mod
-    import unittest.mock as mock
+def test_correction_can_be_applied_and_restored(monkeypatch):
+    import coding_tutor.ui.evaluation_view as evaluation_view
 
-    conn = get_test_db()
-    conn.execute(
-        """INSERT INTO questions
-               (id, title, question_type, difficulty, problem_statement, supported_methods)
-           VALUES (gen_random_uuid(), 'Repeat Q', 'algorithm', 'Easy', 'Test', '["python"]')"""
+    state = {
+        "editor_question_python": "original",
+    }
+    monkeypatch.setattr(evaluation_view.st, "session_state", state)
+
+    evaluation_view._apply_correction(
+        "editor_question_python", "backup", "applied", "corrected"
     )
-    q_id = str(conn.execute("SELECT id FROM questions LIMIT 1").fetchone()[0])
+    assert state["editor_question_python"] == "corrected"
+    assert state["backup"] == "original"
+    assert state["applied"] is True
 
-    with mock.patch.object(conn_mod, "get_db", return_value=conn):
-        id1 = save_attempt(
-            q_id, "python", "code v1",
-            RunResult("failed", 0, 1, 0.0), None,
-        )
-        id2 = save_attempt(
-            q_id, "python", "code v2",
-            RunResult("passed", 1, 1, 100.0), None,
-        )
+    evaluation_view._restore_correction(
+        "editor_question_python", "backup", "applied"
+    )
+    assert state["editor_question_python"] == "original"
+    assert state["applied"] is False
 
-    assert id1 != id2
-    count = conn.execute(
-        "SELECT COUNT(*) FROM attempts WHERE question_id = ?", [q_id]
-    ).fetchone()[0]
-    assert count == 2
+
+def test_active_assessment_is_rendered_again_after_rerun(monkeypatch):
+    import coding_tutor.ui.evaluation_view as evaluation_view
+    import coding_tutor.ui.main_page as main_page
+    from coding_tutor.evaluation.feedback import AIAssessment
+
+    assessment = AIAssessment(
+        80, 8, [], "Explanation", "Suggestion", None, "model", "openai"
+    )
+    state = {
+        "method": "python",
+        "active_assessment": {
+            "question_id": "question",
+            "method": "python",
+            "attempt_id": "attempt",
+            "assessment": assessment,
+        },
+    }
+    rendered = []
+    monkeypatch.setattr(main_page.st, "session_state", state)
+    monkeypatch.setattr(
+        evaluation_view,
+        "render_evaluation",
+        lambda *args: rendered.append(args),
+    )
+
+    main_page._render_active_assessment({"id": "question"})
+    main_page._render_active_assessment({"id": "question"})
+
+    assert len(rendered) == 2
+    assert rendered[0][1] is assessment
 
 
 def test_progress_summary_empty_db():
     from coding_tutor.database.connection import get_test_db
     from coding_tutor.database.progress import get_progress_summary
-    conn = get_test_db()
-    summary = get_progress_summary(conn)
+    summary = get_progress_summary(get_test_db())
     assert summary["total_attempts"] == 0
-    assert summary["solved_questions"] == 0
-    assert summary["total_questions"] == 0
+    assert summary["assessed_questions"] == 0

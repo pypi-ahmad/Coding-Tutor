@@ -1,299 +1,333 @@
+<div align="center">
+
 # Coding Tutor
 
-A local, privacy-first AI coding tutor that runs entirely on your machine. Practice algorithm and data-analysis problems, get teacher-style AI feedback, and track your progress in an embedded database — without sending anything except API calls to an AI provider of your choice.
+**A local Streamlit app for practicing coding problems with static, teacher-style AI feedback.**
 
-**GitHub:** https://github.com/pypi-ahmad/Coding-Tutor  
-**Local URL:** `http://127.0.0.1:8551`
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.59.1%2B-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io/)
+[![DuckDB](https://img.shields.io/badge/DuckDB-embedded-FFF000?logo=duckdb&logoColor=black)](https://duckdb.org/)
+[![MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
----
+[Features](#features) · [Get started](#installation-and-setup) · [Usage](#usage) · [Architecture](#how-it-works) · [Community](#community)
 
-## Overview
+</div>
 
-Coding Tutor is a Streamlit application you run locally with your own API credentials. It presents algorithm questions (Python) and data-analysis questions (SQL, Pandas, PySpark, Polars) with an integrated code editor, automated test runner, and AI teacher feedback. Progress is stored in a local DuckDB database that belongs entirely to you.
+Coding Tutor combines a local question bank, on-demand AI question generation, an in-browser editor, and progress tracking in one application. It supports algorithm practice in Python and data-analysis practice with SQL, Pandas, PySpark, or Polars.
 
-Curated practice questions are imported from public research datasets into the local database. Additional questions can be generated on demand by the selected AI provider.
+> [!IMPORTANT]
+> Coding Tutor does **not** execute learner-submitted code. Correctness percentages, marks, mistakes, and suggested corrections are estimates produced by the selected AI model, not actual test results.
 
-> **Your data, your responsibility.** Code you submit for evaluation is executed locally. Anything you send to an external AI API (prompts, code, questions) is subject to that provider's terms of service. You are fully responsible for the data you choose to process with this application. See [DISCLAIMER.md](DISCLAIMER.md).
-
----
+> [!WARNING]
+> You are 100% responsible for every question, code sample, dataset, credential, and other piece of data you process or transmit with this application. AI features send relevant content to the provider you select and are subject to that provider's terms and privacy policy.
 
 ## Features
 
-- **LeetCode-style problem interface** — algorithm questions (Python) and data-analysis questions (SQL, Pandas, PySpark, Polars) in a single UI
-- **Multi-provider AI support** — Agnes AI, OpenAI, and Google Gemini, selectable at runtime; unverified model IDs are disabled with a clear message rather than silently substituted
-- **Curated datasets** — questions imported from LeetCodeDataset, APPS, TACO, Spider, sql-create-context, and querypls (~125,000 problems across six sources)
-- **AI question generation** — generate new problems at any difficulty on demand; generated questions are validated before saving, and incomplete responses are rejected
-- **Isolated code evaluation** — submissions run in a subprocess with an empty environment (no secrets exposure), isolated temp directory, and a strict timeout; SQL is evaluated against an in-memory DuckDB instance separate from the app database
-- **Teacher-style feedback** — after evaluation the selected AI model provides percentage correctness, marks, identified mistakes, an explanation, and an optional corrected code snippet
-- **Show Solution** — view reference solutions (from datasets or AI-generated) for all supported methods; solution views are recorded in progress history
-- **Full attempt history** — every submission is stored separately in DuckDB, never overwritten; progress page with filtering by type, difficulty, and method
+- **Three question sources** — choose a repeatable curated dataset question, generate a fresh AI question, or use Mixed mode for a 50/50 choice when both sources are available.
+- **Multiple practice methods** — Python for algorithms; SQL, Pandas, PySpark, and Polars for data analysis.
+- **Configurable learning experience** — select question type, difficulty, method, topic, AI provider, and model.
+- **Static AI assessment** — receive AI-estimated correctness and marks, identified mistakes, explanations, and suggested corrections without running learner code.
+- **Correction workflow** — preview a model-proposed correction, explicitly apply it, and restore the pre-correction editor text while the original attempt remains stored unchanged.
+- **Teacher-style solutions** — view every stored reference with its source label, or explicitly request a validated, well-commented AI teaching solution for one method at a time.
+- **Complete local progress tracking** — preserve every submission as a separate DuckDB attempt, including failed AI requests, per-attempt marks, solved status, and solution-view history.
+- **Resumable Quiz Mode** — build a 1–10 question coding/MCQ quiz from randomly selected questions, save drafts locally, retry failed AI assessments, and track quiz results separately from practice.
+- **Dataset provenance** — retain and display source attribution and licensing metadata from normalized dataset imports.
+- **Provider choice** — use OpenAI, Agnes AI, or Google Gemini with credentials from your own system environment.
 
----
+## Screenshot
+
+> [!NOTE]
+> A screenshot or short demo GIF has not been added yet. Contributions that document the current interface are welcome.
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| UI | [Streamlit](https://streamlit.io/) ≥ 1.37 |
-| Local database | [DuckDB](https://duckdb.org/) ≥ 1.0 |
-| Data handling | pandas ≥ 2.1, pyarrow ≥ 15.0 |
-| AI providers | OpenAI SDK ≥ 1.40, Google Generative AI ≥ 0.7, Agnes AI (OpenAI-compatible endpoint) |
-| Package manager | [uv](https://docs.astral.sh/uv/) |
-| Testing | pytest ≥ 8.0, pytest-mock |
-| Language | Python ≥ 3.11 |
-
----
+| Area | Technology |
+| --- | --- |
+| Application UI | Streamlit |
+| Language | Python 3.11+ |
+| Local storage | DuckDB |
+| Data handling | pandas and PyArrow |
+| AI SDKs | OpenAI Python SDK and Google Gen AI SDK |
+| Dataset downloads | Hugging Face Hub |
+| Dependency management | uv |
+| Packaging | Hatchling |
+| Testing | pytest and pytest-mock |
 
 ## Project Structure
 
-```
-coding-tutor/
-├── app.py                        # Streamlit entry point, session state init
-├── launch_app.cmd                # Windows double-click launcher
-├── pyproject.toml                # Dependencies and project metadata (uv/hatch)
-├── .streamlit/config.toml        # Server host (127.0.0.1) and port (8551)
-├── .env.example                  # Environment variable template
-├── Dataset/                      # Raw datasets (gitignored — download separately)
-│   ├── algorithm_problems/       # LeetCodeDataset, APPS, CodeContests, TACO
-│   └── data_analysis_problems/   # Spider, sql-create-context, querypls
+```text
+Coding-Tutor/
+├── app.py                         # Streamlit entry point and session initialization
+├── launch_app.cmd                 # Windows launcher
+├── pyproject.toml                 # Package metadata and dependencies
+├── uv.lock                        # Reproducible dependency lock
+├── .streamlit/config.toml         # Local host and port configuration
+├── .env.example                   # Environment-variable names only; not loaded
+├── scripts/
+│   └── download_datasets.py       # Optional Hugging Face dataset downloader
+├── docs/
+│   └── dataset-setup.md           # Dataset download and import guide
 ├── src/coding_tutor/
-│   ├── providers/                # AI provider abstraction layer
-│   │   ├── base.py               # BaseProvider ABC, ModelOption, ChatMessage
-│   │   ├── config.py             # Model registry with verified/unverified flags
-│   │   ├── registry.py
-│   │   ├── openai_provider.py
-│   │   ├── agnes_provider.py     # Uses OpenAI-compatible endpoint
-│   │   └── gemini_provider.py
-│   ├── database/
-│   │   ├── connection.py         # Singleton DuckDB connection, get_test_db()
-│   │   ├── schema.py             # DDL for all 10 application tables
-│   │   ├── migrations.py         # Version-tracked, idempotent migration runner
-│   │   └── progress.py           # Progress summary and attempt history queries
-│   ├── dataset/
-│   │   ├── importer.py           # Orchestrator with import_runs tracking
-│   │   ├── leetcode.py
-│   │   ├── apps_dataset.py
-│   │   ├── taco.py
-│   │   ├── codecontests.py       # Graceful skip (binary archive format)
-│   │   ├── spider.py
-│   │   ├── sql_create_context.py
-│   │   └── querypls.py
-│   ├── generation/
-│   │   ├── prompts.py            # Versioned prompt templates (PROMPT_VERSION)
-│   │   ├── validator.py          # Structural validation before saving
-│   │   └── generator.py          # Provider call → validate → persist
-│   ├── evaluation/
-│   │   ├── runner.py             # Isolated subprocess runner (Python, SQL, Pandas, Polars, PySpark)
-│   │   ├── feedback.py           # AI teacher feedback dataclass and parser
-│   │   └── persistence.py        # save_attempt(), mark_solution_viewed()
-│   ├── quiz/
-│   │   └── session.py            # Streamlit session state helpers
-│   └── ui/
-│       ├── sidebar.py            # Provider, model, question type, difficulty, method
-│       ├── main_page.py          # Question picker + LeetCode-style display + editor
-│       ├── submit_handler.py     # Done button: run → feedback → save → display
-│       ├── evaluation_view.py    # Test results + teacher feedback panel
-│       ├── solution_view.py      # Reference and AI-generated solutions by method
-│       └── progress_page.py      # Attempt history with filtering
-└── tests/                        # 46 tests — pytest + pytest-mock
-    ├── fixtures/                 # Minimal sample files for import pipeline tests
-    ├── test_config.py
-    ├── test_providers.py
-    ├── test_database.py
-    ├── test_import.py
-    ├── test_generation.py
-    ├── test_evaluation.py
-    └── test_ui.py
+│   ├── database/                  # DuckDB connection, schema, migrations, progress
+│   ├── dataset/                   # Dataset-specific normalization and importers
+│   ├── evaluation/                # Structured AI assessment and persistence
+│   ├── generation/                # AI question prompts, validation, and storage
+│   ├── providers/                 # OpenAI, Agnes AI, and Gemini adapters
+│   ├── quiz/                      # Current-question session state
+│   └── ui/                        # Practice, assessment, solution, and progress views
+├── tests/                         # Unit, integration, and Streamlit AppTest coverage
+└── .github/                       # Issue and pull-request templates
 ```
 
----
+Raw datasets live under the gitignored root-level `Dataset/` directory and are never renamed or modified by the normalization layer.
 
-## Prerequisites
+```text
+Dataset/
+├── algorithm_problems/
+│   ├── LeetCodeDataset/
+│   ├── apps/
+│   ├── TACO/
+│   └── CodeContests/
+└── data_analysis_problems/
+    ├── spider/
+    ├── sql-create-context/
+    └── querypls-prompt2sql-dataset/
+```
 
-- **Python 3.11** or later
-- **[uv](https://docs.astral.sh/uv/getting-started/installation/)** — the Python package manager used by this project
-- At least one AI provider API key (see [Environment Variables](#environment-variables))
-
----
+The downloader preserves each source repository's internal subdirectories. See the [dataset setup guide](docs/dataset-setup.md) for the expected files within each directory.
 
 ## Installation and Setup
 
-### Option A: Windows double-click launcher
+Windows 11 is the tested platform. Linux and macOS users can use the command-line workflow on a community best-effort basis.
 
-Double-click `launch_app.cmd` in the project root. It will:
-1. Verify that `uv` is installed and guide you to install it if not.
-2. Synchronise all dependencies.
-3. Start the app at `http://127.0.0.1:8551`.
+### Prerequisites
 
-### Option B: Command line
+- [Git](https://git-scm.com/)
+- Python 3.11 or later
+- [uv](https://docs.astral.sh/uv/)
+- An API key for at least one supported provider to generate questions or assess solutions
+
+### 1. Clone the repository
 
 ```bash
-# 1. Clone the repository
 git clone https://github.com/pypi-ahmad/Coding-Tutor.git
 cd Coding-Tutor
+```
 
-# 2. Install dependencies
+### 2. Install dependencies
+
+```bash
 uv sync
+```
 
-# 3. Create your environment file
-cp .env.example .env
-# Edit .env and add API keys for the provider(s) you want to use
+### 3. Configure a provider
 
-# 4. Start the app
+Set at least one provider key in your **system environment**. The application intentionally does not load `.env` files.
+
+For a temporary PowerShell session, set one of the following with your own value:
+
+```powershell
+$env:OPENAI_API_KEY = "<your-key>"
+# or
+$env:AGNES_API_KEY = "<your-key>"
+# or
+$env:GOOGLE_API_KEY = "<your-key>"
+```
+
+Open a new terminal or restart the app after changing persistent Windows environment variables. Do not commit credentials, paste them into issues, or place real values in `.env.example`.
+
+### 4. Start the app
+
+From a terminal:
+
+```bash
 uv run streamlit run app.py
 ```
 
----
+Then open <http://127.0.0.1:8551>.
+
+On Windows, you can instead double-click `launch_app.cmd`. The launcher verifies `uv`, installs the locked dependencies, and starts Streamlit at the same address.
 
 ## Environment Variables
 
-Copy `.env.example` to `.env` and fill in the values for the AI providers you want to use. At least one provider key is required to use AI features.
+| Variable | Required | Purpose |
+| --- | --- | --- |
+| `OPENAI_API_KEY` | For OpenAI | Authenticates OpenAI requests. |
+| `OPENAI_BASE_URL` | No | Optional OpenAI endpoint override; blank uses the official default. |
+| `AGNES_API_KEY` | For Agnes AI | Authenticates Agnes AI requests. |
+| `GOOGLE_API_KEY` | For Gemini | Authenticates Google Gemini requests. |
+| `CODING_TUTOR_DB` | No | Overrides the default `coding_tutor.duckdb` database path. |
+| `HF_TOKEN` | No | Authenticates optional Hugging Face dataset downloads. |
+| `HUGGING_FACE_HUB_TOKEN` | No | Fallback name for the Hugging Face token. |
 
-| Variable | Provider | Notes |
-|---|---|---|
-| `OPENAI_API_KEY` | OpenAI | Required for OpenAI models |
-| `OPENAI_BASE_URL` | OpenAI | Optional — for proxies or alternative endpoints |
-| `AGNES_API_KEY` | Agnes AI | Required for Agnes 2.5 Flash |
-| `GOOGLE_API_KEY` | Google Gemini | Required for Gemini models |
-| `CODING_TUTOR_DB` | — | Optional — override the default DuckDB file path |
+Only the selected AI provider receives API requests. Credential values are not written to DuckDB by the application.
 
-> [!WARNING]
-> Never commit `.env`. It is listed in `.gitignore`. Only `.env.example` (empty values) belongs in version control. The application reads API keys only from environment variables and never logs, stores, or displays them.
+### Local storage and privacy
 
----
+By default, questions, attempts, quiz history, solution-view events, and progress are stored in `coding_tutor.duckdb` in the project directory. Set `CODING_TUTOR_DB` to use another local path. DuckDB is embedded, so no database server or cloud account is required.
 
-## Dataset Setup
-
-The raw datasets are not included in the repository (they total ~8 GB). A downloader script fetches them directly from Hugging Face. See [docs/dataset-setup.md](docs/dataset-setup.md) for the full guide including troubleshooting and license notes.
-
-```bash
-# Download all datasets (CodeContests excluded by default — 7 GB, binary)
-uv run python scripts/download_datasets.py
-
-# Download specific datasets only
-uv run python scripts/download_datasets.py --datasets leetcode taco spider
-
-# Then import into DuckDB
-uv run python -c "
-from coding_tutor.database.connection import get_db
-from coding_tutor.dataset.importer import run_import
-run_import(get_db())
-"
-```
-
-Import is **idempotent** — re-running skips already-imported records. Each run is logged in the `import_runs` table.
-
-### Included datasets
-
-| Dataset | Type | License | Notes |
-|---|---|---|---|
-| [LeetCodeDataset](https://huggingface.co/datasets/newfacade/LeetCodeDataset) | Algorithm (Python) | Apache-2.0 | Includes reference solutions and test cases |
-| [APPS](https://huggingface.co/datasets/codeparrot/apps) | Algorithm (Python) | MIT | Includes I/O test cases |
-| [TACO](https://huggingface.co/datasets/BAAI/TACO) | Algorithm (Python) | Apache-2.0 | Includes I/O test cases |
-| [CodeContests](https://huggingface.co/datasets/open-thoughts/CodeContests) | Algorithm | MIT | Skipped — binary archive format |
-| [Spider](https://huggingface.co/datasets/xlangai/spider) | Data Analysis | CC BY-SA 4.0 | Schema only; no fixture data rows |
-| [sql-create-context](https://huggingface.co/datasets/b-mc2/sql-create-context) | Data Analysis | CC BY 4.0 | Schema + SQL answer; no fixture data rows |
-| [querypls](https://huggingface.co/datasets/samadpls/querypls-prompt2sql-dataset) | Data Analysis | Apache-2.0 | Schema + SQL answer; no fixture data rows |
-
-> [!NOTE]
-> Data-analysis questions without fixture data rows are imported with `is_complete = false`. They support reference study but not automated test execution. Fully executable data-analysis questions can be generated through the AI generation feature.
-
----
+The database remains on the user's machine. Content leaves the machine only when the user explicitly requests AI generation, assessment, or an AI-authored solution; the relevant question, editor text, and bounded reference context are then sent to the selected provider. API keys are read from the process environment and are not stored in DuckDB or displayed by the app. Backing up, securing, and deleting the local database remains the user's responsibility.
 
 ## Usage
 
-1. Start the app (`uv run streamlit run app.py` or double-click `launch_app.cmd`).
-2. Open `http://127.0.0.1:8551` in your browser.
-3. In the **sidebar**, select your AI provider and model, question type, difficulty, and coding method.
-4. Use the **Practice** page to browse questions, write code in the editor, and submit.
-5. Review deterministic test results and AI teacher feedback.
-6. Use **Show Solution** to view reference solutions (labeled by source) or request an AI-generated solution.
-7. Track all attempts on the **Progress** page, with filtering by type, difficulty, and method.
+### Supported modes
 
----
+| Mode | Purpose |
+| --- | --- |
+| Practice | Work on curated, AI-generated, or Mixed-source questions in the editor. |
+| Quiz | Complete a resumable coding/MCQ quiz using the current question-selection settings. |
+| Progress | Review saved practice and quiz history, marks, solved status, and filters. |
 
-## How the App Works
+Practice supports three question-source modes: **Curated dataset**, **AI generated**, and **Mixed**. Algorithm questions use Python. Data-analysis questions support SQL, Pandas, PySpark, and Polars as authoring and AI-review methods.
 
-### Provider model
+1. Select an AI provider and verified model in the sidebar.
+2. Choose an algorithm or data-analysis question, difficulty, and solution method.
+3. Choose a question source:
+   - **Curated dataset** lists matching questions from the local DuckDB question bank.
+   - **AI generated** creates a fresh question for the selected topic and settings.
+   - **Mixed** chooses Curated dataset or AI generated with equal probability when both are available.
+4. Write your solution in the editor.
+5. Select **Done** to save the original attempt and request a static AI assessment.
+6. Review the AI-estimated score, mistakes, explanation, and suggested correction.
+7. Optionally apply the proposed correction. You can restore the pre-correction editor text afterward.
+8. Select **Show Solution** to inspect stored references. For data analysis, choose one method and optionally generate a guided solution for that method; algorithm questions can request multiple approaches when meaningful.
+9. Open **Progress** to filter attempts by question type, difficulty, or method; review recent attempts, per-attempt marks grouped by question, AI-estimated solved status, and solution-view history.
 
-Each AI provider implements a common `BaseProvider` interface. Models carry a `verified` flag — set to `True` only when the model ID has been confirmed in official provider documentation. Unverified models are shown in the sidebar but cannot be called.
+### Quiz Mode
 
-**Verified at implementation date:**
+Open **Quiz** from the sidebar, choose 1–10 total questions and how many should use coding answers, then select **Start quiz**. Questions are randomly drawn using the current source, difficulty, question type, method, and topic settings. Multiple-choice items have four options and one correct answer derived from the underlying stored question. Quiz drafts and the selected question provenance are saved in DuckDB and the single unfinished quiz resumes automatically.
 
-| Provider | Model | Notes |
-|---|---|---|
-| Agnes AI | `agnes-2.5-flash` | OpenAI-compatible endpoint |
+Quizzes are untimed, use equal item weighting, have no negative marking, and pass at 80%. Feedback remains hidden until submission. Unanswered items score zero; non-empty coding answers receive static AI assessment and are never executed. If an AI assessment fails, successful results and answers remain saved and scoring can be retried.
 
-**Disabled (unverified at implementation date):** `gpt-5.6-luna` (OpenAI), `gemini-3.5-flash-lite` and `gemini-3.7-flash` (Google Gemini).
+Every non-empty **Done** submission is saved before AI configuration is checked. Reattempting a question creates a new row and never overwrites earlier code or feedback. Because the app does not execute code, deterministic test status is explicitly stored as `not_run`. A question is displayed as AI-estimated solved when any matching completed attempt scores at least 80%.
 
-### Code evaluation
+Editor drafts are kept separately for each question and solution method during the current browser session. If you change the question type or method with unfinished edits, the app asks whether to keep the draft, discard it, or cancel the change.
 
-Submitted code runs in a child process with `env={}` (empty environment), an isolated temp directory, and a 10-second timeout. SQL runs against `duckdb.connect(":memory:")` — a fresh instance with no connection to the app database. PySpark checks for a local Java installation before attempting to run; if absent, it returns a clear error rather than silently substituting another method.
+Curated dataset questions can be browsed without an API key after import. AI generation, assessment, and AI-authored explanations require a configured provider.
+
+### Download and import datasets
+
+Datasets are optional and are not included in the Git repository. The default downloader skips CodeContests; include it explicitly when wanted.
+
+```bash
+# Preview available datasets
+uv run python scripts/download_datasets.py --list
+
+# Download the default dataset set
+uv run python scripts/download_datasets.py
+
+# Optional: include CodeContests
+uv run python scripts/download_datasets.py --include-codecontests
+```
+
+Import downloaded data into the local database. Every file is inspected before parsing, and existing source records are skipped:
+
+```bash
+uv run python scripts/import_datasets.py
+
+# Or import selected datasets
+uv run python scripts/import_datasets.py --datasets leetcode apps spider
+```
+
+Imports are idempotent and retain the dataset name, original identifier, relative source file, available Hugging Face revision, license, attribution, and import timestamp. The CodeContests importer reads task archives from `tasks.parquet` in memory without extracting or changing the source dataset. Data-analysis records without shared fixture rows and expected results are stored as incomplete and do not appear in the learner question picker. See [the dataset setup guide](docs/dataset-setup.md) for formats, command options, and troubleshooting.
+
+The project's MIT license covers the Coding Tutor source code, not imported datasets. Users must review each source dataset's current license and terms, preserve required notices and citations, and confirm that their intended use and redistribution are permitted. Missing or unclear source-license metadata is not a grant of permission.
+
+## How It Works
+
+```mermaid
+flowchart LR
+    D[Downloaded datasets] --> N[Normalization and import layer]
+    N --> DB[(Local DuckDB)]
+    UI[Streamlit app] <--> DB
+    UI -->|Question generation| AI[Selected AI provider]
+    AI -->|Validated question JSON| UI
+    UI -->|Question, method, editor text, bounded reference context| AI
+    AI -->|Structured assessment JSON| UI
+    UI -->|Original attempt and assessment| DB
+```
+
+1. Transactional, versioned database migrations initialize and upgrade a single embedded DuckDB file without deleting attempt history.
+2. Dataset importers normalize source-specific records while retaining provenance, reference solutions, and available cases.
+3. AI-generated questions are structurally validated and saved atomically before display. Data-analysis generation is accepted only when one canonical task includes schema, deterministic fixtures, expected rows, and starters and reference solutions for SQL, Pandas, PySpark, and Polars.
+4. Selecting **Done** first creates a new immutable attempt with deterministic status `not_run`, even when provider configuration or the later AI request fails.
+5. The app sends the question, selected method, submitted text, and bounded reference context to the selected provider.
+6. A strict JSON response becomes the AI-estimated assessment; malformed responses mark the attempt as an error without an automatic paid retry.
+7. Provider failures are shown and stored as sanitized status messages; raw SDK error details are not rendered or written to DuckDB.
+8. Applying a correction updates the editor only. The original attempt remains unchanged in DuckDB.
+9. **Show Solution** labels dataset and stored AI references separately. Explicit AI solution requests must pass a strict structured-response validator; viewed methods are recorded locally.
+10. Quiz attempts and quiz items use separate DuckDB tables linked to the same normalized questions, so quiz history never overwrites or inflates normal practice attempts.
 
 > [!CAUTION]
-> On Windows, isolation is at the process level only. Linux namespace isolation, seccomp, and cgroup limits are not available. Do not expose this application to untrusted code from other users.
+> Reference cases and solutions provide context to the model, but the application does not run them. Treat all assessment results as educational guidance rather than verified correctness.
 
-### Database schema
+## Configuration Options
 
-All data is persisted in `coding_tutor.duckdb`. The schema is applied idempotently at startup via a version-tracked migration runner. Every submission is stored as a new row — previous attempts are never overwritten.
+| Setting | Available values or default |
+| --- | --- |
+| Local address | `127.0.0.1` |
+| Local port | `8551` |
+| Default database | `coding_tutor.duckdb` |
+| Question types | Algorithm, Data analysis |
+| Difficulties | Beginner, Easy, Medium, Hard, Very Hard |
+| Algorithm method | Python |
+| Data-analysis methods | SQL, Pandas, PySpark, Polars |
+| Question sources | Curated dataset, AI generated, Mixed |
+| Mixed behavior | 50/50 when both sources are available; otherwise uses the available source |
 
-**Tables:** `schema_versions`, `import_runs`, `question_sources`, `questions`, `question_assets`, `reference_solutions`, `question_test_cases`, `ai_generated_questions`, `attempts`, `solution_views`
+Verified model options are defined centrally in `src/coding_tutor/providers/config.py`:
 
----
+| Provider | Models |
+| --- | --- |
+| OpenAI | [`gpt-5.6-luna`](https://developers.openai.com/api/docs/models/gpt-5.6-luna) with medium reasoning effort |
+| Agnes AI | [`agnes-2.5-flash`](https://www.agnes-ai.com/en/docs/agnes-25-flash) |
+| Google Gemini | [`gemini-3.5-flash-lite`](https://ai.google.dev/gemini-api/docs/models/gemini-3.5-flash-lite) and [`gemini-3.7-flash`](https://ai.google.dev/gemini-api/docs/models) |
 
-## Documentation
-
-| Document | Description |
-|---|---|
-| [docs/dataset-setup.md](docs/dataset-setup.md) | Full dataset download guide — downloader script, expected directory structure, import API, troubleshooting |
-
----
+Model identifiers and provider parameters are intentionally accepted only after verification against official provider documentation.
+The sidebar configuration status checks environment-variable presence only; it does not contact a provider or validate credentials.
 
 ## Testing
 
+Run the complete test suite with:
+
 ```bash
-uv run pytest
+uv run pytest -q
 ```
 
-No API keys or dataset files are required — all provider calls are mocked and database tests use an in-memory DuckDB instance.
+Tests use mocked provider calls and in-memory DuckDB databases; real API keys and downloaded datasets are not required.
 
----
+## Data Responsibility and Limitations
 
-## Privacy, Responsibility, and Security Limitations
+- All application data and progress are stored locally in DuckDB unless content is deliberately sent to a selected AI provider.
+- Question generation sends the selected learning settings and prompt to that provider.
+- Assessment sends the question, method, editor text, and limited stored reference context.
+- Progress marks and solved status are AI estimates, not deterministic verification. The solved threshold is 80%, and repeated attempts remain separate.
+- Quiz coding marks are AI estimates; MCQ answers are compared deterministically with the validated stored option ID. Quiz and practice progress are reported separately.
+- Guided-solution generation sends the selected method plus bounded question, fixture, expected-result, test-case, and reference context. Generated solutions are not executed, and cross-method equivalence is not deterministically verified.
+- Provider availability, pricing, retention, privacy, terms, and output quality are outside this project's control.
+- You are solely and completely responsible for the legality, confidentiality, licensing, backup, deletion, and consequences of every piece of data you use.
+- The project provides no warranty, service-level agreement, authoritative grading, or guarantee of fitness for any purpose.
 
-- **API calls.** When you use AI features (question generation, teacher feedback, solution generation), the relevant content is sent to the external AI provider whose API key you supply. Review the provider's privacy policy before use.
-- **Local execution.** Practice questions, attempt history, and the DuckDB database are stored on your machine only.
-- **Code execution security.** See the security model described above and in [SECURITY.md](SECURITY.md).
-- **User responsibility.** You are fully responsible for the data you process with this application. See [DISCLAIMER.md](DISCLAIMER.md).
+### PySpark and code-execution limitations
 
----
+- PySpark is supported as an editor template and AI-review method only. The project does not install `pyspark`, bundle Java or Spark, detect a Spark runtime, or execute PySpark submissions.
+- The same non-execution rule applies to learner Python, SQL, Pandas, and Polars submissions. Coding Tutor has no learner-code runner or execution sandbox.
+- Stored test cases, fixtures, and expected results are context for static AI review; the app does not execute or deterministically verify them. Attempt records therefore use deterministic status `not_run`.
+- Provider model pages may advertise their own code-execution capabilities, but Coding Tutor does not request or rely on provider-hosted code execution.
+- Run any submitted or suggested code externally only in an environment you control and secure. AI-generated corrections and solutions may be incomplete or unsafe.
 
-## Contributing
+Read the full [disclaimer](DISCLAIMER.md) and [security policy](SECURITY.md) before using sensitive or proprietary data.
 
-Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup instructions, code guidelines, and the pull request process.
+## Community
 
-This project is free and community-driven. No financial contributions, donations, or sponsorships are requested or accepted.
+Cloning, learning, testing, bug reports, feature ideas, documentation improvements, and focused pull requests are welcome. See the [contribution guide](CONTRIBUTING.md), [support guide](SUPPORT.md), and GitHub issue templates for the appropriate workflow.
 
----
+This project is free and community-driven. The author does **not** need or want donations, sponsorships, paid support, or any other financial contribution. A useful issue, thoughtful review, or code improvement is more than enough.
 
 ## License
 
-[MIT License](LICENSE) — Copyright (c) 2026 Ahmad Mujtaba
-
----
+Coding Tutor is available under the [MIT License](LICENSE).
 
 ## Acknowledgements
 
-Practice questions are sourced from the following public datasets:
-
-- [LeetCodeDataset](https://huggingface.co/datasets/newfacade/LeetCodeDataset) — Apache-2.0
-- [APPS](https://huggingface.co/datasets/codeparrot/apps) (Hendrycks et al., 2021) — MIT
-- [TACO](https://huggingface.co/datasets/BAAI/TACO) — Apache-2.0
-- [CodeContests](https://huggingface.co/datasets/open-thoughts/CodeContests) — MIT
-- [Spider](https://huggingface.co/datasets/xlangai/spider) (Yu et al., 2018) — CC BY-SA 4.0
-- [sql-create-context](https://huggingface.co/datasets/b-mc2/sql-create-context) — CC BY 4.0
-- [querypls prompt2sql dataset](https://huggingface.co/datasets/samadpls/querypls-prompt2sql-dataset) — Apache-2.0
-
----
-
-<p align="center">Made with ❤️ by Ahmad Mujtaba</p>
+The local question bank can normalize material from LeetCodeDataset, APPS, TACO, CodeContests, Spider, sql-create-context, and QueryPls. Each source remains subject to its own license and attribution requirements. Review [the dataset setup guide](docs/dataset-setup.md) and the original dataset documentation before downloading, using, or redistributing any data.

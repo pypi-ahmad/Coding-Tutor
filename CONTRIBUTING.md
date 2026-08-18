@@ -19,8 +19,7 @@ cd Coding-Tutor
 
 ```bash
 uv sync
-cp .env.example .env
-# Add at least one AI provider key to .env
+# Set at least one AI provider key in the Windows system environment
 ```
 
 ### 3. Run the tests

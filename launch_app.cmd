@@ -43,15 +43,7 @@ if errorlevel 1 (
 )
 echo.
 
-:: ── 4. Check for .env ─────────────────────────────────────────
-if not exist ".env" (
-    echo  NOTE: .env file not found.
-    echo  Copy .env.example to .env and add your API key(s) before
-    echo  using AI features. The app will still start without keys.
-    echo.
-)
-
-:: ── 5. Launch Streamlit ───────────────────────────────────────
+:: ── 4. Launch Streamlit ───────────────────────────────────────
 echo  Starting Coding Tutor at http://127.0.0.1:8551 ...
 echo  Press Ctrl+C to stop the server.
 echo.
