@@ -1,0 +1,50 @@
+# Environment secrets — never commit real .env
+.env
+
+# DuckDB database files
+*.db
+*.duckdb
+*.duckdb.wal
+
+# Raw datasets (large binary/Parquet files — not part of source distribution)
+Dataset/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Test caches
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Runner temp files
+runner_tmp/
+*.tmp
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# Node (not used, but defensive)
+node_modules/
+
+# Tool-specific directories (local development tools, not project source)
+.agents/
+.claude/
+.codegraph/
+.code-review-graph/
+skills-lock.json

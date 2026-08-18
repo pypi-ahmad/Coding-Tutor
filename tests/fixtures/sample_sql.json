@@ -1,0 +1,12 @@
+[
+  {
+    "question": "Find all employees with salary greater than 50000",
+    "context": "CREATE TABLE employees (id INT, name TEXT, salary INT, department TEXT);",
+    "answer": "SELECT * FROM employees WHERE salary > 50000;"
+  },
+  {
+    "question": "Count employees per department",
+    "context": "CREATE TABLE employees (id INT, name TEXT, salary INT, department TEXT);",
+    "answer": "SELECT department, COUNT(*) as count FROM employees GROUP BY department;"
+  }
+]
