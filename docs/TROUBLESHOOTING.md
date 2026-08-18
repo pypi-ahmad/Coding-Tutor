@@ -418,6 +418,38 @@ The quiz enters the answering view or reaches the completed result while preserv
 
 The same provider/model is selected and available, but retry loses durable answers, changes completed scores, or cannot progress from a valid stored quiz state.
 
+## A curated quiz has too few matching questions
+
+**Symptom**
+
+Quiz preparation stops with a message in this form:
+
+```text
+Only 0 matching curated questions are available; 2 are required.
+```
+
+The numbers reflect the available and requested counts.
+
+**Likely cause**
+
+The database contains fewer complete, non-AI questions than the quiz requires for its stored question type, difficulty, topic, and method. Curated quiz selection does not duplicate a question to fill the requested count.
+
+**Verified resolution steps**
+
+1. Note the filters and question count used to start the quiz.
+2. Import additional authorized dataset records that can produce complete questions matching those filters. Follow [Dataset Setup](dataset-setup.md); rerunning an import is idempotent.
+3. Return to Quiz Mode and select **Retry preparation**. The retry uses the settings stored with the existing quiz attempt.
+
+Changing the current sidebar filters or question count does not reconfigure that stored attempt. The current UI has no abandon-or-reconfigure control for an unfinished quiz.
+
+**Confirm the issue is resolved**
+
+Quiz Mode enters the answering view with the requested number of distinct questions.
+
+**Report a bug instead when**
+
+Enough complete curated questions match every stored filter, but retry still reports a smaller available count. Include the safe count message and filter values; do not attach the database or raw dataset records.
+
 ## PySpark or another learner solution does not run
 
 **Symptom**

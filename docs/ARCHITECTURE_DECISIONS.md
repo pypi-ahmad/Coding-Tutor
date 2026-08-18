@@ -2,6 +2,8 @@
 
 This document records technical decisions that are implemented and relevant to future contributors. It is intentionally narrower than the broader [Architecture](ARCHITECTURE.md) explanation and [Technical Reference](TECHNICAL_REFERENCE.md).
 
+Commit hashes and dates below come from the repository's local Git history. File links point to the current implementation; a later change may supersede a decision even when its original commit remains in history.
+
 ## ADR-001: Use DuckDB for embedded application persistence
 
 **Status:** Accepted
@@ -26,7 +28,7 @@ Use one embedded DuckDB database. The default file is `coding_tutor.duckdb`; `CO
 
 - Introduced in commit `9cac9c4` on 2026-08-18.
 - Quiz schema added in commit `b92b458` on 2026-08-19.
-- Current evidence: `database/connection.py`, `database/schema.py`, `database/migrations.py`, and `tests/test_database.py`.
+- Current evidence: [connection management](../src/coding_tutor/database/connection.py), [schema](../src/coding_tutor/database/schema.py), [migrations](../src/coding_tutor/database/migrations.py), and [database tests](../tests/test_database.py).
 
 ## ADR-002: Normalize questions as `algorithm` or `data_analysis`
 
@@ -55,7 +57,7 @@ Dataset catalog metadata and normalization rules set the type. The source direct
 ### Date and evidence
 
 - Dataset normalization and question-source modes were added in commit `e66bf88` on 2026-08-19.
-- Current evidence: the `questions.question_type` constraint in `database/schema.py`, `DATA_ANALYSIS_METHODS` and `persist_question()` in `dataset/normalization.py`, `QUESTION_METHODS` in `generation/generator.py`, and importer/UI tests.
+- Current evidence: the `questions.question_type` constraint in the [schema](../src/coding_tutor/database/schema.py), `DATA_ANALYSIS_METHODS` and `persist_question()` in [dataset normalization](../src/coding_tutor/dataset/normalization.py), `QUESTION_METHODS` in [question generation](../src/coding_tutor/generation/generator.py), and the [import](../tests/test_import.py) and [UI tests](../tests/test_ui.py).
 
 ## ADR-003: Require shared deterministic assets for complete data-analysis tasks
 
@@ -85,7 +87,7 @@ AI-generated data-analysis questions must also provide starter templates and ref
 ### Date and evidence
 
 - Implemented with the dataset normalization pipeline in commit `e66bf88` on 2026-08-19.
-- Current evidence: `dataset/normalization.py`, the three SQL-family adapters, `generation/validator.py`, and `test_sql_create_context_import_fixture` in `tests/test_import.py`.
+- Current evidence: [dataset normalization](../src/coding_tutor/dataset/normalization.py), the [Spider](../src/coding_tutor/dataset/spider.py), [sql-create-context](../src/coding_tutor/dataset/sql_create_context.py), and [QueryPls](../src/coding_tutor/dataset/querypls.py) adapters, [generated-question validation](../src/coding_tutor/generation/validator.py), and [import tests](../tests/test_import.py).
 
 ## ADR-004: Support curated, AI-generated, and mixed question sources
 
@@ -115,7 +117,7 @@ Persist accepted generated questions in the same question model, with separate p
 ### Date and evidence
 
 - Added in commit `e66bf88` on 2026-08-19.
-- Current evidence: `ui/sidebar.py`, `ui/main_page.py`, `generation/generator.py`, `quiz/service.py`, and generation/UI tests.
+- Current evidence: the [sidebar](../src/coding_tutor/ui/sidebar.py), [Practice page](../src/coding_tutor/ui/main_page.py), [question generator](../src/coding_tutor/generation/generator.py), [Quiz service](../src/coding_tutor/quiz/service.py), and [generation](../tests/test_generation.py), [Quiz](../tests/test_quiz.py), and [UI tests](../tests/test_ui.py).
 
 ## ADR-005: Use static AI assessment instead of executing learner code
 
@@ -143,7 +145,7 @@ Treat editor content as text and send it, with bounded question context, to the 
 ### Date and evidence
 
 - Superseding change: commit `d759332` on 2026-08-19, titled “replace subprocess code execution with AI-only assessment,” which deleted `evaluation/runner.py`.
-- Current evidence: `evaluation/feedback.py`, `evaluation/persistence.py`, `ui/submit_handler.py`, and `tests/test_evaluation.py`.
+- Current evidence: [static feedback](../src/coding_tutor/evaluation/feedback.py), [attempt persistence](../src/coding_tutor/evaluation/persistence.py), the [submission handler](../src/coding_tutor/ui/submit_handler.py), and [evaluation tests](../tests/test_evaluation.py).
 
 ## ADR-006: Read credentials from process environment variables
 
@@ -169,7 +171,7 @@ Use `.env.example` only as a blank names reference; the application does not loa
 ### Date and evidence
 
 - Environment-backed provider configuration exists from commit `9cac9c4` on 2026-08-18.
-- Current evidence: provider adapters, `.env.example`, `.gitignore`, `ui/sidebar.py`, `tests/test_config.py`, and `tests/test_providers.py`.
+- Current evidence: the [provider modules](../src/coding_tutor/providers), [.env.example](../.env.example), [.gitignore](../.gitignore), [sidebar status](../src/coding_tutor/ui/sidebar.py), [configuration tests](../tests/test_config.py), and [provider tests](../tests/test_providers.py).
 
 ## ADR-007: Use file-backed prompts and strict structured-response validation
 
@@ -195,7 +197,7 @@ Store prompt-version metadata for generated questions. Use a prompt version in t
 ### Date and evidence
 
 - File-backed prompt wiring was added in commit `20e65bb` on 2026-08-19.
-- Current evidence: `prompts/__init__.py`, `generation/prompts.py`, evaluation and quiz services, and `tests/test_prompts.py`.
+- Current evidence: the [prompt loader](../src/coding_tutor/prompts/__init__.py), [generation prompt builders](../src/coding_tutor/generation/prompts.py), [assessment](../src/coding_tutor/evaluation/feedback.py), [teaching solutions](../src/coding_tutor/evaluation/solutions.py), [Quiz service](../src/coding_tutor/quiz/service.py), and [prompt tests](../tests/test_prompts.py).
 
 ## ADR-008: Preserve dataset provenance and make imports idempotent
 
@@ -219,7 +221,7 @@ Inspect configured source formats and required fields before parsing. Normalize 
 ### Date and evidence
 
 - Added with the dataset import pipeline in commit `e66bf88` on 2026-08-19.
-- Current evidence: `dataset/catalog.py`, `dataset/inspection.py`, `dataset/normalization.py`, `dataset/importer.py`, the source adapters, schema uniqueness constraint, and `tests/test_import.py`.
+- Current evidence: the dataset [catalog](../src/coding_tutor/dataset/catalog.py), [inspection](../src/coding_tutor/dataset/inspection.py), [normalization](../src/coding_tutor/dataset/normalization.py), and [import orchestration](../src/coding_tutor/dataset/importer.py), the [schema uniqueness constraint](../src/coding_tutor/database/schema.py), and [import tests](../tests/test_import.py).
 
 ## ADR-009: Preserve immutable practice attempts and separate quiz persistence
 
@@ -243,4 +245,76 @@ Create a new `attempts` row for every Practice submission and never replace its 
 ### Date and evidence
 
 - Immutable Practice attempts exist in the current evaluation persistence flow; separate Quiz schema was added in commit `b92b458` on 2026-08-19 and its lifecycle in `e66bf88` on the same date.
-- Current evidence: `evaluation/persistence.py`, `quiz/persistence.py`, `database/schema.py`, `database/progress.py`, and evaluation/progress/quiz tests.
+- Current evidence: [Practice persistence](../src/coding_tutor/evaluation/persistence.py), [Quiz persistence](../src/coding_tutor/quiz/persistence.py), the [schema](../src/coding_tutor/database/schema.py), [progress queries](../src/coding_tutor/database/progress.py), and the [evaluation](../tests/test_evaluation.py), [progress](../tests/test_progress.py), and [Quiz tests](../tests/test_quiz.py).
+
+## ADR-010: Use Streamlit session state for local interaction state
+
+**Status:** Accepted
+
+### Context
+
+The local browser interface needs to retain selections, the loaded question, editor drafts, and reversible corrections across Streamlit reruns. Durable learner history has a different lifecycle and belongs in DuckDB.
+
+### Decision
+
+Use Streamlit as the application entry point and `st.session_state` for transient UI state. Keep Practice editor drafts keyed by question and method, and require an explicit keep, discard, or cancel choice before a selection change can replace a dirty draft. Persist completed attempts and Quiz state in DuckDB instead of relying on session state.
+
+### Consequences
+
+- The application uses one Python UI process and does not require a separate frontend build.
+- Widget interactions rerun the script, so state keys and deferred selection changes are part of the UI contract.
+- Unsubmitted Practice drafts and correction backups are process-session state and can be lost when the session ends; saved attempts and Quiz state remain in DuckDB.
+- The current interface is local and single-user oriented; it does not implement authentication or multi-user isolation.
+
+### Date and evidence
+
+- The Streamlit entry point and session-state foundation were introduced in commit `9cac9c4` on 2026-08-18.
+- Current evidence: the [application entry point](../app.py), [session-state helpers](../src/coding_tutor/quiz/session.py), [sidebar state flow](../src/coding_tutor/ui/sidebar.py), [UI tests](../tests/test_ui.py), and [configuration tests](../tests/test_config.py).
+
+## ADR-011: Route AI operations through a common provider contract and verified-model registry
+
+**Status:** Accepted
+
+### Context
+
+Question generation, assessment, teaching solutions, and Quiz generation can use multiple providers. Callers need one request boundary, while the UI must avoid presenting an unverified model as usable.
+
+### Decision
+
+Define provider adapters through `BaseProvider`, describe model choices with `ModelOption`, and resolve adapters through the provider registry. Only models marked `verified` are selectable. AI operations validate the provider/model association and configuration status and do not silently substitute another model.
+
+### Consequences
+
+- Application services can call providers through one interface rather than provider-specific UI branches.
+- Unverified choices remain nonselectable and can expose a setup/status explanation without exposing credentials.
+- Configuration status proves only that the required environment variable is present; it does not verify credentials, quota, model entitlement, or live service availability.
+- Adding a provider or model requires adapter, registry, configuration, and test updates.
+
+### Date and evidence
+
+- The provider contract and registry were introduced in commit `9cac9c4` on 2026-08-18; verified provider settings were updated in commit `25a19b7` on 2026-08-19.
+- Current evidence: the [provider contract](../src/coding_tutor/providers/base.py), [registry](../src/coding_tutor/providers/registry.py), [model configuration](../src/coding_tutor/providers/config.py), [sidebar filtering](../src/coding_tutor/ui/sidebar.py), [configuration tests](../tests/test_config.py), and [provider tests](../tests/test_providers.py).
+
+## ADR-012: Represent expected AI generation failures as typed results
+
+**Status:** Accepted
+
+### Context
+
+Question generation and teaching-solution requests have expected failure modes such as missing configuration, unsupported selections, malformed provider output, and persistence failure. The UI needs stable, safe failure handling without displaying raw provider exceptions.
+
+### Decision
+
+Return `GenerationResult`/`GenerationFailure` and `SolutionGenerationResult`/`SolutionFailure` from the corresponding services. Map their failure categories to user-facing messages in the UI, and contain provider or validation exception details within the service boundary.
+
+### Consequences
+
+- Expected failures are explicit and can be asserted without matching SDK-specific exception text.
+- These UI paths do not need to render raw provider error details.
+- Question persistence failure is distinguishable from response validation failure, and generated-question writes remain transactional.
+- Assessment and Quiz flows retain their own error and persistence contracts; this decision does not impose one result type on every AI operation.
+
+### Date and evidence
+
+- Typed generation and solution failure handling was introduced or refined in commit `d759332` on 2026-08-19.
+- Current evidence: [question-generation results](../src/coding_tutor/generation/generator.py), [teaching-solution results](../src/coding_tutor/evaluation/solutions.py), [generation UI handling](../src/coding_tutor/ui/main_page.py), [solution UI handling](../src/coding_tutor/ui/solution_view.py), [generation tests](../tests/test_generation.py), [solution tests](../tests/test_solutions.py), and [UI tests](../tests/test_ui.py).
