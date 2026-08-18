@@ -2,6 +2,20 @@
 
 All notable user-facing changes to Coding Tutor are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [0.1.1] - 2026-08-19
+
+### Changed
+
+- Reworked the public README and documentation index around verified application behavior.
+- Added focused getting-started, usage, architecture, dataset, and technical-reference guides.
+- Updated the Windows launcher to require an existing `uv` installation, synchronize locked dependencies, and report setup or startup failures clearly.
+- Strengthened contribution, issue, pull-request, support, disclaimer, conduct, and security guidance for public collaboration.
+
+### Security and privacy
+
+- Clarified that AI-backed actions send selected content to the configured provider and that users remain responsible for the data they process.
+- Documented the private GitHub vulnerability-reporting path without inventing a security contact address.
+
 ## [0.1.0] - 2026-08-19
 
 ### Added
@@ -21,4 +35,5 @@ All notable user-facing changes to Coding Tutor are documented here. Versions fo
 - Learner code is sent only to the explicitly selected AI provider and is never executed locally.
 - Questions and progress remain in the local DuckDB database unless the user chooses an AI-backed action.
 
+[0.1.1]: https://github.com/pypi-ahmad/Coding-Tutor/releases/tag/v0.1.1
 [0.1.0]: https://github.com/pypi-ahmad/Coding-Tutor/releases/tag/v0.1.0
