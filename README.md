@@ -9,11 +9,33 @@
 [![DuckDB](https://img.shields.io/badge/DuckDB-embedded-FFF000?logo=duckdb&logoColor=black)](https://duckdb.org/)
 [![MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+**[github.com/pypi-ahmad/Coding-Tutor](https://github.com/pypi-ahmad/Coding-Tutor)**
+
 [Features](#features) · [Get started](#installation-and-setup) · [Usage](#usage) · [Architecture](#how-it-works) · [Community](#community)
 
 </div>
 
 Coding Tutor combines a local question bank, on-demand AI question generation, an in-browser editor, and progress tracking in one application. It supports algorithm practice in Python and data-analysis practice with SQL, Pandas, PySpark, or Polars.
+
+## Table of Contents
+
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Installation and Setup](#installation-and-setup)
+- [Environment Variables](#environment-variables)
+- [Usage](#usage)
+  - [Supported Modes](#supported-modes)
+  - [Quiz Mode](#quiz-mode)
+  - [Download and Import Datasets](#download-and-import-datasets)
+- [How It Works](#how-it-works)
+- [Configuration Options](#configuration-options)
+- [Testing](#testing)
+- [Documentation Index](#documentation-index)
+- [Data Responsibility and Limitations](#data-responsibility-and-limitations)
+- [Community](#community)
+- [License](#license)
+- [Acknowledgements](#acknowledgements)
 
 > [!IMPORTANT]
 > Coding Tutor does **not** execute learner-submitted code. Correctness percentages, marks, mistakes, and suggested corrections are estimates produced by the selected AI model, not actual test results.
@@ -318,6 +340,19 @@ Tests use mocked provider calls and in-memory DuckDB databases; real API keys an
 
 Read the full [disclaimer](DISCLAIMER.md) and [security policy](SECURITY.md) before using sensitive or proprietary data.
 
+## Documentation Index
+
+| Document | Description |
+| --- | --- |
+| [README.md](README.md) | Project overview, installation, usage, and configuration |
+| [docs/dataset-setup.md](docs/dataset-setup.md) | How to download and import the seven supported Hugging Face datasets |
+| [Project_Architecture_Blueprint.md](Project_Architecture_Blueprint.md) | Comprehensive architecture reference: component map, sequence diagrams, ER diagram, ADRs, and extension guides |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | How to contribute: bug reports, feature requests, and pull requests |
+| [SECURITY.md](SECURITY.md) | Security policy, vulnerability reporting, and known limitations |
+| [SUPPORT.md](SUPPORT.md) | Support channels and how to get help |
+| [DISCLAIMER.md](DISCLAIMER.md) | Legal disclaimer: no warranty, user data responsibility, AI estimate limitations |
+| [LICENSE](LICENSE) | MIT License |
+
 ## Community
 
 Cloning, learning, testing, bug reports, feature ideas, documentation improvements, and focused pull requests are welcome. See the [contribution guide](CONTRIBUTING.md), [support guide](SUPPORT.md), and GitHub issue templates for the appropriate workflow.
@@ -326,8 +361,38 @@ This project is free and community-driven. The author does **not** need or want 
 
 ## License
 
-Coding Tutor is available under the [MIT License](LICENSE).
+Coding Tutor source code is available under the [MIT License](LICENSE).
+
+```
+MIT License
+
+Copyright (c) 2026 Ahmad Mujtaba
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+The MIT license covers this repository's source code only. Imported datasets each carry their own license; review the source documentation before downloading, using, or redistributing any dataset.
 
 ## Acknowledgements
 
 The local question bank can normalize material from LeetCodeDataset, APPS, TACO, CodeContests, Spider, sql-create-context, and QueryPls. Each source remains subject to its own license and attribution requirements. Review [the dataset setup guide](docs/dataset-setup.md) and the original dataset documentation before downloading, using, or redistributing any data.
+
+---
+
+<p align="center">Made with ❤️ by Ahmad Mujtaba</p>
