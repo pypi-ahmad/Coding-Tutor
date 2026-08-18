@@ -164,7 +164,19 @@ Copy `.env.example` to `.env` and fill in the values for the AI providers you wa
 
 ## Dataset Setup
 
-The raw datasets are not included in the repository (they total ~8 GB). Download them separately via Hugging Face and place them under `Dataset/algorithm_problems/` and `Dataset/data_analysis_problems/`. Then import them into the local DuckDB database:
+The raw datasets are not included in the repository (they total ~8 GB). Download them from Hugging Face and place them under `Dataset/algorithm_problems/` and `Dataset/data_analysis_problems/`. Then import them into the local DuckDB database:
+
+**Download links**
+
+| Dataset | Destination folder | Hugging Face URL |
+|---|---|---|
+| LeetCodeDataset | `Dataset/algorithm_problems/LeetCodeDataset/` | https://huggingface.co/datasets/newfacade/LeetCodeDataset |
+| APPS | `Dataset/algorithm_problems/APPS/` | https://huggingface.co/datasets/codeparrot/apps |
+| TACO | `Dataset/algorithm_problems/TACO/` | https://huggingface.co/datasets/BAAI/TACO |
+| CodeContests | `Dataset/algorithm_problems/CodeContests/` | https://huggingface.co/datasets/open-thoughts/CodeContests |
+| Spider | `Dataset/data_analysis_problems/spider/` | https://huggingface.co/datasets/xlangai/spider |
+| sql-create-context | `Dataset/data_analysis_problems/sql-create-context/` | https://huggingface.co/datasets/b-mc2/sql-create-context |
+| querypls | `Dataset/data_analysis_problems/querypls/` | https://huggingface.co/datasets/samadpls/querypls-prompt2sql-dataset |
 
 ```bash
 uv run python -c "
@@ -183,10 +195,10 @@ Import is **idempotent** — re-running skips already-imported records. Each run
 | [LeetCodeDataset](https://huggingface.co/datasets/newfacade/LeetCodeDataset) | Algorithm (Python) | Apache-2.0 | Includes reference solutions and test cases |
 | [APPS](https://huggingface.co/datasets/codeparrot/apps) | Algorithm (Python) | MIT | Includes I/O test cases |
 | [TACO](https://huggingface.co/datasets/BAAI/TACO) | Algorithm (Python) | Apache-2.0 | Includes I/O test cases |
-| CodeContests | Algorithm | DeepMind research | Skipped — binary archive format |
-| [Spider](https://huggingface.co/datasets/spider) | Data Analysis | CC BY-SA 4.0 | Schema only; no fixture data rows |
+| [CodeContests](https://huggingface.co/datasets/open-thoughts/CodeContests) | Algorithm | MIT | Skipped — binary archive format |
+| [Spider](https://huggingface.co/datasets/xlangai/spider) | Data Analysis | CC BY-SA 4.0 | Schema only; no fixture data rows |
 | [sql-create-context](https://huggingface.co/datasets/b-mc2/sql-create-context) | Data Analysis | CC BY 4.0 | Schema + SQL answer; no fixture data rows |
-| [querypls](https://huggingface.co/datasets/querypls/prompt2sql-dataset) | Data Analysis | Apache-2.0 | Schema + SQL answer; no fixture data rows |
+| [querypls](https://huggingface.co/datasets/samadpls/querypls-prompt2sql-dataset) | Data Analysis | Apache-2.0 | Schema + SQL answer; no fixture data rows |
 
 > [!NOTE]
 > Data-analysis questions without fixture data rows are imported with `is_complete = false`. They support reference study but not automated test execution. Fully executable data-analysis questions can be generated through the AI generation feature.
@@ -274,9 +286,10 @@ Practice questions are sourced from the following public datasets:
 - [LeetCodeDataset](https://huggingface.co/datasets/newfacade/LeetCodeDataset) — Apache-2.0
 - [APPS](https://huggingface.co/datasets/codeparrot/apps) (Hendrycks et al., 2021) — MIT
 - [TACO](https://huggingface.co/datasets/BAAI/TACO) — Apache-2.0
-- [Spider](https://huggingface.co/datasets/spider) (Yu et al., 2018) — CC BY-SA 4.0
+- [CodeContests](https://huggingface.co/datasets/open-thoughts/CodeContests) — MIT
+- [Spider](https://huggingface.co/datasets/xlangai/spider) (Yu et al., 2018) — CC BY-SA 4.0
 - [sql-create-context](https://huggingface.co/datasets/b-mc2/sql-create-context) — CC BY 4.0
-- [querypls prompt2sql dataset](https://huggingface.co/datasets/querypls/prompt2sql-dataset) — Apache-2.0
+- [querypls prompt2sql dataset](https://huggingface.co/datasets/samadpls/querypls-prompt2sql-dataset) — Apache-2.0
 
 ---
 
