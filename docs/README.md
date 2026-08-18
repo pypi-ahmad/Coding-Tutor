@@ -11,6 +11,10 @@ Documentation is organized by purpose:
 | Maintainer reference | [Coding Tutor Technical Reference](technical-reference.md) | Inspect detailed runtime contracts, persistence, scoring, safety boundaries, and extension points. |
 | Reference | [Datasets](DATASETS.md) | Review supported source formats, normalization, licenses, and caveats. |
 | Explanation | [Architecture](ARCHITECTURE.md) | Understand the design choices and trade-offs. |
+| Decisions | [Architecture Decisions](ARCHITECTURE_DECISIONS.md) | Review accepted technical decisions and their implementation evidence. |
+| Explanation | [AI Behavior](AI_BEHAVIOR.md) | Understand provider requests, validation, persistence, and limitations. |
+| Reference | [Security and Privacy](SECURITY_AND_PRIVACY.md) | Review credential, storage, external-data, and code-execution boundaries. |
+| How-to | [Troubleshooting](TROUBLESHOOTING.md) | Resolve verified setup and runtime failures. |
 | Release preparation | [Open-source Checklist](OPEN_SOURCE_CHECKLIST.md) | Record decisions required before publication. |
 
 Additional material:

@@ -1,6 +1,26 @@
 # Changelog
 
-All notable user-facing changes to Coding Tutor are documented here. Versions follow [Semantic Versioning](https://semver.org/).
+All notable user-facing changes to Coding Tutor are documented here.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows [Semantic Versioning](https://semver.org/).
+
+## [Unreleased]
+
+## [0.1.2] - 2026-08-19
+
+### Added
+
+- Added an expanded learner guide covering local setup, practice, quizzes, progress, privacy, and troubleshooting.
+- Added a contributor and maintainer reference covering runtime contracts, persistence, scoring, security boundaries, and extension points.
+- Added focused references for AI behavior, security and privacy, repeatable troubleshooting, and accepted architecture decisions.
+
+### Changed
+
+- Standardized the changelog structure and verified release comparison links.
+
+### Security
+
+- Documented environment-based credential handling, local DuckDB storage, external provider request boundaries, dataset logging, and the absence of learner-code execution or sandboxing.
 
 ## [0.1.1] - 2026-08-19
 
@@ -11,7 +31,7 @@ All notable user-facing changes to Coding Tutor are documented here. Versions fo
 - Updated the Windows launcher to require an existing `uv` installation, synchronize locked dependencies, and report setup or startup failures clearly.
 - Strengthened contribution, issue, pull-request, support, disclaimer, conduct, and security guidance for public collaboration.
 
-### Security and privacy
+### Security
 
 - Clarified that AI-backed actions send selected content to the configured provider and that users remain responsible for the data they process.
 - Documented the private GitHub vulnerability-reporting path without inventing a security contact address.
@@ -29,11 +49,13 @@ All notable user-facing changes to Coding Tutor are documented here. Versions fo
 - Version-controlled Markdown prompts with strict structured-response validation.
 - One-click Windows setup and launch through `launch_app.cmd`.
 
-### Security and privacy
+### Security
 
 - API credentials remain in the user's system environment and are never rendered by the app.
 - Learner code is sent only to the explicitly selected AI provider and is never executed locally.
 - Questions and progress remain in the local DuckDB database unless the user chooses an AI-backed action.
 
-[0.1.1]: https://github.com/pypi-ahmad/Coding-Tutor/releases/tag/v0.1.1
+[Unreleased]: https://github.com/pypi-ahmad/Coding-Tutor/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/pypi-ahmad/Coding-Tutor/compare/v0.1.1...v0.1.2
+[0.1.1]: https://github.com/pypi-ahmad/Coding-Tutor/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/pypi-ahmad/Coding-Tutor/releases/tag/v0.1.0
