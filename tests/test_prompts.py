@@ -4,6 +4,19 @@ import pytest
 
 
 PROMPT_VALUES = {
+    "adaptive_interview_question_generator.md": {
+        "domain": '"AI Engineering"', "topic": '"RAG"', "difficulty": '"Medium"',
+        "answer_format": '"theory"', "prompt_style": '"scenario"', "method": "null",
+        "adaptive_context": "{}", "reference_material": "[]",
+    },
+    "ai_answer_evaluator.md": {
+        "question_and_rubric": "{}", "candidate_answer": '"answer"',
+    },
+    "ai_question_generator.md": {
+        "domain": '"AI Engineering"', "topic": '"RAG"', "difficulty": '"Medium"',
+        "answer_format": '"theory"', "prompt_style": '"scenario"', "method": "null",
+        "reference_material": "[]",
+    },
     "algorithm_question_generator.md": {
         "difficulty": '"Easy"',
         "topic": '"arrays"',
@@ -17,6 +30,13 @@ PROMPT_VALUES = {
     "dataset_record_converter.md": {
         "dataset_metadata": '{"name": "fixture"}',
         "raw_record": '{"id": 1}',
+    },
+    "final_interview_report.md": {
+        "interview_blueprint": "{}", "scored_turns": "[]",
+    },
+    "interview_plan_generator.md": {
+        "role": '"AI Engineer"', "level": '"Mid"',
+        "job_description": '"JD"', "resume": '"resume"',
     },
     "quiz_generator.md": {"question_contexts": "[]"},
     "shared_rules.md": {},

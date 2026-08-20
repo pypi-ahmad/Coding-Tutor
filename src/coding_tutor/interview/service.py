@@ -166,7 +166,10 @@ def _persist_generated(
     return get_item(str(item_id), conn)
 
 
-def _generated_item(filters: dict, provider_name: str, model, web_enabled: bool, tailored: str, conn) -> tuple[dict, list[dict], str | None]:
+def _generated_item(
+    filters: dict, provider_name: str, model, web_enabled: bool,
+    adaptive_context: dict[str, Any] | None, conn,
+) -> tuple[dict, list[dict], str | None]:
     references = _references(filters, conn)
     web_sources: list[dict] = []
     warning = None
@@ -182,10 +185,7 @@ def _generated_item(filters: dict, provider_name: str, model, web_enabled: bool,
         topic=filters.get("topic") or "General", difficulty=filters["difficulty"],
         answer_format=filters["answer_format"], prompt_style=filters["prompt_style"],
         method=filters.get("method"), references=references,
-        tailored_context=(
-            "Use this only to select relevant skills. The question must stand alone and must not mention "
-            "a company, candidate, employer, project name, or identifying detail. " + tailored
-        ) if tailored else "",
+        adaptive_context=adaptive_context,
     )
     item = _persist_generated(
         item, origin="web" if web_sources else "ai", provider_name=provider_name,
@@ -229,7 +229,9 @@ def next_ai_question(session_id: str, provider_name: str | None, model) -> tuple
     if item is None:
         if filters["source_mode"] == "local":
             raise ValueError("No unused local question matches these filters.")
-        item, sources, warning = _generated_item(filters, provider_name or "", model, bool(filters["web_enabled"]), "", conn)
+        item, sources, warning = _generated_item(
+            filters, provider_name or "", model, bool(filters["web_enabled"]), None, conn
+        )
     conn.execute(
         """INSERT INTO ai_question_items
            (session_id, position, interview_item_id, prompt_snapshot, options, correct_option, web_sources)
@@ -324,7 +326,23 @@ def load_interview(session_id: str) -> tuple[dict, list[dict]] | None:
     return session, turns
 
 
-def add_interview_turn(session_id: str, provider_name: str, model, tailored_context: str = "") -> tuple[dict, str | None]:
+def _adaptive_context(session: dict, turns: list[dict]) -> dict[str, Any]:
+    recent = []
+    for turn in [value for value in turns if value["status"] == "scored"][-3:]:
+        feedback = turn.get("feedback") or {}
+        recent.append({
+            "question": turn["prompt"],
+            "answer_format": turn["answer_format"],
+            "method": turn.get("method"),
+            "answer": turn.get("answer_text") or turn.get("selected_option"),
+            "score": turn.get("score"),
+            "gaps": feedback.get("gaps", []),
+            "next_focus": feedback.get("next_focus"),
+        })
+    return {"blueprint": session["blueprint"], "recent_scored_turns": recent}
+
+
+def add_interview_turn(session_id: str, provider_name: str, model) -> tuple[dict, str | None]:
     loaded = load_interview(session_id)
     if not loaded:
         raise ValueError("Interview session not found.")
@@ -360,7 +378,8 @@ def add_interview_turn(session_id: str, provider_name: str, model, tailored_cont
                 raise ValueError("No unused local interview question matches the plan.")
         else:
             item, sources, warning = _generated_item(
-                filters, provider_name, model, bool(session["web_enabled"]), tailored_context, connection()
+                filters, provider_name, model, bool(session["web_enabled"]),
+                _adaptive_context(session, turns), connection(),
             )
     connection().execute(
         """INSERT INTO interview_turns

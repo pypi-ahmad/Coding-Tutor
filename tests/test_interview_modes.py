@@ -99,6 +99,40 @@ def test_interview_timer_and_report_persist_without_documents(monkeypatch):
     assert not {"jd", "resume", "document_text"} & columns
 
 
+def test_generated_interview_question_uses_last_three_scored_turns(monkeypatch):
+    from coding_tutor.database.connection import get_test_db
+    from coding_tutor.interview import service
+
+    conn = get_test_db()
+    monkeypatch.setattr(service, "connection", lambda: conn)
+    captured = []
+
+    def generate(*args, **kwargs):
+        captured.append(kwargs.get("adaptive_context"))
+        return _generated_question(prompt=f"Question {len(captured)}?")
+
+    monkeypatch.setattr(service, "generate_question", generate)
+    monkeypatch.setattr(
+        service, "assess_answer",
+        lambda *args, **kwargs: {"score": 70.0, "strengths": [], "gaps": ["depth"],
+                                "feedback": "More detail", "next_focus": "trade-offs"},
+    )
+    model = SimpleNamespace(model_id="model", provider="openai", verified=True)
+    blueprint = {"role": "AI Engineer", "level": "Mid", "topics": ["RAG"],
+                 "formats": ["theory"], "languages": ["python"]}
+    session_id = service.start_interview("tech", 30, "ai", blueprint, False, "openai", model)
+
+    for position in range(4):
+        item, _ = service.add_interview_turn(session_id, "openai", model)
+        service.submit_interview_answer(session_id, item, f"Answer {position + 1}", "openai", model)
+    service.add_interview_turn(session_id, "openai", model)
+
+    assert captured[0] == {"blueprint": blueprint, "recent_scored_turns": []}
+    recent = captured[-1]["recent_scored_turns"]
+    assert [turn["answer"] for turn in recent] == ["Answer 2", "Answer 3", "Answer 4"]
+    assert all(turn["gaps"] == ["depth"] for turn in recent)
+
+
 def test_text_document_extraction_is_bounded():
     from coding_tutor.interview.documents import extract_document
 
