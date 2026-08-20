@@ -6,6 +6,7 @@ import json
 import streamlit as st
 
 from coding_tutor.evaluation.persistence import record_solution_method
+from coding_tutor.methods import ALL_METHODS, method_label, syntax_language
 from coding_tutor.evaluation.solutions import (
     PROMPT_VERSION,
     SolutionFailure,
@@ -21,7 +22,13 @@ def render_solution_view(question: dict, panel: dict) -> None:
     qid = str(question["id"])
     stored = _get_stored_solutions(qid)
     if question.get("question_type") == "algorithm":
-        _render_method(question, panel, "python", stored.get("python", []), allow_multiple=True)
+        supported = _supported_methods(question)
+        current = st.session_state.get("method")
+        method = current if current in supported else (supported[0] if supported else None)
+        if not method:
+            st.info("No solution languages are available for this question.")
+            return
+        _render_method(question, panel, method, stored.get(method, []), allow_multiple=True)
         return
 
     supported = _supported_methods(question)
@@ -33,7 +40,7 @@ def render_solution_view(question: dict, panel: dict) -> None:
     key = f"solution_method_{qid}"
     st.session_state.setdefault(key, default)
     method = st.segmented_control(
-        "Method", supported, key=key, format_func=lambda value: value.upper(), width="stretch"
+        "Method", supported, key=key, format_func=method_label, width="stretch"
     )
     if method:
         st.caption("Equivalence across methods has not been deterministically executed or verified.")
@@ -47,8 +54,7 @@ def _supported_methods(question: dict) -> list[str]:
             value = json.loads(value)
         except (TypeError, json.JSONDecodeError):
             value = []
-    allowed = {"sql", "pandas", "pyspark", "polars"}
-    return [method for method in value if method in allowed]
+    return [method for method in value if method in ALL_METHODS]
 
 
 def _get_stored_solutions(question_id: str) -> dict[str, list[dict]]:
@@ -69,7 +75,7 @@ def _get_stored_solutions(question_id: str) -> dict[str, list[dict]]:
 
 def _render_method(question: dict, panel: dict, method: str, stored: list[dict], allow_multiple: bool) -> None:
     displayed = False
-    language = "sql" if method == "sql" else "python"
+    language = syntax_language(method)
     for index, solution in enumerate(stored, 1):
         source = (
             "Dataset-provided reference" if solution["is_from_dataset"]
@@ -91,7 +97,11 @@ def _render_method(question: dict, panel: dict, method: str, stored: list[dict],
 
     provider = st.session_state.get("provider")
     model = st.session_state.get("model")
-    label = "Generate teaching approaches" if allow_multiple else f"Generate guided {method.upper()} solution"
+    label = (
+        "Generate alternative solutions"
+        if allow_multiple
+        else f"Generate guided {method_label(method)} solution"
+    )
     if st.button(label, key=f"generate_guided_{question['id']}_{method}"):
         with st.spinner("Generating a structured teaching solution…"):
             result = generate_teaching_solutions(question, method, provider, model)

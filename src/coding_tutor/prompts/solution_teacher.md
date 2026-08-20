@@ -36,7 +36,7 @@ Return only one JSON object with exactly this structure:
 
 Rules:
 - Explain in a teacher-friendly manner for the question difficulty.
-- For algorithm questions, return one to three Python approaches when meaningfully distinct.
+- For algorithm questions, return one to three approaches in the requested method when meaningfully distinct.
 - For data-analysis questions, return exactly one solution for requested method. Other methods are requested separately by application.
 - If method cannot be supported from supplied data, return no solutions and explain why in `availability_note`.
 - Use well-commented code.

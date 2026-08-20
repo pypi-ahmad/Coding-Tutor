@@ -8,8 +8,13 @@ from importlib.resources import files
 PROMPT_NAMES = frozenset(
     {
         "algorithm_question_generator.md",
+        "adaptive_interview_question_generator.md",
+        "ai_answer_evaluator.md",
+        "ai_question_generator.md",
         "data_analysis_question_generator.md",
         "dataset_record_converter.md",
+        "final_interview_report.md",
+        "interview_plan_generator.md",
         "quiz_generator.md",
         "shared_rules.md",
         "solution_teacher.md",

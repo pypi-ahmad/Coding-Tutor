@@ -243,9 +243,9 @@ def test_quiz_navigation_and_setup_controls(monkeypatch):
             monkeypatch.setattr(module, "get_db", lambda: conn)
     app = AppTest.from_file("app.py", default_timeout=10).run()
     navigation = next(widget for widget in app.radio if widget.label == "Navigation")
-    assert "🧠 Quiz" in navigation.options
-    navigation.set_value("🧠 Quiz").run()
+    assert "Quiz" in navigation.options
+    navigation.set_value("Quiz").run()
     assert not app.exception
     assert any(title.value == "🧠 Quiz mode" for title in app.title)
-    assert any(widget.label == "Quiz questions" for widget in app.number_input)
+    assert any(widget.label == "Total questions" for widget in app.number_input)
     assert any(widget.label == "Coding questions" for widget in app.number_input)

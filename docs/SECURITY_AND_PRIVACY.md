@@ -6,10 +6,10 @@ Coding Tutor is designed for a single user running the Streamlit application on 
 
 - Streamlit is configured to listen on `127.0.0.1:8551`.
 - The application has no user-account or authentication system.
-- The Streamlit UI has no file-upload control.
-- Questions, attempts, feedback, quizzes, and progress are stored in a local DuckDB file.
+- The Interview page accepts PDF, DOCX, or TXT JD/resume uploads up to 5 MB.
+- Questions, attempts, feedback, quizzes, AI-question sessions, interviews, and progress are stored in three local DuckDB catalogs.
 - AI-backed actions send selected question and learner context to the configured external provider.
-- Learner Python, SQL, Pandas, PySpark, and Polars text is never executed by the application.
+- Learner Python, JavaScript/TypeScript, Java, C++, SQL, Pandas, PySpark, and Polars text is never executed by the application.
 - The project does not implement database encryption, a code sandbox, process isolation, network isolation, or filesystem isolation.
 
 Binding to the loopback address limits the default listener to the local machine, but it is not an authentication control. Do not reconfigure the app for public or multi-user access without adding and reviewing appropriate protections.
@@ -40,6 +40,7 @@ The repository includes `.env.example` with blank entries for:
 - `OPENAI_BASE_URL`
 - `AGNES_API_KEY`
 - `GOOGLE_API_KEY`
+- `FIRECRAWL_API_KEY`
 
 It is a names-only reference and is not loaded by the application. Do not put real values in it.
 
@@ -55,7 +56,7 @@ Automated configuration tests verify these ignore patterns and verify that `.env
 
 ## Local storage
 
-DuckDB is the only application database. By default, the app opens `coding_tutor.duckdb` in its working directory. `CODING_TUTOR_DB` can select a different path when it is present before the application process imports the database configuration. Startup creates a missing parent directory and applies schema migrations.
+DuckDB is the only application database technology. Normal unified operation uses `Dataset/catalogs/algorithm.duckdb`, `Dataset/catalogs/data_analysis.duckdb`, and `Dataset/catalogs/interview.duckdb`. `CODING_TUTOR_DB` is an advanced/test override that can intentionally route activity to one path. Startup creates missing parent directories and applies migrations per opened catalog.
 
 The database can contain:
 
@@ -66,16 +67,22 @@ The database can contain:
 - AI-estimated percentages, marks, mistakes, explanations, suggested corrections, and optional corrected code;
 - provider and model identifiers used for an interaction;
 - solution-view history;
-- quiz settings, question snapshots, drafts, selected options, MCQ answers and explanations, coding answers, scores, and errors; and
+- quiz settings, question snapshots, drafts, selected options, MCQ answers and explanations, coding answers, scores, and errors;
+- AI-question session settings, question snapshots, answers or selected options, scores, structured feedback, and web-source provenance;
+- interview blueprints, deadlines, question snapshots, answers or selected options, per-turn scores and feedback, and final coaching reports; and
 - dataset import history and migration versions.
 
-Every Practice submission is stored as a new attempt. Applying AI-corrected code changes the active editor but does not replace the original saved submission. Quiz drafts are written to DuckDB; ordinary Practice drafts remain in Streamlit session state until submitted.
+Every Coding submission is stored as a new attempt. Applying AI-corrected code changes the active editor but does not replace the original saved submission. Quiz drafts are written to DuckDB; ordinary Coding drafts remain in Streamlit session state until submitted.
 
-The project does not encrypt the DuckDB file or manage operating-system permissions, backups, retention, secure deletion, or cloud synchronization. Anyone or any process that can read the database file may be able to read its contents. The app provides no in-app data-reset or deletion workflow.
+The project does not encrypt the DuckDB files or manage operating-system permissions, backups, retention, secure deletion, or cloud synchronization. Anyone or any process that can read them may be able to read stored answers and reports. The app provides no in-app data-reset or deletion workflow.
+
+JD and resume files are parsed in memory. Raw bytes and extracted text are not written to DuckDB. The extracted text is sent to the selected AI provider only when the user explicitly creates a JD-based interview plan. Reusable questions derived from that plan must be standalone and exclude candidate, employer, and project identifiers.
+
+Firecrawl receives normalized topic queries only. It never receives uploaded document text, candidate answers, provider credentials, or database contents. Web results are untrusted input, bounded before entering prompts, and used only for question generation. The Firecrawl key is read from the process environment and is neither rendered nor persisted.
 
 ## Data sent to AI providers
 
-No provider request is made merely because text is typed into the editor. External requests occur after an AI-backed user action, including generating a question, selecting **Done**, requesting an AI teaching solution, or preparing/scoring provider-dependent quiz content.
+No provider request is made merely because text is typed into an editor. External requests occur after an AI-backed action such as generating a question, selecting **Submit solution** or **Submit answer**, requesting a teaching solution, preparing/scoring provider-dependent quiz content, creating a Tech or JD-based interview plan, or generating a final interview report.
 
 ### Question generation
 
@@ -83,7 +90,7 @@ The selected provider receives the requested difficulty, topic, question type-sp
 
 ### Submission assessment
 
-Selecting **Done** can send:
+Selecting **Submit solution** can send:
 
 - the learner's submitted editor text;
 - the selected method;
@@ -100,11 +107,17 @@ An explicit AI teaching-solution request can include bounded question fields, th
 
 ### Quizzes
 
-AI-generated quiz questions use the normal question-generation request. MCQ preparation sends a batch containing question IDs, titles, selected methods, bounded statements and constraints, and examples. Non-blank coding answers use the same static-assessment context as Practice mode. MCQ answer scoring compares option IDs locally and does not call a provider.
+AI-generated quiz questions use the normal question-generation request. MCQ preparation sends a batch containing question IDs, titles, selected methods, bounded statements and constraints, and examples. Non-blank coding answers use the same static-assessment context as Coding mode. MCQ answer scoring compares option IDs locally and does not call a provider.
+
+### AI Questions and interviews
+
+AI Questions generation sends selected filters and bounded local or optional web reference material. Earlier AI Questions answers, scores, and feedback are not sent when generating the next item. Theory and coding assessment sends the question, rubric, and learner answer; MCQs are scored locally.
+
+Tech interview plan creation sends the requested role and level. JD-based plan creation additionally sends extracted job-description and optional resume text. Generated Interview questions send the editable blueprint, bounded reference material, and at most the last three scored turns, including their questions, submitted answers or selected options, scores, gaps, and next-focus values. Local Interview questions do not use answer history. Theory and coding assessment sends the current question, rubric, and answer. Final report generation sends the blueprint and all scored turns.
 
 ### Content not included by request builders
 
-The implemented request builders do not add environment-variable values or transmit the DuckDB file as a file. They query and serialize the fields needed for the current question or quiz operation rather than uploading the entire database.
+The implemented request builders do not add environment-variable values or transmit the DuckDB file as a file. They query and serialize the fields needed for the current operation rather than uploading the entire database.
 
 These statements describe Coding Tutor's request construction. They do not make guarantees about provider-side retention, logging, training, subprocesses, SDK behavior, or policies. Review the selected provider's terms and settings before sending content. See [AI Behavior](AI_BEHAVIOR.md) for the exact request and persistence contracts.
 
@@ -112,7 +125,7 @@ The Gemini request builder sets `store=False`. This is a request setting, not a 
 
 ## Dataset handling and provenance
 
-Datasets are optional. The application has no Streamlit file-upload control. Raw source data enters the workflow only through files placed under the expected dataset directories, commonly by explicitly running the separate download script.
+Datasets are optional. The application has no Streamlit dataset-upload control. Raw dataset source data enters the workflow only through files placed under the expected dataset directories, commonly by explicitly running the separate download script. Interview JD/resume uploads use a separate in-memory document path described above.
 
 The downloader contacts Hugging Face and writes snapshots under the gitignored `Dataset/` directory. It reports whether an optional Hugging Face token was detected but does not print the token value in project code.
 
@@ -130,9 +143,9 @@ License and attribution metadata are traceability records, not legal clearance. 
 
 ## Editor and code execution
 
-The Practice and Quiz editors are plain Streamlit text areas. Their contents are treated as text for local storage, display, and optional provider review.
+The Coding, Quiz, AI Questions, and Interview editors are plain Streamlit text inputs. Their contents are treated as text for local storage, display, and optional provider review.
 
-The application does not execute, import, compile, evaluate, or query learner Python, SQL, Pandas, PySpark, or Polars submissions. Stored test cases are sent as static context and are not run. Correctness percentages, marks, coding-quiz scores, errors, and corrections from a provider are AI estimates.
+The application does not execute, import, compile, evaluate, or query learner Python, JavaScript/TypeScript, Java, C++, SQL, Pandas, PySpark, or Polars submissions. Stored test cases are sent as static context and are not run. Correctness percentages, marks, coding-quiz scores, errors, and corrections from a provider are AI estimates.
 
 Because there is no code runner, the project implements no learner-code sandbox, timeout, resource limit, network block, temporary execution directory, or PySpark runtime. This avoids executing learner text inside the app, but it does not prove that the text is correct or safe to run elsewhere.
 

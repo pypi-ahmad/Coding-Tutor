@@ -1,6 +1,8 @@
 """Render explicitly labelled AI-estimated assessment results."""
 import streamlit as st
 
+from coding_tutor.methods import syntax_language
+
 
 def _apply_correction(
     editor_key: str, backup_key: str, applied_key: str, code: str
@@ -31,7 +33,7 @@ def render_evaluation(question: dict, assessment, attempt_id: str, method: str) 
     if assessment.suggested_correction:
         st.info(assessment.suggested_correction)
     if assessment.corrected_code:
-        st.code(assessment.corrected_code, language="sql" if method == "sql" else "python")
+        st.code(assessment.corrected_code, language=syntax_language(method))
         editor_key = f"editor_{question['id']}_{method}"
         backup_key = f"editor_pre_correction_{attempt_id}"
         applied_key = f"correction_applied_{attempt_id}"
@@ -55,7 +57,7 @@ def render_evaluation(question: dict, assessment, attempt_id: str, method: str) 
             )
         else:
             st.button(
-                "Apply correction to editor",
+                "Apply suggested correction",
                 key=f"apply_corr_{attempt_id}",
                 on_click=_apply_correction,
                 args=(editor_key, backup_key, applied_key, assessment.corrected_code),

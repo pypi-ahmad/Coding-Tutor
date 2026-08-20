@@ -7,13 +7,11 @@ import re
 from dataclasses import dataclass
 from enum import Enum
 
+from coding_tutor.methods import METHODS_BY_QUESTION_TYPE, syntax_language
 
 logger = logging.getLogger(__name__)
 
-QUESTION_METHODS = {
-    "algorithm": ("python",),
-    "data_analysis": ("sql", "pandas", "pyspark", "polars"),
-}
+QUESTION_METHODS = METHODS_BY_QUESTION_TYPE
 VALID_DIFFICULTIES = {"Beginner", "Easy", "Medium", "Hard", "Very Hard"}
 MAX_TOPIC_LENGTH = 100
 
@@ -50,6 +48,7 @@ def generate_question(
     difficulty: str,
     method: str,
     topic: str = "general",
+    web_enabled: bool = False,
 ) -> GenerationResult:
     """Generate, validate, and atomically save one question."""
     from coding_tutor.generation.prompts import (
@@ -66,6 +65,8 @@ def generate_question(
     )
     from coding_tutor.providers.base import ChatMessage
     from coding_tutor.providers.registry import get_provider
+    from coding_tutor.database.connection import get_db
+    from coding_tutor.generation.context import load_generation_context
 
     if question_type not in QUESTION_METHODS:
         return _failed(GenerationFailure.INVALID_SELECTION, "Unsupported question type.")
@@ -99,12 +100,39 @@ def generate_question(
     if not provider.is_configured():
         return _failed(GenerationFailure.PROVIDER_UNAVAILABLE)
 
+    try:
+        references = load_generation_context(
+            get_db(), question_type, difficulty, topic,
+        )
+    except Exception as exc:
+        logger.warning("Generation context unavailable (%s)", type(exc).__name__)
+        references = []
+
+    if web_enabled and topic != "general":
+        haystack = json.dumps(references, ensure_ascii=False).casefold()
+        if topic.casefold() not in haystack:
+            try:
+                from coding_tutor.web_research import research_web
+
+                for source in research_web(
+                    f"{topic} {question_type.replace('_', ' ')} coding interview question official documentation"
+                ):
+                    references.append({
+                        "question_id": source.url,
+                        "dataset_name": "web",
+                        "title": source.title,
+                        "problem_statement": source.excerpt,
+                        "source_url": source.url,
+                    })
+            except Exception as exc:
+                logger.warning("Web generation context unavailable (%s)", type(exc).__name__)
+
     if question_type == "algorithm":
         system_prompt = ALGORITHM_SYSTEM_PROMPT
-        user_content = build_algorithm_user_prompt(difficulty, method, topic)
+        user_content = build_algorithm_user_prompt(difficulty, method, topic, references)
     else:
         system_prompt = DATA_ANALYSIS_SYSTEM_PROMPT
-        user_content = build_data_analysis_user_prompt(difficulty, method, topic)
+        user_content = build_data_analysis_user_prompt(difficulty, method, topic, references)
 
     try:
         response = provider.chat(
@@ -138,6 +166,7 @@ def generate_question(
             model,
             provider_name,
             PROMPT_VERSION,
+            references,
         )
     except Exception as exc:
         logger.error("Generated question persistence failed (%s)", type(exc).__name__)
@@ -173,13 +202,17 @@ def _save_generated_question(
     model,
     provider_name: str,
     prompt_version: str,
+    references: list[dict],
 ) -> str:
     from coding_tutor.database.connection import get_db
 
     conn = get_db()
     conn.execute("BEGIN TRANSACTION")
     try:
-        supported_methods = list(QUESTION_METHODS[question_type])
+        supported_methods = (
+            [method] if question_type == "algorithm"
+            else list(QUESTION_METHODS[question_type])
+        )
         q_row = conn.execute(
             """INSERT INTO questions
                    (title, question_type, difficulty, problem_statement, constraints,
@@ -199,7 +232,7 @@ def _save_generated_question(
         q_id = str(q_row[0])
 
         if question_type == "algorithm":
-            _save_algorithm_assets(conn, q_id, data)
+            _save_algorithm_assets(conn, q_id, data, method)
             prompt_template = "algorithm_question"
         else:
             _save_data_analysis_assets(conn, q_id, data)
@@ -221,6 +254,16 @@ def _save_generated_question(
                         "difficulty": data["difficulty"],
                         "method": method,
                         "topic": topic,
+                        "context_sources": [
+                            {
+                                key: value for key, value in {
+                                    "question_id": reference.get("question_id"),
+                                    "dataset_name": reference.get("dataset_name"),
+                                    "source_url": reference.get("source_url"),
+                                }.items() if value
+                            }
+                            for reference in references
+                        ],
                     }
                 ),
             ],
@@ -232,20 +275,20 @@ def _save_generated_question(
         raise
 
 
-def _save_algorithm_assets(conn, q_id: str, data: dict) -> None:
+def _save_algorithm_assets(conn, q_id: str, data: dict, method: str) -> None:
     conn.execute(
         """INSERT INTO question_assets (question_id, asset_type, method, content)
-           VALUES (?, 'starter_code', 'python', ?)""",
-        [q_id, data["starter_code_python"]],
+           VALUES (?, 'starter_code', ?, ?)""",
+        [q_id, method, data["starter_code"]],
     )
 
-    reference = data.get("reference_solution_python")
+    reference = data.get("reference_solution")
     if reference:
         conn.execute(
             """INSERT INTO reference_solutions
                    (question_id, method, code, language, is_from_dataset)
-               VALUES (?, 'python', ?, 'python', false)""",
-            [q_id, reference],
+               VALUES (?, ?, ?, ?, false)""",
+            [q_id, method, reference, syntax_language(method)],
         )
 
     for test_case in data["test_cases"]:
@@ -288,7 +331,7 @@ def _save_data_analysis_assets(conn, q_id: str, data: dict) -> None:
                VALUES (?, 'starter_code', ?, ?)""",
             [q_id, method, data["starter_code"][method]],
         )
-        language = "sql" if method == "sql" else "python"
+        language = syntax_language(method)
         conn.execute(
             """INSERT INTO reference_solutions
                    (question_id, method, code, language, is_from_dataset)

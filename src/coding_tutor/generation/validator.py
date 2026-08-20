@@ -20,10 +20,10 @@ REQUIRED_ALGORITHM_FIELDS = {
     "constraints",
     "difficulty",
     "tags",
-    "starter_code_python",
+    "starter_code",
     "test_cases",
 }
-ALLOWED_ALGORITHM_FIELDS = REQUIRED_ALGORITHM_FIELDS | {"reference_solution_python"}
+ALLOWED_ALGORITHM_FIELDS = REQUIRED_ALGORITHM_FIELDS | {"reference_solution"}
 
 REQUIRED_DATA_ANALYSIS_FIELDS = {
     "question_type",
@@ -88,7 +88,7 @@ def validate_algorithm_question(data: dict, *, expected_difficulty: str) -> None
     )
     _validate_common(data, "algorithm", expected_difficulty)
     _non_empty_string(data["constraints"], "constraints")
-    _non_empty_string(data["starter_code_python"], "starter_code_python")
+    _non_empty_string(data["starter_code"], "starter_code")
 
     examples = data["examples"]
     if not isinstance(examples, list) or not examples:
@@ -109,8 +109,8 @@ def validate_algorithm_question(data: dict, *, expected_difficulty: str) -> None
         }.issubset(test_case):
             raise ValidationError("each test_case needs input and expected_output")
 
-    if "reference_solution_python" in data:
-        _non_empty_string(data["reference_solution_python"], "reference_solution_python")
+    if "reference_solution" in data:
+        _non_empty_string(data["reference_solution"], "reference_solution")
 
 
 def _is_json_scalar(value) -> bool:

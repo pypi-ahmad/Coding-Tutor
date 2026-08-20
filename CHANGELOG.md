@@ -6,6 +6,45 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-08-20
+
+### Added
+
+- Added JavaScript/TypeScript, Java, and C++ algorithm practice across Coding and Quiz modes, including editor templates, teaching solutions, progress filters, and static AI review.
+- Added adaptive generated interview follow-ups grounded in the editable blueprint and the three most recent scored turns.
+
+### Changed
+
+- Moved AI-question and interview prompt strings into registered, version-controlled Markdown templates with bounded builders and strict response contracts.
+- Updated schema migration and dataset normalization behavior so curated algorithm questions advertise all supported languages while historical AI-generated questions retain their original language metadata.
+- Synchronized the README and technical guides with current catalog routing, Firecrawl triggers, prompt versions, privacy boundaries, and no-execution behavior.
+
+### Security
+
+- Multilingual learner code remains unexecuted text and is reviewed only by the explicitly selected AI provider.
+
+## [0.2.0] - 2026-08-20
+
+### Added
+
+- Added AI Questions mode for local, generated, and mixed theory, coding, MCQ, direct, and scenario-based practice across AI engineering domains.
+- Added timed tech and JD-based interviews with editable plans, adaptive questions, 30/45/60/90-minute windows, and final coaching reports.
+- Added JavaScript/TypeScript, Java, C++, Python, and SQL authoring support for static AI review in AI Questions and interviews.
+- Added optional bounded Firecrawl MCP research for question generation with persisted source provenance and no web-assisted grading.
+- Added dedicated `interview.duckdb` persistence, multi-catalog progress, document parsing for PDF/DOCX/TXT, and interview-source import tooling.
+
+### Changed
+
+- Renamed the primary practice navigation to **Coding** and the submission action to **Submit solution**.
+- Routed algorithm, data-analysis, and interview activity through three consolidated DuckDB catalogs.
+- Consolidated the technical reference and task-oriented usage documentation around the current five-mode application.
+
+### Security
+
+- JD and resume content is processed in memory and is not stored in DuckDB; extracted text is sent only to the selected AI provider when creating a JD-based plan.
+- Firecrawl receives bounded normalized research queries, never raw JD/resume content, learner answers, provider secrets, or database contents.
+- Learner code remains static text and is never executed by the application.
+
 ## [0.1.2] - 2026-08-19
 
 ### Added
@@ -55,7 +94,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Learner code is sent only to the explicitly selected AI provider and is never executed locally.
 - Questions and progress are stored in the local DuckDB database. Explicit AI-backed actions send only the relevant question and learner context assembled for that request.
 
-[Unreleased]: https://github.com/pypi-ahmad/Coding-Tutor/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/pypi-ahmad/Coding-Tutor/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/pypi-ahmad/Coding-Tutor/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/pypi-ahmad/Coding-Tutor/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/pypi-ahmad/Coding-Tutor/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/pypi-ahmad/Coding-Tutor/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/pypi-ahmad/Coding-Tutor/releases/tag/v0.1.0

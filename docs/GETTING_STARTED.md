@@ -1,10 +1,10 @@
 # Getting Started
 
-This tutorial takes a new local user from a fresh clone to one algorithm attempt and one data-analysis attempt.
+This tutorial takes a new local user from a fresh clone to a first Coding submission and introduces the other application modes.
 
 ## 1. Install prerequisites
 
-Install Git, Python 3.11 or newer, and `uv`. Windows 11 is the tested platform. You also need your own API key to generate a question, submit an answer for AI review, request an AI teaching solution, or start a quiz.
+Install Git, Python 3.11 or newer, and `uv`. Windows 11 is the tested launcher platform. AI-backed actions require your own provider credential.
 
 ## 2. Clone and install
 
@@ -14,11 +14,11 @@ cd Coding-Tutor
 uv sync --locked
 ```
 
-On Windows, double-click `launch_app.cmd` instead. It checks for `uv`, creates `.venv` when needed, synchronizes dependencies, and launches the app. If `uv` is missing, it prints official installation links and exits without changing the machine.
+On Windows, `launch_app.cmd` can create `.venv`, synchronize locked dependencies, and launch the app. It reports installation links and exits if `uv` is unavailable.
 
 ## 3. Configure one provider
 
-Set one key in the same terminal that will launch Streamlit:
+Set one key in the terminal that will launch Streamlit:
 
 ```powershell
 $env:OPENAI_API_KEY = "<your-key>"
@@ -26,29 +26,30 @@ $env:OPENAI_API_KEY = "<your-key>"
 # or: $env:GOOGLE_API_KEY = "<your-key>"
 ```
 
-`OPENAI_BASE_URL` is optional. `.env.example` documents names only; the app does not load it.
+`OPENAI_BASE_URL` is optional. `.env.example` documents variable names but is not loaded. The sidebar's configuration status checks only for a non-blank value; it does not test credentials, quota, connectivity, or model access.
 
-The sidebar displays “configuration available” when the selected provider's expected key is non-blank. This is not a connectivity or credential test. A missing key produces a configuration-unavailable warning and AI-backed actions remain unavailable.
+## 4. Prepare local question catalogs
 
-## 4. Optionally prepare curated questions
-
-Place source data under:
-
-```text
-Dataset/
-├── data_analysis_problems/
-└── algorithm_problems/
-```
-
-The supplied downloader creates the importer-specific subdirectories:
+Datasets are optional when you use AI generation. To prepare local coding questions:
 
 ```powershell
 uv run python scripts/download_datasets.py --list
 uv run python scripts/download_datasets.py
-uv run python scripts/import_datasets.py
+uv run python scripts/import_datasets.py --datasets leetcode codecontests apps taco --database Dataset/catalogs/algorithm.duckdb
+uv run python scripts/import_datasets.py --datasets spider sqlctx querypls --database Dataset/catalogs/data_analysis.duckdb
 ```
 
-Datasets are optional. The three implemented SQL-family adapters currently produce incomplete records because their sources do not contain a shared fixture and expected result; those records do not appear in the curated picker.
+To prepare local AI and interview questions:
+
+```powershell
+gh auth status
+uv run python scripts/download_interview_sources.py --list
+uv run python scripts/download_interview_sources.py
+uv run python scripts/import_interview_sources.py
+uv run python scripts/import_user_ai_interview_questions.py
+```
+
+Raw files are import inputs. Normal app use reads the consolidated files under `Dataset/catalogs`.
 
 ## 5. Start the app
 
@@ -58,39 +59,38 @@ uv run --locked streamlit run app.py
 
 Open <http://127.0.0.1:8551>.
 
-## 6. Complete an algorithm question
+## 6. Complete a Coding question
 
-1. Open **Practice**.
-2. Select a provider and model.
-3. Choose **Curated dataset** if algorithm data was imported, otherwise **AI generated**.
-4. Select **Algorithm**, a difficulty from Beginner through Very Hard, a topic, and **Python**.
-5. Load or generate a question and edit the Python template.
-6. Click **Done**.
+1. Select **Coding**.
+2. Select a provider and verified model.
+3. Choose **Curated questions** if you imported algorithm data, or **AI generated**.
+4. Select **Algorithm**, a difficulty, an optional topic, and Python, JavaScript/TypeScript, Java, or C++.
+5. Load or generate a question and write an answer.
+6. Select **Submit solution**.
 
-The app saves a new attempt before asking the model for feedback. The displayed percentage and mark are AI estimates; no tests run. If corrected code is returned, **Apply correction to editor** creates a session backup and **Restore pre-correction code** reverses it. The saved submission does not change.
+The app saves the exact answer before requesting static review. The displayed score and mark are AI estimates; no tests execute. Applying a suggested correction changes only the active editor, not the saved submission.
 
-## 7. Complete a data-analysis question
+## 7. Explore the other modes
 
-1. Choose **Data analysis**.
-2. Select SQL, Pandas, PySpark, or Polars. These are authoring/AI-review methods, not installed execution runtimes.
-3. Use **AI generated** to request a complete canonical task. Accepted tasks include schema, fixture rows, expected rows, all four starter templates, and all four references.
-4. Write the answer and click **Done** for static review.
+- **Quiz** creates a resumable mix of coding and MCQ items.
+- **AI Questions** provides theory, coding, MCQ, direct, and scenario questions across AI domains.
+- **Interview** runs a timed tech or JD-based interview for 30, 45, 60, or 90 minutes.
+- **Progress** shows an overview and activity-specific history across all three catalogs.
 
-If generation returns incomplete structured data, the app displays a validation failure and saves no usable question.
+JD-based interviews can parse PDF, DOCX, or TXT files up to 5 MB. Raw JD/resume content is not stored locally, but extracted text is sent to the selected provider to create the interview plan.
 
-## 8. Find local data
+## 8. Know where data is stored
 
-The default database is `coding_tutor.duckdb` in the project root. Set `CODING_TUTOR_DB` before starting the app to choose another local path. The database stores questions, attempts, assessments, solution views, quiz history, import runs, and migrations.
-
-## Troubleshooting
-
-| Message or symptom | Verified meaning |
+| Catalog | Content |
 | --- | --- |
-| “configuration unavailable” | The expected provider key is missing or blank. Set it and restart. |
-| “No curated ... questions” | No complete imported question matches type, difficulty, topic, and method. |
-| “Select a configured, verified model” | The current provider/model cannot be used for the requested AI action. |
-| “provider returned malformed JSON” | Structured validation failed; generated content is not saved or displayed as valid. |
-| `No source files match ...` | The importer did not find the exact catalog path. Keep the source layout unchanged. |
-| Port 8551 does not open | Read the Streamlit terminal output; confirm the process is running and another process is not using the port. |
+| `Dataset/catalogs/algorithm.duckdb` | Algorithm questions, attempts, quizzes, and solution views |
+| `Dataset/catalogs/data_analysis.duckdb` | Data-analysis questions, attempts, quizzes, and solution views |
+| `Dataset/catalogs/interview.duckdb` | AI Questions, interview sessions, turns, and reports |
 
-For normal workflows, continue with [Usage](USAGE.md).
+Leave `CODING_TUTOR_DB` unset for normal unified operation. It is an advanced/test override for intentionally routing activity to one path.
+
+## Next steps
+
+- Follow [How to Use Coding Tutor](USAGE.md) for task recipes.
+- Read [Security and Privacy](SECURITY_AND_PRIVACY.md) before submitting sensitive material.
+- Use [Troubleshooting](TROUBLESHOOTING.md) for verified failure recovery.

@@ -1,7 +1,10 @@
 """Main learning interface page."""
 import json
 import streamlit as st
+from coding_tutor.catalog import get_catalog_profile
 from coding_tutor.database.connection import get_db
+from coding_tutor.dataset.catalog import SPECS_BY_KEY
+from coding_tutor.dataset.importer import run_import
 from coding_tutor.quiz.session import (
     clear_question_with_confirm, editor_baseline_key, editor_key,
     get_current_question, load_question,
@@ -9,8 +12,11 @@ from coding_tutor.quiz.session import (
 from coding_tutor.quiz.templates import get_editor_template
 
 
+ALGORITHM_DATASET_KEYS = ("leetcode", "codecontests", "apps", "taco")
+
+
 def render_main_page():
-    st.title("🎓 Coding Tutor")
+    st.title(f"🎓 {get_catalog_profile().title}")
 
     question = get_current_question()
 
@@ -31,12 +37,92 @@ def _render_question_picker():
     st.subheader("Select a Question")
     source = st.session_state.get("question_source", "dataset")
 
+    _render_dataset_import_results()
+    if (
+        source in {"dataset", "curated", "mixed"}
+        and st.session_state.get("question_type", "algorithm") == "algorithm"
+    ):
+        _render_algorithm_dataset_setup(get_db())
+
     if source in {"dataset", "curated"}:
         _pick_dataset_question()
     elif source == "ai_generated":
         _pick_generated_question()
     else:
         _pick_mixed_question()
+
+
+def _pending_algorithm_dataset_keys(conn) -> list[str]:
+    specs = [SPECS_BY_KEY[key] for key in ALGORITHM_DATASET_KEYS]
+    names = [spec.dataset_name for spec in specs]
+    statuses = dict(conn.execute(
+        """SELECT dataset_name, status
+           FROM (
+               SELECT dataset_name, status,
+                      row_number() OVER (
+                          PARTITION BY dataset_name ORDER BY started_at DESC, id DESC
+                      ) AS rank
+               FROM import_runs
+               WHERE dataset_name IN (?, ?, ?, ?)
+           ) latest
+           WHERE rank = 1""",
+        names,
+    ).fetchall())
+    curated_count = conn.execute(
+        """SELECT count(*) FROM questions
+           WHERE question_type = 'algorithm' AND is_complete = true
+             AND is_ai_generated = false"""
+    ).fetchone()[0]
+    if curated_count and not statuses:
+        return []
+    return [
+        spec.key for spec in specs
+        if statuses.get(spec.dataset_name) != "completed"
+    ]
+
+
+def _render_dataset_import_results() -> None:
+    results = st.session_state.pop("dataset_import_results", None)
+    if not results:
+        return
+    imported = sum(result[1] for result in results)
+    skipped = sum(result[2] for result in results)
+    failures = [result[0] for result in results if result[3] != "completed"]
+    if imported or skipped:
+        st.success(f"Dataset import completed: {imported} imported, {skipped} skipped.")
+    if failures:
+        st.error(
+            f"Import failed for: {', '.join(failures)}. "
+            "Retry below or check the server logs."
+        )
+
+
+def _render_algorithm_dataset_setup(conn) -> None:
+    pending = _pending_algorithm_dataset_keys(conn)
+    if not pending:
+        return
+    st.warning(
+        "No complete curated algorithm catalog is ready. Downloaded sources total about "
+        "3.7 GiB, so importing may take several minutes. CodeContests has unresolved "
+        "source-license status."
+    )
+    if not st.button("Build question catalog", type="primary"):
+        return
+
+    results = []
+    with st.status("Importing downloaded algorithm datasets...", expanded=True) as status:
+        for key in pending:
+            name = SPECS_BY_KEY[key].dataset_name
+            status.write(f"Importing {name}...")
+            result = run_import(conn, [key])[0]
+            results.append((name, result.imported, result.skipped, result.status))
+        failed = any(result[3] != "completed" for result in results)
+        status.update(
+            label="Dataset import finished with errors." if failed else "Dataset import complete.",
+            state="error" if failed else "complete",
+        )
+    st.session_state["dataset_import_results"] = results
+    st.rerun()
 
 
 def _dataset_rows(conn, question_type: str, difficulty: str, method: str,
@@ -99,7 +185,9 @@ def _choose_mixed_source(has_dataset: bool, has_ai: bool, random_value=None):
     return None
 
 
-def _generate_selected_question(provider_name, model, question_type, difficulty, method, topic):
+def _generate_selected_question(
+    provider_name, model, question_type, difficulty, method, topic, web_enabled=False,
+):
     from coding_tutor.generation.generator import generate_question
     return generate_question(
         provider_name=provider_name,
@@ -108,6 +196,7 @@ def _generate_selected_question(provider_name, model, question_type, difficulty,
         difficulty=difficulty,
         method=method,
         topic=topic.strip() or "general",
+        web_enabled=web_enabled,
     )
 
 
@@ -136,6 +225,8 @@ def _pick_dataset_question():
     rows = _dataset_rows(conn, q_type, difficulty, method, topic)
 
     if not rows:
+        if q_type == "algorithm" and _pending_algorithm_dataset_keys(conn):
+            return
         st.info(
             f"No curated {q_type.replace('_', ' ')} questions for {method.upper()} at {difficulty} difficulty. "
             "Try a different difficulty or import datasets."
@@ -143,8 +234,8 @@ def _pick_dataset_question():
         return
 
     options = {str(r[0]): f"{r[1]} ({r[2]})" for r in rows}
-    selected = st.selectbox("Choose a question", list(options), format_func=options.get)
-    if st.button("Load Question", type="primary"):
+    selected = st.selectbox("Question", list(options), format_func=options.get)
+    if st.button("Open question", type="primary"):
         load_question(selected)
         st.rerun()
 
@@ -157,7 +248,7 @@ def _pick_generated_question():
         st.warning(unavailable_reason)
         return
     st.info("AI question generation is available — click Generate to create a new question.")
-    if st.button("Generate Question", type="primary"):
+    if st.button("Generate question", type="primary"):
         with st.spinner("Generating question..."):
             result = _generate_selected_question(
                 provider_name, model,
@@ -165,6 +256,7 @@ def _pick_generated_question():
                 st.session_state.get("difficulty", "Easy"),
                 st.session_state.get("method", "python"),
                 st.session_state.get("topic", "general"),
+                st.session_state.get("web_research_enabled", False),
             )
         if result.ok:
             load_question(result.question_id)
@@ -198,14 +290,15 @@ def _pick_mixed_question():
     elif dataset_count:
         st.info(f"Mixed mode is using curated questions. {unavailable_reason}")
     else:
-        st.info("🎲 Mixed mode — using AI generation (no curated questions at this difficulty).")
+        st.info("Mixed mode is using AI because no curated questions are available at this difficulty.")
 
-    if st.button("Get Question", type="primary"):
+    if st.button("Create next question", type="primary"):
         use_ai = _choose_mixed_source(bool(dataset_count), has_ai) == "ai"
         if use_ai:
             with st.spinner("Generating question..."):
                 result = _generate_selected_question(
-                    provider_name, model, q_type, difficulty, method, topic
+                    provider_name, model, q_type, difficulty, method, topic,
+                    st.session_state.get("web_research_enabled", False),
                 )
             q_id = result.question_id
         else:
@@ -244,6 +337,12 @@ def _render_question(question: dict):
         st.caption(f"Source: {source}" + (f" · {details}" if details else ""))
     elif question.get("source_kind") == "ai_generated":
         st.caption(f"Source: AI generated · {question.get('generation_provider', 'unknown')}/{question.get('generation_model', 'unknown')}")
+        references = question.get("generation_metadata", {}).get("context_sources", [])
+        web_sources = [reference for reference in references if reference.get("source_url")]
+        if web_sources:
+            with st.expander("Web sources"):
+                for reference in web_sources:
+                    st.markdown(f"- [{reference['source_url']}]({reference['source_url']})")
 
     tags = question.get("tags") or []
     if tags:
@@ -279,7 +378,7 @@ def _render_question(question: dict):
     st.divider()
     _render_editor(question)
 
-    # Handle submit trigger (Done button)
+    # Handle submit trigger (Submit solution button)
     if st.session_state.get("submit_trigger"):
         method = st.session_state.get("method", "python")
         from coding_tutor.ui.submit_handler import handle_submit
@@ -386,13 +485,13 @@ def _render_action_panel(question: dict):
     content_key = editor_key(q_id, method)
     has_code = bool(st.session_state.get(content_key, "").strip())
 
-    if st.button("✅ Done", type="primary", disabled=not has_code, width="stretch"):
+    if st.button("Submit solution", type="primary", disabled=not has_code, width="stretch"):
         st.session_state.submit_trigger = True
         st.rerun()
 
     panel = st.session_state.get("solution_panel")
     panel_open = isinstance(panel, dict) and panel.get("question_id") == str(q_id)
-    if st.button("Hide Solutions" if panel_open else "💡 Show Solution", width="stretch"):
+    if st.button("Hide solution" if panel_open else "Show solution", width="stretch"):
         if panel_open:
             st.session_state.pop("solution_panel", None)
         else:
@@ -405,7 +504,7 @@ def _render_action_panel(question: dict):
 
     st.divider()
 
-    if st.button("← Back to question list", width="stretch"):
+    if st.button("Back to questions", width="stretch"):
         clear_question_with_confirm()
         st.rerun()
 

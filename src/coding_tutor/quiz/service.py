@@ -125,6 +125,7 @@ def _generate_question(settings: dict, model) -> dict:
     result = generate_question(
         settings["provider"], model, settings["question_type"], settings["difficulty"],
         settings["method"], settings.get("topic") or "general",
+        web_enabled=bool(settings.get("web_enabled")),
     )
     if not result.ok:
         raise QuizError("The provider could not generate a valid quiz question.")

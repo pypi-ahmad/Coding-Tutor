@@ -2,6 +2,29 @@
 
 EDITOR_TEMPLATES = {
     "python": "def solution():\n    # Write your solution here\n    pass\n",
+    "javascript/typescript": (
+        "function solution() {\n"
+        "  // Write your JavaScript or TypeScript solution here\n"
+        "}\n"
+    ),
+    "java": (
+        "class Solution {\n"
+        "    public Object solve() {\n"
+        "        // Write your solution here\n"
+        "        return null;\n"
+        "    }\n"
+        "}\n"
+    ),
+    "cpp": (
+        "#include <bits/stdc++.h>\n"
+        "using namespace std;\n\n"
+        "class Solution {\n"
+        "public:\n"
+        "    void solve() {\n"
+        "        // Write your solution here\n"
+        "    }\n"
+        "};\n"
+    ),
     "sql": "-- Write your SQL query here\nSELECT \n",
     "pandas": (
         "import pandas as pd\n\n"

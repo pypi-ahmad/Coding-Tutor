@@ -42,7 +42,7 @@ The application imports heterogeneous dataset records and also saves AI-generate
 
 Store each normalized question with exactly one of two types:
 
-- `algorithm`, supporting Python; or
+- `algorithm`, supporting Python, JavaScript/TypeScript, Java, and C++; or
 - `data_analysis`, declaring SQL, Pandas, PySpark, and Polars.
 
 Dataset catalog metadata and normalization rules set the type. The source directory name alone does not classify a record.
@@ -50,7 +50,7 @@ Dataset catalog metadata and normalization rules set the type. The source direct
 ### Consequences
 
 - The sidebar, editor templates, generation validators, importers, and persistence share one method matrix.
-- Algorithm normalization rejects method sets other than Python.
+- Curated algorithm normalization requires all four declared languages; AI-generated algorithm questions store only their requested language.
 - Data-analysis normalization requires the four declared methods.
 - PySpark and Polars are authoring and static-review methods; they are not installed execution runtimes.
 
@@ -133,7 +133,7 @@ Treat editor content as text and send it, with bounded question context, to the 
 
 ### Consequences
 
-- Python, SQL, Pandas, PySpark, and Polars submissions are not executed by Coding Tutor.
+- Python, JavaScript/TypeScript, Java, C++, SQL, Pandas, PySpark, and Polars submissions are not executed by Coding Tutor.
 - There is no runner, sandbox, execution timeout, resource limit, network block, or runtime dependency detection.
 - Static feedback can miss runtime, type, ordering, performance, and edge-case failures.
 - Corrected code can be applied reversibly in the editor while the original attempt remains unchanged.
@@ -179,7 +179,7 @@ Use `.env.example` only as a blank names reference; the application does not loa
 
 ### Context
 
-Question generation, assessment, teaching solutions, and quiz preparation require different provider instructions and machine-readable responses.
+Question generation, assessment, teaching solutions, quiz preparation, AI Questions, and Interview planning, follow-ups, assessment, and reporting require different provider instructions and machine-readable responses.
 
 ### Decision
 
@@ -197,7 +197,7 @@ Store prompt-version metadata for generated questions. Use a prompt version in t
 ### Date and evidence
 
 - File-backed prompt wiring was added in commit `20e65bb` on 2026-08-19.
-- Current evidence: the [prompt loader](../src/coding_tutor/prompts/__init__.py), [generation prompt builders](../src/coding_tutor/generation/prompts.py), [assessment](../src/coding_tutor/evaluation/feedback.py), [teaching solutions](../src/coding_tutor/evaluation/solutions.py), [Quiz service](../src/coding_tutor/quiz/service.py), and [prompt tests](../tests/test_prompts.py).
+- Current evidence: the [prompt loader](../src/coding_tutor/prompts/__init__.py), [generation prompt builders](../src/coding_tutor/generation/prompts.py), [Interview prompt builders](../src/coding_tutor/interview/prompts.py), [Interview AI contracts](../src/coding_tutor/interview/ai.py), [assessment](../src/coding_tutor/evaluation/feedback.py), [teaching solutions](../src/coding_tutor/evaluation/solutions.py), [Quiz service](../src/coding_tutor/quiz/service.py), and [prompt tests](../tests/test_prompts.py).
 
 ## ADR-008: Preserve dataset provenance and make imports idempotent
 

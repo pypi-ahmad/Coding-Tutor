@@ -7,11 +7,7 @@ from typing import Any, Optional
 
 import streamlit as st
 
-
-METHODS_BY_QUESTION_TYPE = {
-    "algorithm": ("python",),
-    "data_analysis": ("sql", "pandas", "pyspark", "polars"),
-}
+from coding_tutor.methods import METHODS_BY_QUESTION_TYPE
 
 _DEFAULT_STATE = {
     "initialized": True,
@@ -32,6 +28,8 @@ _DEFAULT_STATE = {
     "quiz_total_items": 1,
     "quiz_coding_items": 1,
     "active_quiz_attempt_id": None,
+    "active_ai_question_session_id": None,
+    "active_interview_session_id": None,
 }
 
 
@@ -185,7 +183,8 @@ def load_question(question_id: str) -> None:
     row = conn.execute(
         """SELECT q.id, q.title, q.question_type, q.difficulty, q.problem_statement,
                   q.constraints, q.examples, q.supported_methods, q.tags, q.is_complete, q.is_ai_generated, q.source_id,
-                  qs.dataset_name, qs.attribution, qs.license, ag.provider, ag.model_id
+                  qs.dataset_name, qs.attribution, qs.license, ag.provider, ag.model_id,
+                  ag.generation_metadata
            FROM questions q
            LEFT JOIN question_sources qs ON q.source_id = qs.id
            LEFT JOIN ai_generated_questions ag ON q.id = ag.question_id
@@ -219,6 +218,7 @@ def load_question(question_id: str) -> None:
         "source_kind": "ai_generated" if row[10] else "dataset",
         "dataset_name": row[12], "attribution": row[13], "license": row[14],
         "generation_provider": row[15], "generation_model": row[16],
+        "generation_metadata": _json_value(row[17], {}),
     }
 
     supported = question["supported_methods"]

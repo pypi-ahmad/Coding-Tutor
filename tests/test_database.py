@@ -12,6 +12,9 @@ def test_migrations_create_all_tables():
         "questions", "question_assets", "reference_solutions",
         "question_test_cases", "ai_generated_questions",
         "attempts", "solution_views", "quiz_attempts", "quiz_items",
+        "interview_items",
+        "interview_item_generation", "ai_question_sessions", "ai_question_items",
+        "interview_sessions", "interview_turns",
     }
     assert expected.issubset(tables), f"Missing tables: {expected - tables}"
 
@@ -50,3 +53,16 @@ def test_insert_question():
     )
     count = conn.execute("SELECT COUNT(*) FROM questions").fetchone()[0]
     assert count == 1
+
+
+def test_interview_items_have_separate_formats():
+    conn = get_test_db()
+    conn.execute("INSERT INTO question_sources (dataset_name, source_key) VALUES ('test', 'interview')")
+    source_id = conn.execute("SELECT id FROM question_sources WHERE source_key='interview'").fetchone()[0]
+    conn.execute(
+        """INSERT INTO interview_items
+           (source_id, domain, topic, answer_format, prompt_style, difficulty, prompt, content_hash)
+           VALUES (?, 'llm', 'rag', 'theory', 'scenario', 'Medium', 'Design a RAG evaluator.', 'hash')""",
+        [source_id],
+    )
+    assert conn.execute("SELECT answer_format, prompt_style FROM interview_items").fetchone() == ("theory", "scenario")

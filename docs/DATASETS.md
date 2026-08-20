@@ -45,10 +45,10 @@ The application does not execute imported tests, SQL, Python, Pandas, PySpark, o
 
 | Key | Source | Category | Format | Adapter result |
 | --- | --- | --- | --- | --- |
-| `leetcode` | LeetCodeDataset | Algorithm | JSONL | Complete Python questions when a statement is present; stores available starter, reference, and cases. |
-| `apps` | APPS | Algorithm | JSONL | Complete Python questions when a statement is present; stores available starter, references, and cases. |
-| `taco` | TACO | Algorithm | Parquet | Complete Python questions when URL identity and statement are present; stores available starter, references, and cases. |
-| `codecontests` | CodeContests | Algorithm | Parquet containing tar blobs | Complete Python questions when required archive members are valid; stores up to 10 case pairs. |
+| `leetcode` | LeetCodeDataset | Algorithm | JSONL | Complete language-neutral questions when a statement is present; stores available Python starter, reference, and cases. |
+| `apps` | APPS | Algorithm | JSONL | Complete language-neutral questions when a statement is present; stores available Python starter, references, and cases. |
+| `taco` | TACO | Algorithm | Parquet | Complete language-neutral questions when URL identity and statement are present; stores available Python starter, references, and cases. |
+| `codecontests` | CodeContests | Algorithm | Parquet containing tar blobs | Complete language-neutral questions when required archive members are valid; stores up to 10 case pairs. |
 | `spider` | Spider | Data analysis | Parquet | Incomplete; stores the natural-language question, database ID, and SQL reference but no shared analytical assets. |
 | `sqlctx` | sql-create-context | Data analysis | JSON array | Incomplete; stores `CREATE TABLE` context and SQL reference but no fixture rows or expected result. |
 | `querypls` | QueryPls Prompt2SQL | Data analysis | Parquet | Incomplete; stores context and SQL reference but no fixture rows or expected result. |
@@ -56,7 +56,7 @@ The application does not execute imported tests, SQL, Python, Pandas, PySpark, o
 ## LeetCodeDataset
 
 - **Configured source:** [newfacade/LeetCodeDataset](https://huggingface.co/datasets/newfacade/LeetCodeDataset)
-- **Category and methods:** `algorithm`; Python only.
+- **Category and methods:** `algorithm`; Python, JavaScript/TypeScript, Java, and C++ authoring with static AI review.
 - **Local source:** `Dataset/algorithm_problems/LeetCodeDataset/*.jsonl`
 - **Inspected snapshot revision:** `215604aeed660029df7de2fea5a4d7b6ed476a08`
 - **Required fields:** `task_id`, `problem_description`
@@ -71,7 +71,7 @@ The importer does not execute or validate the semantic correctness of references
 ## APPS
 
 - **Configured source:** [codeparrot/apps](https://huggingface.co/datasets/codeparrot/apps)
-- **Category and methods:** `algorithm`; Python only.
+- **Category and methods:** `algorithm`; Python, JavaScript/TypeScript, Java, and C++ authoring with static AI review.
 - **Local source:** `Dataset/algorithm_problems/apps/*.jsonl`
 - **Inspected snapshot revision:** `21e74ddf8de1a21436da12e3e653065c5213e9d1`
 - **Required fields:** `id`, `question`
@@ -86,7 +86,7 @@ The downloaded card notes that limited test coverage can produce false positives
 ## TACO
 
 - **Configured source:** [BAAI/TACO](https://huggingface.co/datasets/BAAI/TACO)
-- **Category and methods:** `algorithm`; Python only.
+- **Category and methods:** `algorithm`; Python, JavaScript/TypeScript, Java, and C++ authoring with static AI review.
 - **Local source:** `Dataset/algorithm_problems/TACO/ALL/*.parquet`
 - **Inspected snapshot revision:** `d593ed0a2becbbc952230bb89be09189bf1056dc`
 - **Required fields:** `question`, `url`, `input_output`
@@ -102,7 +102,7 @@ The local card states that the corpus also contains material under other permiss
 
 - **Configured source:** [open-thoughts/CodeContests](https://huggingface.co/datasets/open-thoughts/CodeContests)
 - **Upstream sources recorded in the downloaded card:** [DCAgent/code-contests-sandboxes-with-tests](https://huggingface.co/datasets/DCAgent/code-contests-sandboxes-with-tests) and [deepmind/code_contests](https://huggingface.co/datasets/deepmind/code_contests)
-- **Category and methods:** `algorithm`; Python only.
+- **Category and methods:** `algorithm`; Python, JavaScript/TypeScript, Java, and C++ authoring with static AI review.
 - **Local source:** `Dataset/algorithm_problems/CodeContests/tasks.parquet`
 - **Inspected snapshot revision:** `11f66f5e81d8035f44c3a576ed6772994d1ed90b`
 - **Required and inspected fields:** `path`, `task_binary`
@@ -186,6 +186,30 @@ uv run python scripts/import_datasets.py --datasets leetcode apps taco
 ```
 
 The import CLI also implements `--dataset-root` and `--database`. Omitting `--database` uses `CODING_TUTOR_DB` when set and otherwise uses `coding_tutor.duckdb`. See [Dataset Setup](dataset-setup.md) for the command reference and [Troubleshooting](TROUBLESHOOTING.md) for verified import failures.
+
+## Interview question sources
+
+Interview material is downloaded to `Dataset/interview_sources/raw` and normalized into `Dataset/catalogs/interview.duckdb`. The downloader uses authenticated GitHub CLI requests, pins each source revision, calculates file hashes, and writes license and ingestion decisions to `Dataset/interview_sources/manifest.json`.
+
+```powershell
+gh auth status
+uv run python scripts/download_interview_sources.py --list
+uv run python scripts/download_interview_sources.py
+uv run python scripts/import_interview_sources.py
+uv run python scripts/import_user_ai_interview_questions.py
+```
+
+Only sources marked `ingestion_allowed` are normalized. Raw-only sources remain local research inputs and do not become application questions. RecruitView is deferred because its non-commercial/access constraints require separate approval. Repeated imports skip stable source identities.
+
+## Runtime catalogs
+
+| Catalog | Imported material |
+| --- | --- |
+| `Dataset/catalogs/algorithm.duckdb` | LeetCodeDataset, APPS, TACO, and CodeContests algorithm records |
+| `Dataset/catalogs/data_analysis.duckdb` | Spider, sql-create-context, and QueryPls reference records |
+| `Dataset/catalogs/interview.duckdb` | Allowed interview sources and project-maintained AI interview questions |
+
+Raw dataset directories are import inputs and are not queried during normal app use.
 
 ## Licensing and redistribution cautions
 

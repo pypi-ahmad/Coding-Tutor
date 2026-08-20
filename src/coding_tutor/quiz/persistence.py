@@ -13,13 +13,13 @@ def create_quiz_attempt(settings: dict[str, Any]) -> str:
     conn = get_db()
     row = conn.execute(
         """INSERT INTO quiz_attempts
-               (question_source, question_type, difficulty, topic, method,
-                total_items, coding_items, mcq_items, provider, model_id)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id""",
+                (question_source, question_type, difficulty, topic, method,
+                total_items, coding_items, mcq_items, provider, model_id, web_enabled)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id""",
         [settings[key] for key in (
             "question_source", "question_type", "difficulty", "topic", "method",
             "total_items", "coding_items", "mcq_items", "provider", "model_id",
-        )],
+        )] + [bool(settings.get("web_enabled"))],
     ).fetchone()
     conn.commit()
     return str(row[0])
@@ -91,7 +91,7 @@ def load_quiz(attempt_id: str) -> tuple[dict, list[dict]] | None:
         """SELECT id, CAST(started_at AS VARCHAR), CAST(completed_at AS VARCHAR), status,
                   question_source, question_type, difficulty, topic, method, total_items,
                   coding_items, mcq_items, percentage_correct, marks, passed,
-                  provider, model_id, error_details
+                  provider, model_id, web_enabled, error_details
            FROM quiz_attempts WHERE id=?""",
         [attempt_id],
     ).fetchone()
@@ -100,7 +100,7 @@ def load_quiz(attempt_id: str) -> tuple[dict, list[dict]] | None:
     attempt_cols = ["id", "started_at", "completed_at", "status", "question_source",
                     "question_type", "difficulty", "topic", "method", "total_items",
                     "coding_items", "mcq_items", "percentage_correct", "marks", "passed",
-                    "provider", "model_id", "error_details"]
+                    "provider", "model_id", "web_enabled", "error_details"]
     attempt = dict(zip(attempt_cols, attempt_row))
     attempt["id"] = str(attempt["id"])
     rows = conn.execute(

@@ -15,7 +15,7 @@ DuckDB keeps questions, provenance, fixture/expected-result assets, attempts, an
 
 ## Semantic classification
 
-Import catalog metadata—not the folder name—sets `algorithm` or `data_analysis`. This avoids turning directory layout into product semantics and lets validation enforce Python-only algorithms versus shared analytical assets.
+Import catalog metadata—not the folder name—sets `algorithm` or `data_analysis`. This avoids turning directory layout into product semantics and lets validation expose curated algorithms in Python, JavaScript/TypeScript, Java, and C++ while preserving the shared analytical-asset contract.
 
 ## One analytical problem, four expressions
 
@@ -37,4 +37,4 @@ If execution is ever added, it must be isolated outside Streamlit and separately
 
 ## Windows and PySpark trade-offs
 
-Windows 11 is the tested launcher platform. PySpark appears only as an editor template and AI-review method. The project does not depend on PySpark, Java, or Spark and does not verify a local Spark runtime. Polars is likewise not installed. Users may run code externally in an environment they control, but that is outside Coding Tutor's safety model.
+Windows 11 is the tested launcher platform. JavaScript/TypeScript, Java, C++, and PySpark appear only as editor and AI-review methods. The project does not install language runtimes, compilers, PySpark, or Spark. Polars is likewise not installed. Users may run code externally in an environment they control, but that is outside Coding Tutor's safety model.

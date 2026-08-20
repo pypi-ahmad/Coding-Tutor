@@ -34,6 +34,16 @@ def test_validate_algorithm_allows_multiple_commented_approaches():
     assert note is None
 
 
+@pytest.mark.parametrize("method", ["javascript/typescript", "java", "cpp"])
+def test_validate_algorithm_allows_c_style_comments(method):
+    from coding_tutor.evaluation.solutions import _validate_payload
+
+    solutions, _, _ = _validate_payload(
+        _payload(comment="// explanation"), method, "algorithm"
+    )
+    assert len(solutions) == 1
+
+
 @pytest.mark.parametrize("method,comment", [("sql", "-- note"), ("pandas", "# note"), ("pyspark", "# note"), ("polars", "# note")])
 def test_validate_data_solution_for_each_method(method, comment):
     from coding_tutor.evaluation.solutions import _validate_payload

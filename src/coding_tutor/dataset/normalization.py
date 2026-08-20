@@ -9,8 +9,8 @@ from typing import Any
 
 import duckdb
 
+from coding_tutor.methods import ALGORITHM_METHODS, DATA_ANALYSIS_METHODS
 
-DATA_ANALYSIS_METHODS = ("sql", "pandas", "pyspark", "polars")
 
 
 @dataclass(frozen=True)
@@ -93,8 +93,8 @@ def persist_question(conn: duckdb.DuckDBPyConnection, question: NormalizedQuesti
     """Persist one normalized question atomically; return (inserted, skipped)."""
     if not question.problem_statement.strip():
         return False, True
-    if question.question_type == "algorithm" and question.supported_methods != ("python",):
-        raise ValueError("Algorithm questions must support Python only")
+    if question.question_type == "algorithm" and question.supported_methods != ALGORITHM_METHODS:
+        raise ValueError("Algorithm questions must expose all supported languages")
     if question.question_type == "data_analysis" and question.supported_methods != DATA_ANALYSIS_METHODS:
         raise ValueError("Data-analysis questions must expose all supported methods")
 

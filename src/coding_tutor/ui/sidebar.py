@@ -3,14 +3,12 @@ from __future__ import annotations
 
 import streamlit as st
 
+from coding_tutor.catalog import CatalogProfile, get_catalog_profile
 from coding_tutor.database.connection import get_db
+from coding_tutor.methods import METHODS_BY_QUESTION_TYPE, method_label
 from coding_tutor.providers.config import get_models_for_provider
 from coding_tutor.providers.registry import PROVIDERS, PROVIDER_DISPLAY_NAMES
-from coding_tutor.quiz.session import (
-    METHODS_BY_QUESTION_TYPE,
-    request_learning_change,
-    resolve_pending_learning_change,
-)
+from coding_tutor.quiz.session import request_learning_change, resolve_pending_learning_change
 
 QUESTION_TYPES = ["algorithm", "data_analysis"]
 DIFFICULTIES = ["Beginner", "Easy", "Medium", "Hard", "Very Hard"]
@@ -28,7 +26,40 @@ def _available_topics(conn, question_type: str, difficulty: str, method: str) ->
            ORDER BY topic""",
         [question_type, difficulty, method],
     ).fetchall()
-    return [row[0] for row in rows if row[0]]
+    return [str(row[0]) for row in rows if row[0] is not None]
+
+
+def _format_topic(value) -> str:
+    return "Any topic" if value == "general" else str(value)
+
+
+def _available_difficulties(conn, question_type: str, method: str) -> list[str]:
+    rows = conn.execute(
+        """SELECT DISTINCT difficulty
+           FROM questions
+           WHERE question_type = ? AND is_complete = true
+             AND is_ai_generated = false
+             AND json_contains(supported_methods, to_json(?))""",
+        [question_type, method],
+    ).fetchall()
+    available = {row[0] for row in rows}
+    return [difficulty for difficulty in DIFFICULTIES if difficulty in available]
+
+
+def _learning_modes(
+    conn, profile: CatalogProfile, question_type: str, method: str,
+) -> tuple[str, ...]:
+    if question_type != "data_analysis" or profile.learning_modes == ("ai_generated",):
+        return profile.learning_modes
+    curated_exists = conn.execute(
+        """SELECT 1 FROM questions
+           WHERE question_type = 'data_analysis' AND is_complete = true
+             AND is_ai_generated = false
+             AND json_contains(supported_methods, to_json(?))
+           LIMIT 1""",
+        [method],
+    ).fetchone()
+    return profile.learning_modes if curated_exists else ("ai_generated",)
 
 
 def _on_question_type_change() -> None:
@@ -60,9 +91,10 @@ def render_pending_learning_change_dialog() -> None:
         st.rerun()
 
 
-def render_sidebar():
+def render_sidebar(profile: CatalogProfile | None = None):
+    profile = profile or get_catalog_profile()
     with st.sidebar:
-        st.header("⚙️ Settings")
+        st.header(":material/settings: Settings")
 
         st.subheader("AI provider")
         provider_name = st.selectbox(
@@ -101,38 +133,73 @@ def render_sidebar():
         st.session_state["provider"] = provider_name
         st.session_state["model"] = selected_model
 
+        from coding_tutor.web_research import firecrawl_access_mode
+
+        web_mode = firecrawl_access_mode()
+        st.caption(
+            "Web research: authenticated Firecrawl MCP"
+            if web_mode == "authenticated"
+            else "Web research: keyless Firecrawl MCP (limited)"
+        )
+
+        page = st.session_state.get("nav_page", "Coding")
+        if page not in {"Coding", "Quiz"}:
+            st.divider()
+            st.caption("AI Questions and Interview use the interview catalog.")
+            return
+
         st.divider()
         st.subheader("Learning")
-        st.segmented_control(
-            "Learning mode", options=["dataset", "ai_generated", "mixed"],
-            format_func=lambda value: {
-                "dataset": "Curated dataset", "ai_generated": "AI generated", "mixed": "Mixed",
-            }[value],
-            key="question_source", required=True, width="stretch",
-        )
-        st.selectbox(
-            "Question type", QUESTION_TYPES,
-            format_func=lambda value: value.replace("_", " ").title(),
-            key="question_type_control", on_change=_on_question_type_change,
-        )
-        st.selectbox("Difficulty", DIFFICULTIES, key="difficulty")
-
-        question_type = st.session_state.get("question_type", "algorithm")
+        if profile.question_type is None:
+            st.selectbox(
+                "Question type", QUESTION_TYPES,
+                format_func=lambda value: value.replace("_", " ").title(),
+                key="question_type_control", on_change=_on_question_type_change,
+            )
+            question_type = st.session_state.get("question_type", "algorithm")
+        else:
+            question_type = profile.question_type
+            st.caption(f"Catalog: {question_type.replace('_', ' ').title()}")
         methods = list(METHODS_BY_QUESTION_TYPE[question_type])
         if st.session_state.get("method_control") not in methods:
             candidate = st.session_state.get("method", methods[0])
             st.session_state["method_control"] = candidate if candidate in methods else methods[0]
+        method = st.session_state.get("method", methods[0])
         st.selectbox(
-            "Solution method", methods, format_func=str.upper,
+            "Language or method", methods, format_func=method_label,
             key="method_control", on_change=_on_method_change,
         )
+        method = st.session_state.get("method", methods[0])
+
+        learning_modes = _learning_modes(get_db(), profile, question_type, method)
+        if st.session_state.get("question_source") not in learning_modes:
+            st.session_state["question_source"] = learning_modes[0]
+        if len(learning_modes) == 1:
+            source = learning_modes[0]
+            st.caption("Learning mode: AI generated")
+        else:
+            source = st.segmented_control(
+                "Learning mode", options=list(learning_modes),
+                format_func=lambda value: {
+                    "dataset": "Curated questions", "ai_generated": "AI generated", "mixed": "Mixed",
+                }[value],
+                key="question_source", required=True, width="stretch",
+            )
+
+        difficulty_options = DIFFICULTIES
+        if source in {"dataset", "curated"}:
+            available = _available_difficulties(get_db(), question_type, method)
+            if available:
+                difficulty_options = available
+        if st.session_state.get("difficulty") not in difficulty_options:
+            st.session_state["difficulty"] = difficulty_options[0]
+        st.selectbox("Difficulty", difficulty_options, key="difficulty")
 
         topics = _available_topics(
             get_db(), question_type, st.session_state.get("difficulty", "Easy"),
             st.session_state.get("method", methods[0]),
         )
         topic_options = ["general", *topics]
-        source = st.session_state.get("question_source", "dataset")
         topic_key = f"topic_control_{source}"
         current_topic = st.session_state.get("topic", "general")
         if topic_key not in st.session_state:
@@ -140,18 +207,26 @@ def render_sidebar():
         elif source == "dataset" and st.session_state[topic_key] not in topic_options:
             st.session_state[topic_key] = "general"
         selected_topic = st.selectbox(
-            "Topic/tag", topic_options, key=topic_key,
-            format_func=lambda value: "All topics" if value == "general" else value,
+            "Topic", topic_options, key=topic_key,
+            format_func=_format_topic,
             accept_new_options=source in {"ai_generated", "mixed"},
             help="Choose an imported tag or type a custom topic when AI generation is available.",
         )
         st.session_state["topic"] = selected_topic or "general"
 
-        if st.session_state.get("nav_page") == "🧠 Quiz":
+        st.toggle(
+            "Web research",
+            value=False,
+            key="web_research_enabled",
+            disabled=source in {"dataset", "curated"},
+            help="When enabled, AI generation can use Firecrawl if local references do not cover the topic.",
+        )
+
+        if st.session_state.get("nav_page") == "Quiz":
             st.divider()
             st.subheader("Quiz setup")
             st.number_input(
-                "Quiz questions", min_value=1, max_value=10, step=1,
+                "Total questions", min_value=1, max_value=10, step=1,
                 key="quiz_total_items",
             )
             total = int(st.session_state.get("quiz_total_items", 1))

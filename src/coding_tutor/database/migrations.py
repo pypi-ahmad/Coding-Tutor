@@ -86,6 +86,88 @@ MIGRATIONS: list[tuple[int, str, str]] = [
                UNIQUE (quiz_attempt_id, question_id)
            );""",
     ),
+    (
+        6,
+        "licensed interview question catalog",
+        """CREATE TABLE IF NOT EXISTS interview_items (
+               id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+               source_id UUID NOT NULL REFERENCES question_sources(id),
+               domain TEXT NOT NULL,
+               topic TEXT NOT NULL,
+               answer_format TEXT NOT NULL CHECK (answer_format IN ('theory','coding','mcq')),
+               prompt_style TEXT NOT NULL CHECK (prompt_style IN ('direct','scenario')),
+               difficulty TEXT NOT NULL CHECK (difficulty IN ('Beginner','Easy','Medium','Hard','Very Hard')),
+               prompt TEXT NOT NULL,
+               reference_answer TEXT,
+               rubric JSON,
+               method TEXT,
+               options JSON,
+               correct_option TEXT,
+               tags JSON NOT NULL DEFAULT '[]',
+               content_hash TEXT NOT NULL UNIQUE,
+               is_complete BOOLEAN NOT NULL DEFAULT true,
+               created_at TIMESTAMPTZ DEFAULT now()
+           );""",
+    ),
+    (
+        7,
+        "AI question practice and timed interview sessions",
+        """ALTER TABLE quiz_attempts ADD COLUMN IF NOT EXISTS web_enabled BOOLEAN DEFAULT false;
+           CREATE TABLE IF NOT EXISTS interview_item_generation (
+               interview_item_id UUID PRIMARY KEY REFERENCES interview_items(id),
+               origin TEXT NOT NULL CHECK (origin IN ('ai','web')),
+               provider TEXT,
+               model_id TEXT,
+               prompt_version TEXT,
+               web_sources JSON NOT NULL DEFAULT '[]',
+               generated_at TIMESTAMPTZ DEFAULT now()
+           );
+           CREATE TABLE IF NOT EXISTS ai_question_sessions (
+               id UUID PRIMARY KEY DEFAULT gen_random_uuid(), started_at TIMESTAMPTZ DEFAULT now(),
+               completed_at TIMESTAMPTZ, status TEXT NOT NULL DEFAULT 'active',
+               source_mode TEXT NOT NULL CHECK (source_mode IN ('local','ai','mixed')),
+               domain TEXT, topic TEXT, difficulty TEXT NOT NULL, answer_format TEXT NOT NULL,
+               prompt_style TEXT NOT NULL, method TEXT, web_enabled BOOLEAN NOT NULL DEFAULT false,
+               provider TEXT, model_id TEXT
+           );
+           CREATE TABLE IF NOT EXISTS ai_question_items (
+               id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+               session_id UUID NOT NULL REFERENCES ai_question_sessions(id), position INTEGER NOT NULL,
+               interview_item_id UUID NOT NULL REFERENCES interview_items(id), prompt_snapshot TEXT NOT NULL,
+               options JSON, correct_option TEXT, answer_text TEXT, selected_option TEXT,
+               score DOUBLE, feedback JSON, web_sources JSON NOT NULL DEFAULT '[]',
+               status TEXT NOT NULL DEFAULT 'pending', created_at TIMESTAMPTZ DEFAULT now(),
+               answered_at TIMESTAMPTZ, UNIQUE (session_id, position)
+           );
+           CREATE TABLE IF NOT EXISTS interview_sessions (
+               id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+               interview_type TEXT NOT NULL CHECK (interview_type IN ('tech','jd')),
+               duration_minutes INTEGER NOT NULL CHECK (duration_minutes IN (30,45,60,90)),
+               source_mode TEXT NOT NULL CHECK (source_mode IN ('local','ai','mixed')),
+               blueprint JSON NOT NULL, web_enabled BOOLEAN NOT NULL DEFAULT false,
+               provider TEXT NOT NULL, model_id TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'active',
+               started_at TIMESTAMPTZ DEFAULT now(), deadline_at TIMESTAMPTZ NOT NULL,
+               completed_at TIMESTAMPTZ, overall_score DOUBLE, report JSON, error_details TEXT
+           );
+           CREATE TABLE IF NOT EXISTS interview_turns (
+               id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+               session_id UUID NOT NULL REFERENCES interview_sessions(id), position INTEGER NOT NULL,
+               interview_item_id UUID NOT NULL REFERENCES interview_items(id), prompt_snapshot TEXT NOT NULL,
+               answer_format TEXT NOT NULL, method TEXT, options JSON, correct_option TEXT,
+               answer_text TEXT, selected_option TEXT, score DOUBLE, feedback JSON,
+               web_sources JSON NOT NULL DEFAULT '[]', status TEXT NOT NULL DEFAULT 'pending',
+               created_at TIMESTAMPTZ DEFAULT now(), answered_at TIMESTAMPTZ,
+               UNIQUE (session_id, position)
+           );""",
+    ),
+    (
+        8,
+        "multi-language curated algorithm questions",
+        """UPDATE questions
+           SET supported_methods = '["python","javascript/typescript","java","cpp"]'
+           WHERE question_type = 'algorithm'
+             AND is_ai_generated = false;""",
+    ),
     # Future migrations appended here as (version, description, sql)
 ]
 
