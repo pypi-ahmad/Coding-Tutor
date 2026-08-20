@@ -131,6 +131,18 @@ uv run python scripts/import_datasets.py
 uv run python scripts/import_datasets.py --datasets leetcode apps taco
 ```
 
+Build and launch the two independent consolidated catalogs:
+
+```powershell
+uv run python scripts/import_datasets.py --datasets leetcode codecontests apps taco --database Dataset/catalogs/algorithm.duckdb
+uv run python scripts/import_datasets.py --datasets spider sqlctx querypls --database Dataset/catalogs/data_analysis.duckdb
+
+uv run python scripts/run_catalog.py algorithm      # http://127.0.0.1:8551
+uv run python scripts/run_catalog.py data-analysis  # http://127.0.0.1:8552
+```
+
+The algorithm app supports curated, AI-generated, and mixed modes. The data-analysis app uses imported SQL records as bounded AI-generation context and exposes AI-generated mode only; its source records remain incomplete reference material.
+
 Source files are inspected before parsing and are not renamed, overwritten, or extracted into. Repeated records are skipped by stable source identity. Spider, sql-create-context, and QueryPls do not supply the complete shared fixture and expected-result context required by the UI, so their imported records remain incomplete and are not offered as curated exercises. See [Datasets](docs/DATASETS.md).
 
 ## Provider/model status

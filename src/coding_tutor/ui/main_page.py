@@ -1,7 +1,10 @@
 """Main learning interface page."""
 import json
 import streamlit as st
+from coding_tutor.catalog import get_catalog_profile
 from coding_tutor.database.connection import get_db
+from coding_tutor.dataset.catalog import SPECS_BY_KEY
+from coding_tutor.dataset.importer import run_import
 from coding_tutor.quiz.session import (
     clear_question_with_confirm, editor_baseline_key, editor_key,
     get_current_question, load_question,
@@ -9,8 +12,11 @@ from coding_tutor.quiz.session import (
 from coding_tutor.quiz.templates import get_editor_template
 
 
+ALGORITHM_DATASET_KEYS = ("leetcode", "codecontests", "apps", "taco")
+
+
 def render_main_page():
-    st.title("🎓 Coding Tutor")
+    st.title(f"🎓 {get_catalog_profile().title}")
 
     question = get_current_question()
 
@@ -31,12 +37,92 @@ def _render_question_picker():
     st.subheader("Select a Question")
     source = st.session_state.get("question_source", "dataset")
 
+    _render_dataset_import_results()
+    if (
+        source in {"dataset", "curated", "mixed"}
+        and st.session_state.get("question_type", "algorithm") == "algorithm"
+    ):
+        _render_algorithm_dataset_setup(get_db())
+
     if source in {"dataset", "curated"}:
         _pick_dataset_question()
     elif source == "ai_generated":
         _pick_generated_question()
     else:
         _pick_mixed_question()
+
+
+def _pending_algorithm_dataset_keys(conn) -> list[str]:
+    specs = [SPECS_BY_KEY[key] for key in ALGORITHM_DATASET_KEYS]
+    names = [spec.dataset_name for spec in specs]
+    statuses = dict(conn.execute(
+        """SELECT dataset_name, status
+           FROM (
+               SELECT dataset_name, status,
+                      row_number() OVER (
+                          PARTITION BY dataset_name ORDER BY started_at DESC, id DESC
+                      ) AS rank
+               FROM import_runs
+               WHERE dataset_name IN (?, ?, ?, ?)
+           ) latest
+           WHERE rank = 1""",
+        names,
+    ).fetchall())
+    curated_count = conn.execute(
+        """SELECT count(*) FROM questions
+           WHERE question_type = 'algorithm' AND is_complete = true
+             AND is_ai_generated = false"""
+    ).fetchone()[0]
+    if curated_count and not statuses:
+        return []
+    return [
+        spec.key for spec in specs
+        if statuses.get(spec.dataset_name) != "completed"
+    ]
+
+
+def _render_dataset_import_results() -> None:
+    results = st.session_state.pop("dataset_import_results", None)
+    if not results:
+        return
+    imported = sum(result[1] for result in results)
+    skipped = sum(result[2] for result in results)
+    failures = [result[0] for result in results if result[3] != "completed"]
+    if imported or skipped:
+        st.success(f"Dataset import completed: {imported} imported, {skipped} skipped.")
+    if failures:
+        st.error(
+            f"Import failed for: {', '.join(failures)}. "
+            "Retry below or check the server logs."
+        )
+
+
+def _render_algorithm_dataset_setup(conn) -> None:
+    pending = _pending_algorithm_dataset_keys(conn)
+    if not pending:
+        return
+    st.warning(
+        "No complete curated algorithm catalog is ready. Downloaded sources total about "
+        "3.7 GiB, so importing may take several minutes. CodeContests has unresolved "
+        "source-license status."
+    )
+    if not st.button("Import downloaded datasets", type="primary"):
+        return
+
+    results = []
+    with st.status("Importing downloaded algorithm datasets...", expanded=True) as status:
+        for key in pending:
+            name = SPECS_BY_KEY[key].dataset_name
+            status.write(f"Importing {name}...")
+            result = run_import(conn, [key])[0]
+            results.append((name, result.imported, result.skipped, result.status))
+        failed = any(result[3] != "completed" for result in results)
+        status.update(
+            label="Dataset import finished with errors." if failed else "Dataset import complete.",
+            state="error" if failed else "complete",
+        )
+    st.session_state["dataset_import_results"] = results
+    st.rerun()
 
 
 def _dataset_rows(conn, question_type: str, difficulty: str, method: str,
@@ -136,6 +222,8 @@ def _pick_dataset_question():
     rows = _dataset_rows(conn, q_type, difficulty, method, topic)
 
     if not rows:
+        if q_type == "algorithm" and _pending_algorithm_dataset_keys(conn):
+            return
         st.info(
             f"No curated {q_type.replace('_', ' ')} questions for {method.upper()} at {difficulty} difficulty. "
             "Try a different difficulty or import datasets."
@@ -198,7 +286,7 @@ def _pick_mixed_question():
     elif dataset_count:
         st.info(f"Mixed mode is using curated questions. {unavailable_reason}")
     else:
-        st.info("🎲 Mixed mode — using AI generation (no curated questions at this difficulty).")
+        st.info("Mixed mode is using AI because no curated questions are available at this difficulty.")
 
     if st.button("Get Question", type="primary"):
         use_ai = _choose_mixed_source(bool(dataset_count), has_ai) == "ai"

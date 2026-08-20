@@ -110,6 +110,38 @@ def test_available_topics_come_from_matching_questions():
     assert _available_topics(conn, "algorithm", "Easy", "python") == ["Array", "Hash Table"]
 
 
+def test_topic_formatter_always_returns_string():
+    from coding_tutor.ui.sidebar import _format_topic
+
+    assert _format_topic("general") == "All topics"
+    assert _format_topic(42) == "42"
+
+
+def test_curated_difficulties_include_only_complete_dataset_questions():
+    from coding_tutor.database.connection import get_test_db
+    from coding_tutor.ui.sidebar import _available_difficulties
+
+    conn = get_test_db()
+    conn.execute(
+        """INSERT INTO questions
+               (title, question_type, difficulty, problem_statement, supported_methods,
+                is_complete, is_ai_generated)
+           VALUES ('AI beginner', 'algorithm', 'Beginner', 'p', '["python"]', true, true),
+                  ('Dataset easy', 'algorithm', 'Easy', 'p', '["python"]', true, false),
+                  ('Incomplete hard', 'algorithm', 'Hard', 'p', '["python"]', false, false),
+                  ('Dataset very hard', 'algorithm', 'Very Hard', 'p', '["python"]', true, false)"""
+    )
+
+    assert _available_difficulties(conn, "algorithm", "python") == ["Easy", "Very Hard"]
+
+
+def test_fresh_database_needs_all_algorithm_imports():
+    from coding_tutor.database.connection import get_test_db
+    from coding_tutor.ui.main_page import ALGORITHM_DATASET_KEYS, _pending_algorithm_dataset_keys
+
+    assert _pending_algorithm_dataset_keys(get_test_db()) == list(ALGORITHM_DATASET_KEYS)
+
+
 def _editor_state():
     from coding_tutor.quiz.session import initialize_session_state
     state = {}
@@ -260,16 +292,129 @@ def test_app_source_control_and_conditional_topic(monkeypatch):
     assert not app.exception
     method = next(widget for widget in app.selectbox if widget.label == "Solution method")
     assert method.options == ["SQL", "PANDAS", "PYSPARK", "POLARS"]
-
-    source = next(widget for widget in app.segmented_control if widget.label == "Learning mode")
-    source.set_value("ai_generated").run()
-    assert not app.exception
+    assert not any(button.label == "Import downloaded datasets" for button in app.button)
+    assert not any(widget.label == "Learning mode" for widget in app.segmented_control)
+    assert app.session_state["question_source"] == "ai_generated"
+    rendered = "\n".join(message.value for message in app.info)
+    assert "No curated data analysis questions" not in rendered
 
     provider = next(widget for widget in app.selectbox if widget.label == "Provider")
     provider.set_value("gemini").run()
     assert not app.exception
     model = next(widget for widget in app.selectbox if widget.label == "Model")
     assert model.options == ["Gemini 3.5 Flash Lite", "Gemini 3.7 Flash"]
+
+
+def test_data_analysis_profile_is_fixed_to_ai_generation(monkeypatch):
+    from streamlit.testing.v1 import AppTest
+    from coding_tutor.database.connection import get_test_db
+    import coding_tutor.database.connection as connection
+    import coding_tutor.ui.main_page as main_page
+    import coding_tutor.ui.sidebar as sidebar
+
+    conn = get_test_db()
+    monkeypatch.setenv("CODING_TUTOR_CATALOG", "data_analysis")
+    monkeypatch.setattr(connection, "get_db", lambda: conn)
+    monkeypatch.setattr(main_page, "get_db", lambda: conn)
+    monkeypatch.setattr(sidebar, "get_db", lambda: conn)
+
+    app = AppTest.from_file("app.py", default_timeout=10).run()
+
+    assert not app.exception
+    assert not any(control.label == "Learning mode" for control in app.segmented_control)
+    assert not any(control.label == "Question type" for control in app.selectbox)
+    method = next(control for control in app.selectbox if control.label == "Solution method")
+    assert method.options == ["SQL", "PANDAS", "PYSPARK", "POLARS"]
+    assert app.session_state["question_type"] == "data_analysis"
+    assert app.session_state["question_source"] == "ai_generated"
+
+
+def test_empty_catalog_offers_import_and_invokes_all_algorithm_sources(monkeypatch):
+    from streamlit.testing.v1 import AppTest
+    from coding_tutor.database.connection import get_test_db
+    from coding_tutor.dataset.importer import ImportResult
+    import coding_tutor.database.connection as connection
+    import coding_tutor.ui.main_page as main_page
+    import coding_tutor.ui.sidebar as sidebar
+
+    conn = get_test_db()
+    calls = []
+
+    def fake_run_import(import_conn, datasets):
+        key = datasets[0]
+        calls.append(key)
+        import_conn.execute(
+            """INSERT INTO import_runs
+                   (dataset_name, completed_at, records_imported, records_skipped, status)
+               VALUES (?, now(), 1, 0, 'completed')""",
+            [{
+                "leetcode": "LeetCodeDataset", "codecontests": "CodeContests",
+                "apps": "apps", "taco": "TACO",
+            }[key]],
+        )
+        if key == "leetcode":
+            import_conn.execute(
+                """INSERT INTO questions
+                       (title, question_type, difficulty, problem_statement, supported_methods)
+                   VALUES ('Imported easy', 'algorithm', 'Easy', 'p', '["python"]')"""
+            )
+        return [ImportResult(key, 1, 0, "completed")]
+
+    monkeypatch.setattr(connection, "get_db", lambda: conn)
+    monkeypatch.setattr(main_page, "get_db", lambda: conn)
+    monkeypatch.setattr(sidebar, "get_db", lambda: conn)
+    monkeypatch.setattr(main_page, "run_import", fake_run_import)
+
+    app = AppTest.from_file("app.py", default_timeout=10).run()
+    button = next(button for button in app.button if button.label == "Import downloaded datasets")
+    button.click().run()
+
+    assert not app.exception
+    assert calls == list(main_page.ALGORITHM_DATASET_KEYS)
+    assert any("4 imported" in message.value for message in app.success)
+    difficulty = next(widget for widget in app.selectbox if widget.label == "Difficulty")
+    assert difficulty.options == ["Easy"]
+
+    source = next(widget for widget in app.segmented_control if widget.label == "Learning mode")
+    source.set_value("mixed").run()
+    difficulty = next(widget for widget in app.selectbox if widget.label == "Difficulty")
+    assert difficulty.options == ["Beginner", "Easy", "Medium", "Hard", "Very Hard"]
+
+
+def test_import_failure_message_does_not_render_raw_error(monkeypatch):
+    from streamlit.testing.v1 import AppTest
+    from coding_tutor.database.connection import get_test_db
+    from coding_tutor.dataset.importer import ImportResult
+    import coding_tutor.database.connection as connection
+    import coding_tutor.ui.main_page as main_page
+    import coding_tutor.ui.sidebar as sidebar
+
+    conn = get_test_db()
+
+    def fake_run_import(import_conn, datasets):
+        key = datasets[0]
+        import_conn.execute(
+            """INSERT INTO import_runs (dataset_name, completed_at, status, error_message)
+               VALUES (?, now(), 'failed', 'sentinel-private-path')""",
+            [{
+                "leetcode": "LeetCodeDataset", "codecontests": "CodeContests",
+                "apps": "apps", "taco": "TACO",
+            }[key]],
+        )
+        return [ImportResult(key, 0, 0, "failed", "sentinel-private-path")]
+
+    monkeypatch.setattr(connection, "get_db", lambda: conn)
+    monkeypatch.setattr(main_page, "get_db", lambda: conn)
+    monkeypatch.setattr(sidebar, "get_db", lambda: conn)
+    monkeypatch.setattr(main_page, "run_import", fake_run_import)
+
+    app = AppTest.from_file("app.py", default_timeout=10).run()
+    next(button for button in app.button if button.label == "Import downloaded datasets").click().run()
+    rendered = "\n".join(message.value for message in [*app.error, *app.warning, *app.info])
+
+    assert "Import failed for" in rendered
+    assert "sentinel-private-path" not in rendered
+    assert any(button.label == "Import downloaded datasets" for button in app.button)
 
 
 @pytest.mark.parametrize(
@@ -334,6 +479,7 @@ def test_provider_secrets_are_never_rendered(monkeypatch):
     from coding_tutor.database.connection import get_test_db
     import coding_tutor.database.connection as connection
     import coding_tutor.ui.main_page as main_page
+    import coding_tutor.ui.sidebar as sidebar
 
     secrets = {
         "OPENAI_API_KEY": "sentinel-openai-secret",
@@ -347,6 +493,7 @@ def test_provider_secrets_are_never_rendered(monkeypatch):
     conn = get_test_db()
     monkeypatch.setattr(connection, "get_db", lambda: conn)
     monkeypatch.setattr(main_page, "get_db", lambda: conn)
+    monkeypatch.setattr(sidebar, "get_db", lambda: conn)
 
     app = AppTest.from_file("app.py", default_timeout=10).run()
     assert not app.exception

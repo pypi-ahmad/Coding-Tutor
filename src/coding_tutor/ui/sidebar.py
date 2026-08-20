@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import streamlit as st
 
+from coding_tutor.catalog import CatalogProfile, get_catalog_profile
 from coding_tutor.database.connection import get_db
 from coding_tutor.providers.config import get_models_for_provider
 from coding_tutor.providers.registry import PROVIDERS, PROVIDER_DISPLAY_NAMES
@@ -28,7 +29,40 @@ def _available_topics(conn, question_type: str, difficulty: str, method: str) ->
            ORDER BY topic""",
         [question_type, difficulty, method],
     ).fetchall()
-    return [row[0] for row in rows if row[0]]
+    return [str(row[0]) for row in rows if row[0] is not None]
+
+
+def _format_topic(value) -> str:
+    return "All topics" if value == "general" else str(value)
+
+
+def _available_difficulties(conn, question_type: str, method: str) -> list[str]:
+    rows = conn.execute(
+        """SELECT DISTINCT difficulty
+           FROM questions
+           WHERE question_type = ? AND is_complete = true
+             AND is_ai_generated = false
+             AND json_contains(supported_methods, to_json(?))""",
+        [question_type, method],
+    ).fetchall()
+    available = {row[0] for row in rows}
+    return [difficulty for difficulty in DIFFICULTIES if difficulty in available]
+
+
+def _learning_modes(
+    conn, profile: CatalogProfile, question_type: str, method: str,
+) -> tuple[str, ...]:
+    if question_type != "data_analysis" or profile.learning_modes == ("ai_generated",):
+        return profile.learning_modes
+    curated_exists = conn.execute(
+        """SELECT 1 FROM questions
+           WHERE question_type = 'data_analysis' AND is_complete = true
+             AND is_ai_generated = false
+             AND json_contains(supported_methods, to_json(?))
+           LIMIT 1""",
+        [method],
+    ).fetchone()
+    return profile.learning_modes if curated_exists else ("ai_generated",)
 
 
 def _on_question_type_change() -> None:
@@ -60,7 +94,8 @@ def render_pending_learning_change_dialog() -> None:
         st.rerun()
 
 
-def render_sidebar():
+def render_sidebar(profile: CatalogProfile | None = None):
+    profile = profile or get_catalog_profile()
     with st.sidebar:
         st.header("⚙️ Settings")
 
@@ -103,36 +138,56 @@ def render_sidebar():
 
         st.divider()
         st.subheader("Learning")
-        st.segmented_control(
-            "Learning mode", options=["dataset", "ai_generated", "mixed"],
-            format_func=lambda value: {
-                "dataset": "Curated dataset", "ai_generated": "AI generated", "mixed": "Mixed",
-            }[value],
-            key="question_source", required=True, width="stretch",
-        )
-        st.selectbox(
-            "Question type", QUESTION_TYPES,
-            format_func=lambda value: value.replace("_", " ").title(),
-            key="question_type_control", on_change=_on_question_type_change,
-        )
-        st.selectbox("Difficulty", DIFFICULTIES, key="difficulty")
-
-        question_type = st.session_state.get("question_type", "algorithm")
+        if profile.question_type is None:
+            st.selectbox(
+                "Question type", QUESTION_TYPES,
+                format_func=lambda value: value.replace("_", " ").title(),
+                key="question_type_control", on_change=_on_question_type_change,
+            )
+            question_type = st.session_state.get("question_type", "algorithm")
+        else:
+            question_type = profile.question_type
+            st.caption(f"Catalog: {question_type.replace('_', ' ').title()}")
         methods = list(METHODS_BY_QUESTION_TYPE[question_type])
         if st.session_state.get("method_control") not in methods:
             candidate = st.session_state.get("method", methods[0])
             st.session_state["method_control"] = candidate if candidate in methods else methods[0]
+        method = st.session_state.get("method", methods[0])
         st.selectbox(
             "Solution method", methods, format_func=str.upper,
             key="method_control", on_change=_on_method_change,
         )
+        method = st.session_state.get("method", methods[0])
+
+        learning_modes = _learning_modes(get_db(), profile, question_type, method)
+        if st.session_state.get("question_source") not in learning_modes:
+            st.session_state["question_source"] = learning_modes[0]
+        if len(learning_modes) == 1:
+            source = learning_modes[0]
+            st.caption("Learning mode: AI generated")
+        else:
+            source = st.segmented_control(
+                "Learning mode", options=list(learning_modes),
+                format_func=lambda value: {
+                    "dataset": "Curated dataset", "ai_generated": "AI generated", "mixed": "Mixed",
+                }[value],
+                key="question_source", required=True, width="stretch",
+            )
+
+        difficulty_options = DIFFICULTIES
+        if source in {"dataset", "curated"}:
+            available = _available_difficulties(get_db(), question_type, method)
+            if available:
+                difficulty_options = available
+        if st.session_state.get("difficulty") not in difficulty_options:
+            st.session_state["difficulty"] = difficulty_options[0]
+        st.selectbox("Difficulty", difficulty_options, key="difficulty")
 
         topics = _available_topics(
             get_db(), question_type, st.session_state.get("difficulty", "Easy"),
             st.session_state.get("method", methods[0]),
         )
         topic_options = ["general", *topics]
-        source = st.session_state.get("question_source", "dataset")
         topic_key = f"topic_control_{source}"
         current_topic = st.session_state.get("topic", "general")
         if topic_key not in st.session_state:
@@ -141,7 +196,7 @@ def render_sidebar():
             st.session_state[topic_key] = "general"
         selected_topic = st.selectbox(
             "Topic/tag", topic_options, key=topic_key,
-            format_func=lambda value: "All topics" if value == "general" else value,
+            format_func=_format_topic,
             accept_new_options=source in {"ai_generated", "mixed"},
             help="Choose an imported tag or type a custom topic when AI generation is available.",
         )
