@@ -1,4 +1,4 @@
-"""Handle Done submissions through AI review only; no learner code is executed."""
+"""Handle Submit solution actions through AI review only; no learner code is executed."""
 from __future__ import annotations
 import streamlit as st
 

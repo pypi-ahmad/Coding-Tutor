@@ -33,7 +33,7 @@ def _available_topics(conn, question_type: str, difficulty: str, method: str) ->
 
 
 def _format_topic(value) -> str:
-    return "All topics" if value == "general" else str(value)
+    return "Any topic" if value == "general" else str(value)
 
 
 def _available_difficulties(conn, question_type: str, method: str) -> list[str]:
@@ -97,7 +97,7 @@ def render_pending_learning_change_dialog() -> None:
 def render_sidebar(profile: CatalogProfile | None = None):
     profile = profile or get_catalog_profile()
     with st.sidebar:
-        st.header("⚙️ Settings")
+        st.header(":material/settings: Settings")
 
         st.subheader("AI provider")
         provider_name = st.selectbox(
@@ -136,6 +136,21 @@ def render_sidebar(profile: CatalogProfile | None = None):
         st.session_state["provider"] = provider_name
         st.session_state["model"] = selected_model
 
+        from coding_tutor.web_research import firecrawl_access_mode
+
+        web_mode = firecrawl_access_mode()
+        st.caption(
+            "Web research: authenticated Firecrawl MCP"
+            if web_mode == "authenticated"
+            else "Web research: keyless Firecrawl MCP (limited)"
+        )
+
+        page = st.session_state.get("nav_page", "Coding")
+        if page not in {"Coding", "Quiz"}:
+            st.divider()
+            st.caption("AI Questions and Interview use the interview catalog.")
+            return
+
         st.divider()
         st.subheader("Learning")
         if profile.question_type is None:
@@ -154,7 +169,7 @@ def render_sidebar(profile: CatalogProfile | None = None):
             st.session_state["method_control"] = candidate if candidate in methods else methods[0]
         method = st.session_state.get("method", methods[0])
         st.selectbox(
-            "Solution method", methods, format_func=str.upper,
+            "Language or method", methods, format_func=str.upper,
             key="method_control", on_change=_on_method_change,
         )
         method = st.session_state.get("method", methods[0])
@@ -169,7 +184,7 @@ def render_sidebar(profile: CatalogProfile | None = None):
             source = st.segmented_control(
                 "Learning mode", options=list(learning_modes),
                 format_func=lambda value: {
-                    "dataset": "Curated dataset", "ai_generated": "AI generated", "mixed": "Mixed",
+                    "dataset": "Curated questions", "ai_generated": "AI generated", "mixed": "Mixed",
                 }[value],
                 key="question_source", required=True, width="stretch",
             )
@@ -195,18 +210,26 @@ def render_sidebar(profile: CatalogProfile | None = None):
         elif source == "dataset" and st.session_state[topic_key] not in topic_options:
             st.session_state[topic_key] = "general"
         selected_topic = st.selectbox(
-            "Topic/tag", topic_options, key=topic_key,
+            "Topic", topic_options, key=topic_key,
             format_func=_format_topic,
             accept_new_options=source in {"ai_generated", "mixed"},
             help="Choose an imported tag or type a custom topic when AI generation is available.",
         )
         st.session_state["topic"] = selected_topic or "general"
 
-        if st.session_state.get("nav_page") == "🧠 Quiz":
+        st.toggle(
+            "Web research",
+            value=False,
+            key="web_research_enabled",
+            disabled=source in {"dataset", "curated"},
+            help="When enabled, AI generation can use Firecrawl if local references do not cover the topic.",
+        )
+
+        if st.session_state.get("nav_page") == "Quiz":
             st.divider()
             st.subheader("Quiz setup")
             st.number_input(
-                "Quiz questions", min_value=1, max_value=10, step=1,
+                "Total questions", min_value=1, max_value=10, step=1,
                 key="quiz_total_items",
             )
             total = int(st.session_state.get("quiz_total_items", 1))

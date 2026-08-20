@@ -91,7 +91,7 @@ def _render_method(question: dict, panel: dict, method: str, stored: list[dict],
 
     provider = st.session_state.get("provider")
     model = st.session_state.get("model")
-    label = "Generate teaching approaches" if allow_multiple else f"Generate guided {method.upper()} solution"
+    label = "Generate alternative solutions" if allow_multiple else f"Generate guided {method.upper()} solution"
     if st.button(label, key=f"generate_guided_{question['id']}_{method}"):
         with st.spinner("Generating a structured teaching solution…"):
             result = generate_teaching_solutions(question, method, provider, model)

@@ -50,6 +50,7 @@ def generate_question(
     difficulty: str,
     method: str,
     topic: str = "general",
+    web_enabled: bool = False,
 ) -> GenerationResult:
     """Generate, validate, and atomically save one question."""
     from coding_tutor.generation.prompts import (
@@ -108,6 +109,25 @@ def generate_question(
     except Exception as exc:
         logger.warning("Generation context unavailable (%s)", type(exc).__name__)
         references = []
+
+    if web_enabled and topic != "general":
+        haystack = json.dumps(references, ensure_ascii=False).casefold()
+        if topic.casefold() not in haystack:
+            try:
+                from coding_tutor.web_research import research_web
+
+                for source in research_web(
+                    f"{topic} {question_type.replace('_', ' ')} coding interview question official documentation"
+                ):
+                    references.append({
+                        "question_id": source.url,
+                        "dataset_name": "web",
+                        "title": source.title,
+                        "problem_statement": source.excerpt,
+                        "source_url": source.url,
+                    })
+            except Exception as exc:
+                logger.warning("Web generation context unavailable (%s)", type(exc).__name__)
 
     if question_type == "algorithm":
         system_prompt = ALGORITHM_SYSTEM_PROMPT
@@ -235,8 +255,11 @@ def _save_generated_question(
                         "topic": topic,
                         "context_sources": [
                             {
-                                "question_id": reference["question_id"],
-                                "dataset_name": reference["dataset_name"],
+                                key: value for key, value in {
+                                    "question_id": reference.get("question_id"),
+                                    "dataset_name": reference.get("dataset_name"),
+                                    "source_url": reference.get("source_url"),
+                                }.items() if value
                             }
                             for reference in references
                         ],

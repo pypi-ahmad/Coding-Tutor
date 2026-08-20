@@ -1,4 +1,4 @@
-"""Application profiles for the consolidated algorithm and data-analysis catalogs."""
+"""Application profiles for the independent runtime catalogs."""
 from __future__ import annotations
 
 import os
@@ -33,6 +33,11 @@ _PROFILES = {
         ("ai_generated",),
         Path("Dataset/catalogs/data_analysis.duckdb"), 8552,
     ),
+    "interview": CatalogProfile(
+        "interview", "AI Interview Tutor", None,
+        ("dataset", "ai_generated", "mixed"),
+        Path("Dataset/catalogs/interview.duckdb"), 8551,
+    ),
 }
 
 _METHODS = {
@@ -47,6 +52,16 @@ def get_catalog_profile(value: str | None = None) -> CatalogProfile:
         return _PROFILES[key]
     except KeyError as exc:
         raise ValueError(f"Unknown catalog profile: {key}") from exc
+
+
+def database_for_question_type(question_type: str) -> Path:
+    """Return the consolidated runtime catalog for a coding question type."""
+    key = "data_analysis" if question_type == "data_analysis" else "algorithm"
+    return _PROFILES[key].database
+
+
+def interview_database() -> Path:
+    return _PROFILES["interview"].database
 
 
 def apply_catalog_profile(

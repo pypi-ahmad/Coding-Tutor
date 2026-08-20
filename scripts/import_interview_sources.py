@@ -10,6 +10,7 @@ import duckdb
 from coding_tutor.database.migrations import run_migrations
 from coding_tutor.dataset.importer import _finish_run, _start_run
 from coding_tutor.dataset.interview import parse_30_seconds, parse_markdown, persist_interview_item
+from coding_tutor.dataset.ai_engineering_qa import parse_ai_engineering_qa
 
 ROOT = Path(__file__).resolve().parents[1]
 DATASET = ROOT / "Dataset"
@@ -24,7 +25,8 @@ def import_sources(db_path: Path = DB) -> tuple[int, int]:
     run_migrations(conn)
     imported = skipped = 0
     try:
-        for key in ("30-seconds-of-interviews", "data-science-interviews", "interview-questions", "tech-interview-handbook"):
+        for key in ("30-seconds-of-interviews", "data-science-interviews", "interview-questions",
+                    "tech-interview-handbook", "ai-engineering-interview-questions"):
             meta = manifest["sources"][key]
             if not meta["ingestion_allowed"]:
                 continue
@@ -33,6 +35,8 @@ def import_sources(db_path: Path = DB) -> tuple[int, int]:
             paths = [RAW / key / file["path"] for file in meta["files"]]
             if key == "30-seconds-of-interviews":
                 items = parse_30_seconds(RAW / key / "data/questions.json", meta["revision"], run_id)
+            elif key == "ai-engineering-interview-questions":
+                items = parse_ai_engineering_qa(RAW / key / "README.md", meta["revision"], run_id)
             else:
                 domain = {"data-science-interviews": "data-science", "interview-questions": "software-engineering",
                           "tech-interview-handbook": "interview"}[key]

@@ -1,7 +1,10 @@
-"""Filter-aware learner progress dashboard backed entirely by DuckDB."""
+"""Unified progress dashboard across coding and interview catalogs."""
+import os
+
 import pandas as pd
 import streamlit as st
 
+from coding_tutor.catalog import database_for_question_type, interview_database
 from coding_tutor.database.connection import get_db
 from coding_tutor.database.progress import (
     get_all_attempts,
@@ -11,14 +14,110 @@ from coding_tutor.database.progress import (
 )
 
 
+def _catalog_db(path):
+    override = os.environ.get("CODING_TUTOR_DB")
+    return get_db(override or path)
+
+
+def _render_ai_question_progress(conn) -> None:
+    summary = conn.execute(
+        """SELECT COUNT(DISTINCT s.id), COUNT(i.id),
+                  AVG(CASE WHEN i.status='scored' THEN i.score END)
+           FROM ai_question_sessions s
+           LEFT JOIN ai_question_items i ON i.session_id=s.id"""
+    ).fetchone()
+    cols = st.columns(3)
+    cols[0].metric("Practice sessions", summary[0])
+    cols[1].metric("Questions attempted", summary[1])
+    cols[2].metric("Average AI-estimated score", f"{(summary[2] or 0):.1f}%")
+    rows = conn.execute(
+        """SELECT i.prompt_snapshot, q.domain, q.topic, q.answer_format, q.difficulty,
+                  i.score, CAST(i.answered_at AS VARCHAR)
+           FROM ai_question_items i JOIN interview_items q ON q.id=i.interview_item_id
+           WHERE i.status='scored' ORDER BY i.answered_at DESC LIMIT 100"""
+    ).fetchall()
+    if rows:
+        st.dataframe(pd.DataFrame(rows, columns=[
+            "Question", "Domain", "Topic", "Format", "Difficulty", "Score %", "Answered"
+        ]), hide_index=True, width="stretch")
+    else:
+        st.info("No AI Questions attempts yet.")
+
+
+def _render_interview_progress(conn) -> None:
+    summary = conn.execute(
+        """SELECT COUNT(*), COUNT(CASE WHEN status='completed' THEN 1 END),
+                  AVG(CASE WHEN status='completed' THEN overall_score END)
+           FROM interview_sessions"""
+    ).fetchone()
+    cols = st.columns(3)
+    cols[0].metric("Interviews", summary[0])
+    cols[1].metric("Completed", summary[1])
+    cols[2].metric("Average AI-estimated score", f"{(summary[2] or 0):.1f}%")
+    rows = conn.execute(
+        """SELECT interview_type, duration_minutes, source_mode, status, overall_score,
+                  CAST(started_at AS VARCHAR), report
+           FROM interview_sessions ORDER BY started_at DESC LIMIT 100"""
+    ).fetchall()
+    if rows:
+        frame = pd.DataFrame(rows, columns=[
+            "Type", "Minutes", "Source", "Status", "Score %", "Started", "Report"
+        ])
+        frame = frame.drop(columns=["Report"])
+        st.dataframe(frame, hide_index=True, width="stretch")
+    else:
+        st.info("No interview sessions yet.")
+
+
+def _render_overview() -> None:
+    override = os.environ.get("CODING_TUTOR_DB")
+    algorithm = _catalog_db(database_for_question_type("algorithm"))
+    data = algorithm if override else _catalog_db(database_for_question_type("data_analysis"))
+    interview = _catalog_db(interview_database())
+    coding_connections = (algorithm,) if override else (algorithm, data)
+    coding_attempts = sum(
+        conn.execute("SELECT COUNT(*) FROM attempts").fetchone()[0]
+        for conn in coding_connections
+    )
+    quiz_attempts = sum(
+        conn.execute("SELECT COUNT(*) FROM quiz_attempts").fetchone()[0]
+        for conn in coding_connections
+    )
+    ai_questions = interview.execute(
+        "SELECT COUNT(*) FROM ai_question_items WHERE status='scored'"
+    ).fetchone()[0]
+    interviews = interview.execute(
+        "SELECT COUNT(*) FROM interview_sessions WHERE status='completed'"
+    ).fetchone()[0]
+    cols = st.columns(4)
+    cols[0].metric("Coding attempts", coding_attempts)
+    cols[1].metric("Quiz attempts", quiz_attempts)
+    cols[2].metric("AI questions", ai_questions)
+    cols[3].metric("Completed interviews", interviews)
+    st.caption("Choose an activity above for detailed filters and history.")
+
+
 def render_progress_page():
-    st.title("📈 My progress")
-    conn = get_db()
+    st.title(":material/monitoring: My progress")
+    activity = st.selectbox(
+        "Activity", ["Overview", "Algorithms", "Data analysis", "AI Questions", "Interviews"]
+    )
+    if activity == "Overview":
+        _render_overview()
+        return
+    if activity == "AI Questions":
+        _render_ai_question_progress(_catalog_db(interview_database()))
+        return
+    if activity == "Interviews":
+        _render_interview_progress(_catalog_db(interview_database()))
+        return
+    question_type = "algorithm" if activity == "Algorithms" else "data_analysis"
+    conn = _catalog_db(database_for_question_type(question_type))
 
     st.subheader("Filters")
     col_f1, col_f2, col_f3 = st.columns(3)
     with col_f1:
-        qt_filter = st.selectbox("Question type", ["All", "algorithm", "data_analysis"])
+        qt_filter = st.selectbox("Question type", [question_type], disabled=True)
     with col_f2:
         diff_filter = st.selectbox(
             "Difficulty", ["All", "Beginner", "Easy", "Medium", "Hard", "Very Hard"]
@@ -28,7 +127,7 @@ def render_progress_page():
             "Method", ["All", "python", "sql", "pandas", "pyspark", "polars"]
         )
     filters = {
-        "question_type": None if qt_filter == "All" else qt_filter,
+        "question_type": qt_filter,
         "difficulty": None if diff_filter == "All" else diff_filter,
         "method": None if method_filter == "All" else method_filter,
     }

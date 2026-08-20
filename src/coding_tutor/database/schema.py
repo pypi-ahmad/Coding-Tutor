@@ -165,6 +165,7 @@ CREATE TABLE IF NOT EXISTS quiz_attempts (
     passed          BOOLEAN,
     provider        TEXT,
     model_id        TEXT,
+    web_enabled     BOOLEAN NOT NULL DEFAULT false,
     error_details   TEXT
 );
 
@@ -190,5 +191,91 @@ CREATE TABLE IF NOT EXISTS quiz_items (
     error_details       TEXT,
     UNIQUE (quiz_attempt_id, position),
     UNIQUE (quiz_attempt_id, question_id)
+);
+
+-- Provenance for validated AI/web questions promoted to the interview catalog.
+CREATE TABLE IF NOT EXISTS interview_item_generation (
+    interview_item_id UUID PRIMARY KEY REFERENCES interview_items(id),
+    origin            TEXT NOT NULL CHECK (origin IN ('ai','web')),
+    provider          TEXT,
+    model_id          TEXT,
+    prompt_version    TEXT,
+    web_sources       JSON NOT NULL DEFAULT '[]',
+    generated_at      TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS ai_question_sessions (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    started_at      TIMESTAMPTZ DEFAULT now(),
+    completed_at    TIMESTAMPTZ,
+    status          TEXT NOT NULL DEFAULT 'active',
+    source_mode     TEXT NOT NULL CHECK (source_mode IN ('local','ai','mixed')),
+    domain          TEXT,
+    topic           TEXT,
+    difficulty      TEXT NOT NULL,
+    answer_format   TEXT NOT NULL,
+    prompt_style    TEXT NOT NULL,
+    method          TEXT,
+    web_enabled     BOOLEAN NOT NULL DEFAULT false,
+    provider        TEXT,
+    model_id        TEXT
+);
+
+CREATE TABLE IF NOT EXISTS ai_question_items (
+    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    session_id          UUID NOT NULL REFERENCES ai_question_sessions(id),
+    position            INTEGER NOT NULL,
+    interview_item_id   UUID NOT NULL REFERENCES interview_items(id),
+    prompt_snapshot     TEXT NOT NULL,
+    options             JSON,
+    correct_option      TEXT,
+    answer_text         TEXT,
+    selected_option     TEXT,
+    score               DOUBLE,
+    feedback            JSON,
+    web_sources         JSON NOT NULL DEFAULT '[]',
+    status              TEXT NOT NULL DEFAULT 'pending',
+    created_at          TIMESTAMPTZ DEFAULT now(),
+    answered_at         TIMESTAMPTZ,
+    UNIQUE (session_id, position)
+);
+
+CREATE TABLE IF NOT EXISTS interview_sessions (
+    id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    interview_type   TEXT NOT NULL CHECK (interview_type IN ('tech','jd')),
+    duration_minutes INTEGER NOT NULL CHECK (duration_minutes IN (30,45,60,90)),
+    source_mode      TEXT NOT NULL CHECK (source_mode IN ('local','ai','mixed')),
+    blueprint        JSON NOT NULL,
+    web_enabled      BOOLEAN NOT NULL DEFAULT false,
+    provider         TEXT NOT NULL,
+    model_id         TEXT NOT NULL,
+    status           TEXT NOT NULL DEFAULT 'active',
+    started_at       TIMESTAMPTZ DEFAULT now(),
+    deadline_at      TIMESTAMPTZ NOT NULL,
+    completed_at     TIMESTAMPTZ,
+    overall_score    DOUBLE,
+    report           JSON,
+    error_details    TEXT
+);
+
+CREATE TABLE IF NOT EXISTS interview_turns (
+    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    session_id          UUID NOT NULL REFERENCES interview_sessions(id),
+    position            INTEGER NOT NULL,
+    interview_item_id   UUID NOT NULL REFERENCES interview_items(id),
+    prompt_snapshot     TEXT NOT NULL,
+    answer_format       TEXT NOT NULL,
+    method              TEXT,
+    options             JSON,
+    correct_option      TEXT,
+    answer_text         TEXT,
+    selected_option     TEXT,
+    score               DOUBLE,
+    feedback            JSON,
+    web_sources         JSON NOT NULL DEFAULT '[]',
+    status              TEXT NOT NULL DEFAULT 'pending',
+    created_at          TIMESTAMPTZ DEFAULT now(),
+    answered_at         TIMESTAMPTZ,
+    UNIQUE (session_id, position)
 );
 """

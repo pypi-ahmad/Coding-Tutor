@@ -106,7 +106,7 @@ def _render_algorithm_dataset_setup(conn) -> None:
         "3.7 GiB, so importing may take several minutes. CodeContests has unresolved "
         "source-license status."
     )
-    if not st.button("Import downloaded datasets", type="primary"):
+    if not st.button("Build question catalog", type="primary"):
         return
 
     results = []
@@ -185,7 +185,9 @@ def _choose_mixed_source(has_dataset: bool, has_ai: bool, random_value=None):
     return None
 
 
-def _generate_selected_question(provider_name, model, question_type, difficulty, method, topic):
+def _generate_selected_question(
+    provider_name, model, question_type, difficulty, method, topic, web_enabled=False,
+):
     from coding_tutor.generation.generator import generate_question
     return generate_question(
         provider_name=provider_name,
@@ -194,6 +196,7 @@ def _generate_selected_question(provider_name, model, question_type, difficulty,
         difficulty=difficulty,
         method=method,
         topic=topic.strip() or "general",
+        web_enabled=web_enabled,
     )
 
 
@@ -231,8 +234,8 @@ def _pick_dataset_question():
         return
 
     options = {str(r[0]): f"{r[1]} ({r[2]})" for r in rows}
-    selected = st.selectbox("Choose a question", list(options), format_func=options.get)
-    if st.button("Load Question", type="primary"):
+    selected = st.selectbox("Question", list(options), format_func=options.get)
+    if st.button("Open question", type="primary"):
         load_question(selected)
         st.rerun()
 
@@ -245,7 +248,7 @@ def _pick_generated_question():
         st.warning(unavailable_reason)
         return
     st.info("AI question generation is available — click Generate to create a new question.")
-    if st.button("Generate Question", type="primary"):
+    if st.button("Generate question", type="primary"):
         with st.spinner("Generating question..."):
             result = _generate_selected_question(
                 provider_name, model,
@@ -253,6 +256,7 @@ def _pick_generated_question():
                 st.session_state.get("difficulty", "Easy"),
                 st.session_state.get("method", "python"),
                 st.session_state.get("topic", "general"),
+                st.session_state.get("web_research_enabled", False),
             )
         if result.ok:
             load_question(result.question_id)
@@ -288,12 +292,13 @@ def _pick_mixed_question():
     else:
         st.info("Mixed mode is using AI because no curated questions are available at this difficulty.")
 
-    if st.button("Get Question", type="primary"):
+    if st.button("Create next question", type="primary"):
         use_ai = _choose_mixed_source(bool(dataset_count), has_ai) == "ai"
         if use_ai:
             with st.spinner("Generating question..."):
                 result = _generate_selected_question(
-                    provider_name, model, q_type, difficulty, method, topic
+                    provider_name, model, q_type, difficulty, method, topic,
+                    st.session_state.get("web_research_enabled", False),
                 )
             q_id = result.question_id
         else:
@@ -332,6 +337,12 @@ def _render_question(question: dict):
         st.caption(f"Source: {source}" + (f" · {details}" if details else ""))
     elif question.get("source_kind") == "ai_generated":
         st.caption(f"Source: AI generated · {question.get('generation_provider', 'unknown')}/{question.get('generation_model', 'unknown')}")
+        references = question.get("generation_metadata", {}).get("context_sources", [])
+        web_sources = [reference for reference in references if reference.get("source_url")]
+        if web_sources:
+            with st.expander("Web sources"):
+                for reference in web_sources:
+                    st.markdown(f"- [{reference['source_url']}]({reference['source_url']})")
 
     tags = question.get("tags") or []
     if tags:
@@ -367,7 +378,7 @@ def _render_question(question: dict):
     st.divider()
     _render_editor(question)
 
-    # Handle submit trigger (Done button)
+    # Handle submit trigger (Submit solution button)
     if st.session_state.get("submit_trigger"):
         method = st.session_state.get("method", "python")
         from coding_tutor.ui.submit_handler import handle_submit
@@ -474,13 +485,13 @@ def _render_action_panel(question: dict):
     content_key = editor_key(q_id, method)
     has_code = bool(st.session_state.get(content_key, "").strip())
 
-    if st.button("✅ Done", type="primary", disabled=not has_code, width="stretch"):
+    if st.button("Submit solution", type="primary", disabled=not has_code, width="stretch"):
         st.session_state.submit_trigger = True
         st.rerun()
 
     panel = st.session_state.get("solution_panel")
     panel_open = isinstance(panel, dict) and panel.get("question_id") == str(q_id)
-    if st.button("Hide Solutions" if panel_open else "💡 Show Solution", width="stretch"):
+    if st.button("Hide solution" if panel_open else "Show solution", width="stretch"):
         if panel_open:
             st.session_state.pop("solution_panel", None)
         else:
@@ -493,7 +504,7 @@ def _render_action_panel(question: dict):
 
     st.divider()
 
-    if st.button("← Back to question list", width="stretch"):
+    if st.button("Back to questions", width="stretch"):
         clear_question_with_confirm()
         st.rerun()
 

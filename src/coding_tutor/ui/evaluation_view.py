@@ -55,7 +55,7 @@ def render_evaluation(question: dict, assessment, attempt_id: str, method: str) 
             )
         else:
             st.button(
-                "Apply correction to editor",
+                "Apply suggested correction",
                 key=f"apply_corr_{attempt_id}",
                 on_click=_apply_correction,
                 args=(editor_key, backup_key, applied_key, assessment.corrected_code),

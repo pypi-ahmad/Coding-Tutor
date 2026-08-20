@@ -21,7 +21,9 @@ SOURCES = (
         ("LICENSE", "README.md", "theory.md", "technical.md", "contrib/probability.md"), "CC-BY-4.0", True),
     InterviewSource("interview-questions", "pwittchen/interview-questions", (
         "LICENSE", "README.md", "java-developer.md", "javascript-developer.md",
-        "google-developer.md", "general-questions.md"), "Apache-2.0", True),
+        "google-developer.md", "general-questions.md", "questions-for-the-employer.md"), "Apache-2.0", True),
+    InterviewSource("ai-engineering-interview-questions", "amitshekhariitbhu/ai-engineering-interview-questions",
+        ("LICENSE", "README.md"), "Apache-2.0", True),
     InterviewSource("ai-engineering-field-guide", "alexeygrigorev/ai-engineering-field-guide", (
         "README.md", "interview/questions/01-theory.md", "interview/questions/02-coding.md",
         "interview/questions/03-project-deep-dive.md", "interview/questions/04-ai-system-design.md",

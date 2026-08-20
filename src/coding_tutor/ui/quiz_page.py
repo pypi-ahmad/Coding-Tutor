@@ -64,6 +64,7 @@ def _render_start() -> None:
             "total_items": total, "coding_items": coding, "mcq_items": mcq,
             "provider": st.session_state.get("provider"),
             "model_id": getattr(model, "model_id", None),
+            "web_enabled": bool(st.session_state.get("web_research_enabled", False)),
         }
         try:
             with st.spinner("Preparing quiz questions…"):
@@ -82,7 +83,7 @@ def _render_preparation(attempt: dict, items: list[dict]) -> None:
     else:
         st.warning(attempt.get("error_details") or "Quiz preparation needs to be retried.")
     st.caption(f"Prepared question records: {len(items)} of {attempt['total_items']}")
-    if st.button("Retry preparation", type="primary"):
+    if st.button("Retry quiz creation", type="primary"):
         with st.spinner("Retrying quiz preparation…"):
             retry_preparation(attempt["id"], st.session_state.get("model"))
         st.rerun()
@@ -127,7 +128,7 @@ def _render_answering(attempt: dict, items: list[dict]) -> None:
                     on_change=_save_widget_draft, args=(item["id"], "mcq", key),
                 )
 
-    label = "Retry scoring" if attempt["status"] == "evaluation_error" else "Submit quiz"
+    label = "Retry assessment" if attempt["status"] == "evaluation_error" else "Submit quiz"
     if st.button(label, type="primary"):
         with st.spinner("Scoring quiz…"):
             complete = evaluate_quiz(
@@ -167,7 +168,7 @@ def _render_completed(attempt: dict, items: list[dict]) -> None:
                         st.warning(mistake)
                     if feedback.get("suggested_correction"):
                         st.info(feedback["suggested_correction"])
-    if st.button("Start another quiz"):
+    if st.button("New quiz"):
         st.session_state["active_quiz_attempt_id"] = None
         for key in [key for key in st.session_state if key.startswith("quiz_answer_")]:
             del st.session_state[key]
