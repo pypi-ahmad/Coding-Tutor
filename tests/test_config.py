@@ -46,6 +46,7 @@ def test_env_example_contains_only_blank_supported_variables():
         "OPENAI_BASE_URL": "",
         "AGNES_API_KEY": "",
         "GOOGLE_API_KEY": "",
+        "FIRECRAWL_API_KEY": "",
     }
 
 

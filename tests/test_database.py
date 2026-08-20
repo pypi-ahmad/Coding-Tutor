@@ -13,6 +13,8 @@ def test_migrations_create_all_tables():
         "question_test_cases", "ai_generated_questions",
         "attempts", "solution_views", "quiz_attempts", "quiz_items",
         "interview_items",
+        "interview_item_generation", "ai_question_sessions", "ai_question_items",
+        "interview_sessions", "interview_turns",
     }
     assert expected.issubset(tables), f"Missing tables: {expected - tables}"
 

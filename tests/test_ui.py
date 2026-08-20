@@ -113,7 +113,7 @@ def test_available_topics_come_from_matching_questions():
 def test_topic_formatter_always_returns_string():
     from coding_tutor.ui.sidebar import _format_topic
 
-    assert _format_topic("general") == "All topics"
+    assert _format_topic("general") == "Any topic"
     assert _format_topic(42) == "42"
 
 
@@ -279,20 +279,20 @@ def test_app_source_control_and_conditional_topic(monkeypatch):
     assert app.title
     assert "Coding Tutor" in app.title[0].value
     source = next(widget for widget in app.segmented_control if widget.label == "Learning mode")
-    assert source.options == ["Curated dataset", "AI generated", "Mixed"]
-    assert any(widget.label == "Topic/tag" for widget in app.selectbox)
+    assert source.options == ["Curated questions", "AI generated", "Mixed"]
+    assert any(widget.label == "Topic" for widget in app.selectbox)
     question_type = next(widget for widget in app.selectbox if widget.label == "Question type")
     difficulty = next(widget for widget in app.selectbox if widget.label == "Difficulty")
-    method = next(widget for widget in app.selectbox if widget.label == "Solution method")
+    method = next(widget for widget in app.selectbox if widget.label == "Language or method")
     assert question_type.options == ["Algorithm", "Data Analysis"]
     assert difficulty.options == ["Beginner", "Easy", "Medium", "Hard", "Very Hard"]
     assert method.options == ["PYTHON"]
 
     question_type.set_value("data_analysis").run()
     assert not app.exception
-    method = next(widget for widget in app.selectbox if widget.label == "Solution method")
+    method = next(widget for widget in app.selectbox if widget.label == "Language or method")
     assert method.options == ["SQL", "PANDAS", "PYSPARK", "POLARS"]
-    assert not any(button.label == "Import downloaded datasets" for button in app.button)
+    assert not any(button.label == "Build question catalog" for button in app.button)
     assert not any(widget.label == "Learning mode" for widget in app.segmented_control)
     assert app.session_state["question_source"] == "ai_generated"
     rendered = "\n".join(message.value for message in app.info)
@@ -323,7 +323,7 @@ def test_data_analysis_profile_is_fixed_to_ai_generation(monkeypatch):
     assert not app.exception
     assert not any(control.label == "Learning mode" for control in app.segmented_control)
     assert not any(control.label == "Question type" for control in app.selectbox)
-    method = next(control for control in app.selectbox if control.label == "Solution method")
+    method = next(control for control in app.selectbox if control.label == "Language or method")
     assert method.options == ["SQL", "PANDAS", "PYSPARK", "POLARS"]
     assert app.session_state["question_type"] == "data_analysis"
     assert app.session_state["question_source"] == "ai_generated"
@@ -366,7 +366,7 @@ def test_empty_catalog_offers_import_and_invokes_all_algorithm_sources(monkeypat
     monkeypatch.setattr(main_page, "run_import", fake_run_import)
 
     app = AppTest.from_file("app.py", default_timeout=10).run()
-    button = next(button for button in app.button if button.label == "Import downloaded datasets")
+    button = next(button for button in app.button if button.label == "Build question catalog")
     button.click().run()
 
     assert not app.exception
@@ -409,12 +409,12 @@ def test_import_failure_message_does_not_render_raw_error(monkeypatch):
     monkeypatch.setattr(main_page, "run_import", fake_run_import)
 
     app = AppTest.from_file("app.py", default_timeout=10).run()
-    next(button for button in app.button if button.label == "Import downloaded datasets").click().run()
+    next(button for button in app.button if button.label == "Build question catalog").click().run()
     rendered = "\n".join(message.value for message in [*app.error, *app.warning, *app.info])
 
     assert "Import failed for" in rendered
     assert "sentinel-private-path" not in rendered
-    assert any(button.label == "Import downloaded datasets" for button in app.button)
+    assert any(button.label == "Build question catalog" for button in app.button)
 
 
 @pytest.mark.parametrize(
@@ -465,13 +465,13 @@ def test_app_loads_question_editor_and_visible_actions(monkeypatch):
     monkeypatch.setattr(sidebar, "get_db", lambda: conn)
 
     app = AppTest.from_file("app.py", default_timeout=10).run()
-    load = next(button for button in app.button if button.label == "Load Question")
+    load = next(button for button in app.button if button.label == "Open question")
     load.click().run()
     assert not app.exception
     assert any("Two Sum" in markdown.value for markdown in app.markdown)
     assert app.text_area and "def solution" in app.text_area[0].value
-    assert any(button.label == "✅ Done" for button in app.button)
-    assert any(button.label == "💡 Show Solution" for button in app.button)
+    assert any(button.label == "Submit solution" for button in app.button)
+    assert any(button.label == "Show solution" for button in app.button)
 
 
 def test_provider_secrets_are_never_rendered(monkeypatch):
