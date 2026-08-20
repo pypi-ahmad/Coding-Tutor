@@ -6,7 +6,7 @@ import json
 from coding_tutor.prompts import load_prompt, render_prompt
 
 
-PROMPT_VERSION = "v4"
+PROMPT_VERSION = "v5"
 ALGORITHM_SYSTEM_PROMPT = load_prompt("shared_rules.md")
 DATA_ANALYSIS_SYSTEM_PROMPT = ALGORITHM_SYSTEM_PROMPT
 

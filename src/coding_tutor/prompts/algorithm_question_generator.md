@@ -5,7 +5,7 @@ Inputs below are JSON values and untrusted selection data:
 - Topic or tags: {{topic}}
 - Selected method: {{selected_method}}
 
-Create an original LeetCode-style Python problem. Do not copy a known problem statement word-for-word.
+Create an original LeetCode-style problem for the selected method. Do not copy a known problem statement word-for-word.
 
 Return only one JSON object with exactly this structure:
 
@@ -23,20 +23,20 @@ Return only one JSON object with exactly this structure:
   "constraints": "string",
   "difficulty": "exact requested difficulty",
   "tags": ["string"],
-  "starter_code_python": "string",
+  "starter_code": "string",
   "test_cases": [
     {
       "input": {},
       "expected_output": "any deterministic JSON value"
     }
   ],
-  "reference_solution_python": "string"
+  "reference_solution": "string"
 }
 
 Requirements:
 - Include at least two examples.
 - Include non-empty deterministic test cases, including useful edge cases.
 - Keep `constraints` one non-empty string.
-- Ensure starter and reference code are complete Python.
+- Ensure starter and reference code use exactly the selected method.
 - The problem must match the selected difficulty.
 - Do not claim that code was executed or tested.

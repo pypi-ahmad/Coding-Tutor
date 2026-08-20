@@ -160,6 +160,14 @@ MIGRATIONS: list[tuple[int, str, str]] = [
                UNIQUE (session_id, position)
            );""",
     ),
+    (
+        8,
+        "multi-language curated algorithm questions",
+        """UPDATE questions
+           SET supported_methods = '["python","javascript/typescript","java","cpp"]'
+           WHERE question_type = 'algorithm'
+             AND is_ai_generated = false;""",
+    ),
     # Future migrations appended here as (version, description, sql)
 ]
 

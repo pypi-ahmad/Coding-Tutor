@@ -6,11 +6,12 @@ import json
 import streamlit as st
 
 from coding_tutor.interview import service
+from coding_tutor.methods import INTERVIEW_LANGUAGES, method_label
 
 DIFFICULTIES = ["Beginner", "Easy", "Medium", "Hard", "Very Hard"]
 FORMATS = ["theory", "coding", "mcq"]
 STYLES = ["scenario", "direct"]
-LANGUAGES = ["python", "javascript/typescript", "java", "cpp", "sql"]
+LANGUAGES = list(INTERVIEW_LANGUAGES)
 
 
 def _source_label(value: str) -> str:
@@ -55,7 +56,7 @@ def render_ai_questions_page() -> None:
             difficulty = col3.selectbox("Difficulty", DIFFICULTIES, index=2)
             answer_format = col4.selectbox("Answer format", FORMATS, format_func=str.title)
             prompt_style = col5.selectbox("Question style", STYLES, format_func=str.title)
-            method = st.selectbox("Coding language", LANGUAGES) if answer_format == "coding" else None
+            method = st.selectbox("Coding language", LANGUAGES, format_func=method_label) if answer_format == "coding" else None
             web_enabled = st.toggle(
                 "Web research", value=False, disabled=source_mode == "local",
                 help="Used only when local references cannot cover an AI-generated question.",

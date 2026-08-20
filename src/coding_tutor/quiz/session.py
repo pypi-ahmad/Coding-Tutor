@@ -7,11 +7,7 @@ from typing import Any, Optional
 
 import streamlit as st
 
-
-METHODS_BY_QUESTION_TYPE = {
-    "algorithm": ("python",),
-    "data_analysis": ("sql", "pandas", "pyspark", "polars"),
-}
+from coding_tutor.methods import METHODS_BY_QUESTION_TYPE
 
 _DEFAULT_STATE = {
     "initialized": True,

@@ -15,7 +15,10 @@ def test_get_current_question_returns_none_initially():
 def test_starter_templates_exist_for_all_methods():
     """All method templates must be non-empty strings."""
     from coding_tutor.quiz.templates import get_editor_template
-    for method in ("python", "sql", "pandas", "pyspark", "polars"):
+    for method in (
+        "python", "javascript/typescript", "java", "cpp",
+        "sql", "pandas", "pyspark", "polars",
+    ):
         template = get_editor_template(method)
         assert template.strip(), f"Template for {method} must not be empty"
     assert get_editor_template("sql").lstrip().startswith("--")
@@ -25,15 +28,10 @@ def test_starter_templates_exist_for_all_methods():
 
 
 def test_supported_methods_algorithm():
-    from coding_tutor.database.connection import get_test_db
-    conn = get_test_db()
-    conn.execute(
-        """INSERT INTO questions (title, question_type, difficulty, problem_statement, supported_methods)
-           VALUES ('Test', 'algorithm', 'Easy', 'stmt', '["python"]')"""
-    )
-    row = conn.execute("SELECT supported_methods FROM questions LIMIT 1").fetchone()
-    methods = json.loads(row[0])
-    assert methods == ["python"]
+    from coding_tutor.dataset.catalog import SPECS_BY_KEY
+    from coding_tutor.methods import ALGORITHM_METHODS
+
+    assert SPECS_BY_KEY["leetcode"].supported_methods == ALGORITHM_METHODS
 
 
 def test_supported_methods_data_analysis():
@@ -286,12 +284,12 @@ def test_app_source_control_and_conditional_topic(monkeypatch):
     method = next(widget for widget in app.selectbox if widget.label == "Language or method")
     assert question_type.options == ["Algorithm", "Data Analysis"]
     assert difficulty.options == ["Beginner", "Easy", "Medium", "Hard", "Very Hard"]
-    assert method.options == ["PYTHON"]
+    assert method.options == ["Python", "JavaScript/TypeScript", "Java", "C++"]
 
     question_type.set_value("data_analysis").run()
     assert not app.exception
     method = next(widget for widget in app.selectbox if widget.label == "Language or method")
-    assert method.options == ["SQL", "PANDAS", "PYSPARK", "POLARS"]
+    assert method.options == ["SQL", "Pandas", "PySpark", "Polars"]
     assert not any(button.label == "Build question catalog" for button in app.button)
     assert not any(widget.label == "Learning mode" for widget in app.segmented_control)
     assert app.session_state["question_source"] == "ai_generated"
@@ -324,7 +322,7 @@ def test_data_analysis_profile_is_fixed_to_ai_generation(monkeypatch):
     assert not any(control.label == "Learning mode" for control in app.segmented_control)
     assert not any(control.label == "Question type" for control in app.selectbox)
     method = next(control for control in app.selectbox if control.label == "Language or method")
-    assert method.options == ["SQL", "PANDAS", "PYSPARK", "POLARS"]
+    assert method.options == ["SQL", "Pandas", "PySpark", "Polars"]
     assert app.session_state["question_type"] == "data_analysis"
     assert app.session_state["question_source"] == "ai_generated"
 

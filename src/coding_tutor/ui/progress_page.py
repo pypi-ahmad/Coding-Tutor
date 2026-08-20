@@ -4,6 +4,8 @@ import os
 import pandas as pd
 import streamlit as st
 
+from coding_tutor.methods import ALL_METHODS, method_label
+
 from coding_tutor.catalog import database_for_question_type, interview_database
 from coding_tutor.database.connection import get_db
 from coding_tutor.database.progress import (
@@ -124,7 +126,8 @@ def render_progress_page():
         )
     with col_f3:
         method_filter = st.selectbox(
-            "Method", ["All", "python", "sql", "pandas", "pyspark", "polars"]
+            "Method", ["All", *sorted(ALL_METHODS)],
+            format_func=lambda value: value if value == "All" else method_label(value),
         )
     filters = {
         "question_type": qt_filter,

@@ -5,13 +5,10 @@ import streamlit as st
 
 from coding_tutor.catalog import CatalogProfile, get_catalog_profile
 from coding_tutor.database.connection import get_db
+from coding_tutor.methods import METHODS_BY_QUESTION_TYPE, method_label
 from coding_tutor.providers.config import get_models_for_provider
 from coding_tutor.providers.registry import PROVIDERS, PROVIDER_DISPLAY_NAMES
-from coding_tutor.quiz.session import (
-    METHODS_BY_QUESTION_TYPE,
-    request_learning_change,
-    resolve_pending_learning_change,
-)
+from coding_tutor.quiz.session import request_learning_change, resolve_pending_learning_change
 
 QUESTION_TYPES = ["algorithm", "data_analysis"]
 DIFFICULTIES = ["Beginner", "Easy", "Medium", "Hard", "Very Hard"]
@@ -169,7 +166,7 @@ def render_sidebar(profile: CatalogProfile | None = None):
             st.session_state["method_control"] = candidate if candidate in methods else methods[0]
         method = st.session_state.get("method", methods[0])
         st.selectbox(
-            "Language or method", methods, format_func=str.upper,
+            "Language or method", methods, format_func=method_label,
             key="method_control", on_change=_on_method_change,
         )
         method = st.session_state.get("method", methods[0])

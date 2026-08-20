@@ -6,6 +6,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import MutableMapping, Any
 
+from coding_tutor.methods import METHODS_BY_QUESTION_TYPE
+
 
 @dataclass(frozen=True)
 class CatalogProfile:
@@ -40,12 +42,6 @@ _PROFILES = {
     ),
 }
 
-_METHODS = {
-    "algorithm": ("python",),
-    "data_analysis": ("sql", "pandas", "pyspark", "polars"),
-}
-
-
 def get_catalog_profile(value: str | None = None) -> CatalogProfile:
     key = value or os.environ.get("CODING_TUTOR_CATALOG", "all")
     try:
@@ -78,7 +74,7 @@ def apply_catalog_profile(
     if state.get("question_source") not in profile.learning_modes:
         state["question_source"] = profile.learning_modes[0]
 
-    methods = _METHODS[question_type]
+    methods = METHODS_BY_QUESTION_TYPE[question_type]
     method = state.get("method")
     if method not in methods:
         method = methods[0]

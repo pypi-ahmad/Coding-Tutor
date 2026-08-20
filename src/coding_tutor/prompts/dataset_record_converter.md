@@ -39,7 +39,7 @@ Return this JSON structure:
 }
 
 Classification rules:
-- Use `algorithm` for programming tasks that can be answered through Python code.
+- Use `algorithm` for programming tasks that can be answered through code.
 - Use `data_analysis` only when the record has, or is supplied with, a usable schema, fixture data, and expected result.
 - A SQL query plus only `CREATE TABLE` statements is incomplete for a multi-method data-analysis task because it lacks actual fixture data.
 - Do not classify based only on folder name.

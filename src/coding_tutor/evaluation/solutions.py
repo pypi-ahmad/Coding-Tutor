@@ -8,13 +8,14 @@ from enum import Enum
 from typing import Any
 
 from coding_tutor.database.connection import get_db
+from coding_tutor.methods import ALL_METHODS, comment_tokens
 from coding_tutor.prompts import load_prompt, render_prompt
 from coding_tutor.providers.base import ChatMessage, ModelOption
 from coding_tutor.providers.config import get_models_for_provider
 from coding_tutor.providers.registry import get_provider
 
 PROMPT_VERSION = "solution-v2"
-METHODS = {"python", "sql", "pandas", "pyspark", "polars"}
+METHODS = ALL_METHODS
 
 
 class SolutionFailure(str, Enum):
@@ -185,8 +186,7 @@ def _validate_payload(data: Any, method: str, question_type: str | None):
         if title.casefold() in titles:
             raise ValueError("duplicate title")
         titles.add(title.casefold())
-        comment_tokens = ("--", "/*") if method == "sql" else ("#", "'''", '\"\"\"')
-        if not any(token in code for token in comment_tokens):
+        if not any(token in code for token in comment_tokens(method)):
             raise ValueError("comments")
         solutions.append(TeachingSolution(
             title, code, _text(item["explanation"], "explanation", 4000),

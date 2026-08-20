@@ -8,9 +8,10 @@ import streamlit as st
 from coding_tutor.interview.ai import draft_blueprint
 from coding_tutor.interview.documents import DocumentError, extract_document
 from coding_tutor.interview import service
+from coding_tutor.methods import INTERVIEW_LANGUAGES, method_label
 
 DURATIONS = [30, 45, 60, 90]
-LANGUAGES = ["python", "javascript/typescript", "java", "cpp", "sql"]
+LANGUAGES = list(INTERVIEW_LANGUAGES)
 FORMATS = ["theory", "coding", "mcq"]
 
 
@@ -101,7 +102,10 @@ def _review_plan(draft: dict) -> None:
         )
         topics_text = st.text_area("Topics", value=", ".join(blueprint.get("topics") or ["RAG", "LLMs"]))
         formats = st.pills("Answer formats", FORMATS, default=suggested_formats, selection_mode="multi")
-        languages = st.pills("Coding languages", LANGUAGES, default=suggested_languages, selection_mode="multi")
+        languages = st.pills(
+            "Coding languages", LANGUAGES, default=suggested_languages,
+            selection_mode="multi", format_func=method_label,
+        )
         duration = st.segmented_control("Time window", DURATIONS, default=45, format_func=lambda x: f"{x} min", required=True)
         source_mode = st.segmented_control(
             "Question source", ["local", "ai", "mixed"], default="mixed", required=True,

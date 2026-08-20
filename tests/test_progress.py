@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from contextlib import nullcontext
+import json
 
 import duckdb
 import pytest
@@ -161,10 +162,40 @@ def test_v4_migration_preserves_legacy_attempt(monkeypatch):
         [question_id],
     )
     migrations.run_migrations(conn)
-    assert migrations.get_schema_version(conn) == 7
+    assert migrations.get_schema_version(conn) == 8
     assert conn.execute(
         "SELECT submitted_code, deterministic_test_result FROM attempts"
     ).fetchone() == ("keep me", "not_run")
+
+
+def test_v8_migration_expands_only_curated_algorithm_languages():
+    import coding_tutor.database.migrations as migrations
+    from coding_tutor.database.schema import SCHEMA_SQL
+    from coding_tutor.methods import ALGORITHM_METHODS
+
+    conn = duckdb.connect(":memory:")
+    conn.execute(SCHEMA_SQL)
+    conn.executemany(
+        "INSERT INTO schema_versions (version, description) VALUES (?, 'legacy')",
+        [(version,) for version in range(1, 8)],
+    )
+    conn.execute(
+        """INSERT INTO questions
+               (title, question_type, difficulty, problem_statement,
+                supported_methods, is_ai_generated)
+           VALUES ('Curated', 'algorithm', 'Easy', 'Solve it.', '["python"]', false),
+                  ('Generated', 'algorithm', 'Easy', 'Solve it.', '["python"]', true)"""
+    )
+
+    migrations.run_migrations(conn)
+
+    rows = conn.execute(
+        "SELECT title, supported_methods FROM questions ORDER BY title"
+    ).fetchall()
+    assert rows == [
+        ("Curated", json.dumps(list(ALGORITHM_METHODS), separators=(",", ":"))),
+        ("Generated", '["python"]'),
+    ]
 
 
 def test_failed_migration_rolls_back_schema_and_version(monkeypatch):

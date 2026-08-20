@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import uuid
 from coding_tutor.database.connection import get_db
+from coding_tutor.methods import ALL_METHODS
 
 
 def create_attempt(
@@ -48,7 +49,7 @@ def record_solution_method(
     question_id: str, attempt_id: str | None, method: str, view_id: str | None = None
 ) -> str:
     """Record one panel opening and append each actually displayed method once."""
-    if method not in {"python", "sql", "pandas", "pyspark", "polars"}:
+    if method not in ALL_METHODS:
         raise ValueError("Unsupported solution method")
     conn = get_db()
     linked_attempt = None

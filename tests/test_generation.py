@@ -16,12 +16,12 @@ VALID_ALGORITHM = {
     "constraints": "0 <= nums.length <= 100",
     "difficulty": "Easy",
     "tags": ["Array"],
-    "starter_code_python": "class Solution:\n    def solve(self, nums):\n        pass",
+    "starter_code": "class Solution:\n    def solve(self, nums):\n        pass",
     "test_cases": [
         {"input": {"nums": [1, 2, 3]}, "expected_output": 6},
         {"input": {"nums": []}, "expected_output": 0},
     ],
-    "reference_solution_python": (
+    "reference_solution": (
         "class Solution:\n    def solve(self, nums):\n        return sum(nums)"
     ),
 }
@@ -201,7 +201,7 @@ def test_generate_algorithm_sends_selections_and_saves_provenance(monkeypatch):
     ).fetchone()
     assert generated[:2] == ("agnes", "agnes-2.5-flash")
     assert generated[2] is True
-    assert generated[3] == "v4"
+    assert generated[3] == "v5"
     assert json.loads(generated[4]) == {
         "prompt_template": "algorithm_question",
         "question_type": "algorithm",
@@ -216,6 +216,31 @@ def test_generate_algorithm_sends_selections_and_saves_provenance(monkeypatch):
     assert all(value in prompt for value in ["algorithm", "Easy", "python", "arrays"])
     assert prompt.startswith("Generate one new algorithm practice question.")
     assert call.kwargs["system_prompt"] == load_prompt("shared_rules.md")
+
+
+def test_generate_javascript_algorithm_saves_only_selected_language(monkeypatch):
+    data = {**VALID_ALGORITHM}
+    data["starter_code"] = "function solve(nums) {\n  // TODO\n}"
+    data["reference_solution"] = "function solve(nums) {\n  return nums.reduce((a, b) => a + b, 0);\n}"
+    result, conn, _, _ = _generate(
+        monkeypatch, json.dumps(data), method="javascript/typescript"
+    )
+
+    assert result.ok
+    methods = json.loads(conn.execute(
+        "SELECT supported_methods FROM questions WHERE id=?", [result.question_id]
+    ).fetchone()[0])
+    starter = conn.execute(
+        "SELECT method, content FROM question_assets WHERE question_id=?",
+        [result.question_id],
+    ).fetchone()
+    solution = conn.execute(
+        "SELECT method, language FROM reference_solutions WHERE question_id=?",
+        [result.question_id],
+    ).fetchone()
+    assert methods == ["javascript/typescript"]
+    assert starter == ("javascript/typescript", data["starter_code"])
+    assert solution == ("javascript/typescript", "javascript")
 
 
 def test_generate_uses_bounded_catalog_context_and_records_provenance(monkeypatch):

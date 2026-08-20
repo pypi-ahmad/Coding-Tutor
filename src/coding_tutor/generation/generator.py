@@ -7,13 +7,11 @@ import re
 from dataclasses import dataclass
 from enum import Enum
 
+from coding_tutor.methods import METHODS_BY_QUESTION_TYPE, syntax_language
 
 logger = logging.getLogger(__name__)
 
-QUESTION_METHODS = {
-    "algorithm": ("python",),
-    "data_analysis": ("sql", "pandas", "pyspark", "polars"),
-}
+QUESTION_METHODS = METHODS_BY_QUESTION_TYPE
 VALID_DIFFICULTIES = {"Beginner", "Easy", "Medium", "Hard", "Very Hard"}
 MAX_TOPIC_LENGTH = 100
 
@@ -211,7 +209,10 @@ def _save_generated_question(
     conn = get_db()
     conn.execute("BEGIN TRANSACTION")
     try:
-        supported_methods = list(QUESTION_METHODS[question_type])
+        supported_methods = (
+            [method] if question_type == "algorithm"
+            else list(QUESTION_METHODS[question_type])
+        )
         q_row = conn.execute(
             """INSERT INTO questions
                    (title, question_type, difficulty, problem_statement, constraints,
@@ -231,7 +232,7 @@ def _save_generated_question(
         q_id = str(q_row[0])
 
         if question_type == "algorithm":
-            _save_algorithm_assets(conn, q_id, data)
+            _save_algorithm_assets(conn, q_id, data, method)
             prompt_template = "algorithm_question"
         else:
             _save_data_analysis_assets(conn, q_id, data)
@@ -274,20 +275,20 @@ def _save_generated_question(
         raise
 
 
-def _save_algorithm_assets(conn, q_id: str, data: dict) -> None:
+def _save_algorithm_assets(conn, q_id: str, data: dict, method: str) -> None:
     conn.execute(
         """INSERT INTO question_assets (question_id, asset_type, method, content)
-           VALUES (?, 'starter_code', 'python', ?)""",
-        [q_id, data["starter_code_python"]],
+           VALUES (?, 'starter_code', ?, ?)""",
+        [q_id, method, data["starter_code"]],
     )
 
-    reference = data.get("reference_solution_python")
+    reference = data.get("reference_solution")
     if reference:
         conn.execute(
             """INSERT INTO reference_solutions
                    (question_id, method, code, language, is_from_dataset)
-               VALUES (?, 'python', ?, 'python', false)""",
-            [q_id, reference],
+               VALUES (?, ?, ?, ?, false)""",
+            [q_id, method, reference, syntax_language(method)],
         )
 
     for test_case in data["test_cases"]:
@@ -330,7 +331,7 @@ def _save_data_analysis_assets(conn, q_id: str, data: dict) -> None:
                VALUES (?, 'starter_code', ?, ?)""",
             [q_id, method, data["starter_code"][method]],
         )
-        language = "sql" if method == "sql" else "python"
+        language = syntax_language(method)
         conn.execute(
             """INSERT INTO reference_solutions
                    (question_id, method, code, language, is_from_dataset)

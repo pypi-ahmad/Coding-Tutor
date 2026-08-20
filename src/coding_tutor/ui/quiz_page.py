@@ -5,6 +5,8 @@ import json
 
 import streamlit as st
 
+from coding_tutor.methods import syntax_language
+
 from coding_tutor.quiz import persistence
 from coding_tutor.quiz.service import QuizError, evaluate_quiz, retry_preparation, start_quiz
 
@@ -155,7 +157,10 @@ def _render_completed(attempt: dict, items: list[dict]) -> None:
                 st.success(f"Correct answer: {options.get(item['correct_option_id'], item['correct_option_id'])}")
                 st.info(item.get("explanation") or "No explanation was provided.")
             else:
-                st.code(item.get("answer_text") or "# Unanswered", language="sql" if item["method"] == "sql" else "python")
+                st.code(
+                    item.get("answer_text") or "// Unanswered",
+                    language=syntax_language(item["method"]),
+                )
                 feedback = item.get("ai_feedback")
                 if isinstance(feedback, str):
                     try:
