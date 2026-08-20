@@ -66,6 +66,8 @@ def generate_question(
     )
     from coding_tutor.providers.base import ChatMessage
     from coding_tutor.providers.registry import get_provider
+    from coding_tutor.database.connection import get_db
+    from coding_tutor.generation.context import load_generation_context
 
     if question_type not in QUESTION_METHODS:
         return _failed(GenerationFailure.INVALID_SELECTION, "Unsupported question type.")
@@ -99,12 +101,20 @@ def generate_question(
     if not provider.is_configured():
         return _failed(GenerationFailure.PROVIDER_UNAVAILABLE)
 
+    try:
+        references = load_generation_context(
+            get_db(), question_type, difficulty, topic,
+        )
+    except Exception as exc:
+        logger.warning("Generation context unavailable (%s)", type(exc).__name__)
+        references = []
+
     if question_type == "algorithm":
         system_prompt = ALGORITHM_SYSTEM_PROMPT
-        user_content = build_algorithm_user_prompt(difficulty, method, topic)
+        user_content = build_algorithm_user_prompt(difficulty, method, topic, references)
     else:
         system_prompt = DATA_ANALYSIS_SYSTEM_PROMPT
-        user_content = build_data_analysis_user_prompt(difficulty, method, topic)
+        user_content = build_data_analysis_user_prompt(difficulty, method, topic, references)
 
     try:
         response = provider.chat(
@@ -138,6 +148,7 @@ def generate_question(
             model,
             provider_name,
             PROMPT_VERSION,
+            references,
         )
     except Exception as exc:
         logger.error("Generated question persistence failed (%s)", type(exc).__name__)
@@ -173,6 +184,7 @@ def _save_generated_question(
     model,
     provider_name: str,
     prompt_version: str,
+    references: list[dict],
 ) -> str:
     from coding_tutor.database.connection import get_db
 
@@ -221,6 +233,13 @@ def _save_generated_question(
                         "difficulty": data["difficulty"],
                         "method": method,
                         "topic": topic,
+                        "context_sources": [
+                            {
+                                "question_id": reference["question_id"],
+                                "dataset_name": reference["dataset_name"],
+                            }
+                            for reference in references
+                        ],
                     }
                 ),
             ],

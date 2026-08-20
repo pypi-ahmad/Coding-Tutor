@@ -92,7 +92,9 @@ def _generate(monkeypatch, content, **overrides):
     import coding_tutor.database.connection as connection
     from coding_tutor.generation.generator import generate_question
 
+    seed_context = overrides.pop("seed_context", None)
     conn = get_test_db()
+    context_id = seed_context(conn) if seed_context else None
     monkeypatch.setattr(connection, "get_db", lambda: conn)
     provider = _mock_provider(content)
     arguments = {
@@ -106,7 +108,26 @@ def _generate(monkeypatch, content, **overrides):
     arguments.update(overrides)
     with patch("coding_tutor.providers.registry.get_provider", return_value=provider):
         result = generate_question(**arguments)
-    return result, conn, provider
+    return result, conn, provider, context_id
+
+
+def _seed_algorithm_context(conn):
+    source_id = conn.execute(
+        """INSERT INTO question_sources
+               (dataset_name, source_key, source_file, attribution)
+           VALUES ('TACO', 'taco-arrays', 'algorithm/taco.parquet', 'TACO')
+           RETURNING id"""
+    ).fetchone()[0]
+    return str(conn.execute(
+        """INSERT INTO questions
+               (title, question_type, difficulty, problem_statement, supported_methods,
+                tags, source_id, is_ai_generated, is_complete)
+           VALUES ('Array rotation', 'algorithm', 'Easy',
+                   'Rotate an array without changing its length.', '["python"]',
+                   '["arrays"]', ?, false, true)
+           RETURNING id""",
+        [source_id],
+    ).fetchone()[0])
 
 
 def test_validate_algorithm_question_requires_requested_type_and_difficulty():
@@ -164,7 +185,7 @@ def test_validate_data_analysis_question_rejects_incomplete_content(change, mess
 def test_generate_algorithm_sends_selections_and_saves_provenance(monkeypatch):
     from coding_tutor.prompts import load_prompt
 
-    result, conn, provider = _generate(monkeypatch, json.dumps(VALID_ALGORITHM))
+    result, conn, provider, _ = _generate(monkeypatch, json.dumps(VALID_ALGORITHM))
 
     assert result.ok
     question = conn.execute(
@@ -180,13 +201,14 @@ def test_generate_algorithm_sends_selections_and_saves_provenance(monkeypatch):
     ).fetchone()
     assert generated[:2] == ("agnes", "agnes-2.5-flash")
     assert generated[2] is True
-    assert generated[3] == "v3"
+    assert generated[3] == "v4"
     assert json.loads(generated[4]) == {
         "prompt_template": "algorithm_question",
         "question_type": "algorithm",
         "difficulty": "Easy",
         "method": "python",
         "topic": "arrays",
+        "context_sources": [],
     }
 
     call = provider.chat.call_args
@@ -196,8 +218,76 @@ def test_generate_algorithm_sends_selections_and_saves_provenance(monkeypatch):
     assert call.kwargs["system_prompt"] == load_prompt("shared_rules.md")
 
 
+def test_generate_uses_bounded_catalog_context_and_records_provenance(monkeypatch):
+    result, conn, provider, context_id = _generate(
+        monkeypatch,
+        json.dumps(VALID_ALGORITHM),
+        seed_context=_seed_algorithm_context,
+    )
+
+    assert result.ok
+    prompt = provider.chat.call_args.kwargs["messages"][0].content
+    assert "<reference_examples>" in prompt
+    assert "Array rotation" in prompt
+    assert "TACO" not in prompt
+    assert len(prompt) < 20_000
+
+    metadata = json.loads(conn.execute(
+        "SELECT generation_metadata FROM ai_generated_questions WHERE question_id = ?",
+        [result.question_id],
+    ).fetchone()[0])
+    assert metadata["context_sources"] == [
+        {"question_id": context_id, "dataset_name": "TACO"}
+    ]
+
+
+def test_data_analysis_context_includes_incomplete_reference_assets():
+    from coding_tutor.database.connection import get_test_db
+    from coding_tutor.generation.context import load_generation_context
+
+    conn = get_test_db()
+    source_id = conn.execute(
+        """INSERT INTO question_sources
+               (dataset_name, source_key, source_file, attribution)
+           VALUES ('sql-create-context', 'sql-aggregation', 'data/sql.json', 'SQL context')
+           RETURNING id"""
+    ).fetchone()[0]
+    question_id = conn.execute(
+        """INSERT INTO questions
+               (title, question_type, difficulty, problem_statement, supported_methods,
+                source_id, is_ai_generated, is_complete)
+           VALUES ('Department totals', 'data_analysis', 'Easy',
+                   'Aggregate salary by department.',
+                   '["sql", "pandas", "pyspark", "polars"]', ?, false, false)
+           RETURNING id""",
+        [source_id],
+    ).fetchone()[0]
+    conn.execute(
+        """INSERT INTO question_assets
+               (question_id, asset_type, content, content_type)
+           VALUES (?, 'schema', 'CREATE TABLE emp(dept TEXT, salary INT);', 'sql')""",
+        [question_id],
+    )
+    conn.execute(
+        """INSERT INTO reference_solutions
+               (question_id, method, code, language)
+           VALUES (?, 'sql', 'SELECT dept, SUM(salary) FROM emp GROUP BY dept', 'sql')""",
+        [question_id],
+    )
+
+    context = load_generation_context(
+        conn, "data_analysis", "Easy", "aggregation"
+    )
+
+    assert len(context) == 1
+    assert context[0]["question_id"] == str(question_id)
+    assert context[0]["schema_sql"].startswith("CREATE TABLE")
+    assert context[0]["reference_solution"].startswith("SELECT dept")
+    assert context[0]["is_complete"] is False
+
+
 def test_generate_data_analysis_saves_all_method_assets(monkeypatch):
-    result, conn, provider = _generate(
+    result, conn, provider, _ = _generate(
         monkeypatch,
         json.dumps(VALID_DATA_ANALYSIS),
         question_type="data_analysis",
@@ -248,7 +338,7 @@ def test_generate_data_analysis_saves_all_method_assets(monkeypatch):
     ],
 )
 def test_invalid_provider_content_is_not_saved(monkeypatch, content, failure):
-    result, conn, _ = _generate(monkeypatch, content)
+    result, conn, _, _ = _generate(monkeypatch, content)
 
     assert not result.ok
     assert result.failure.value == failure
@@ -258,7 +348,7 @@ def test_invalid_provider_content_is_not_saved(monkeypatch, content, failure):
 
 def test_complete_fenced_json_is_accepted(monkeypatch):
     content = f"```json\n{json.dumps(VALID_ALGORITHM)}\n```"
-    result, _, _ = _generate(monkeypatch, content)
+    result, _, _, _ = _generate(monkeypatch, content)
     assert result.ok
 
 
