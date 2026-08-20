@@ -1,0 +1,58 @@
+flowchart TB
+    invoke(["/code-walkthrough target"])
+    interpret["Interpret target<br/>feature, behavior, function, or file"]
+    locate["Locate verified entry point<br/>file · line · symbol · trigger · input"]
+    read["Read entry-point implementation"]
+    trace["Trace each outgoing call"]
+    source{"Implementation read?"}
+    inspect["Open the called file<br/>and read the actual implementation"]
+    explain["Record purpose, inputs, outputs,<br/>transformations, calls, and errors"]
+    branch{"Meaningful branch?"}
+    paths["Trace every relevant path"]
+    more{"More calls in scope?"}
+    implicit["Inspect middleware, decorators,<br/>hooks, listeners, and framework dispatch"]
+    assemble["Assemble ordered walkthrough"]
+    complete(["Evidence-backed walkthrough"])
+
+    invoke --> interpret --> locate --> read --> trace --> source
+    source -->|No| inspect --> explain
+    source -->|Yes| explain
+    explain --> branch
+    branch -->|Yes| paths --> more
+    branch -->|No| more
+    more -->|Yes| trace
+    more -->|No| implicit --> assemble --> complete
+
+    subgraph tracking[Track throughout the trace]
+        direction LR
+        data["Data shape<br/>request → DTO → model → row → response"]
+        effects["Side effects<br/>DB · APIs · files · events · logs"]
+        failures["Failure behavior<br/>exceptions · early returns · recovery"]
+    end
+
+    explain -. update .-> data
+    explain -. update .-> effects
+    explain -. update .-> failures
+
+    subgraph output[Walkthrough output]
+        direction LR
+        overview["Overview and entry point"]
+        flow["Flow diagram and numbered trace"]
+        files["Key files with line numbers"]
+        summary["Data flow and side effects"]
+    end
+
+    assemble --> overview
+    assemble --> flow
+    assemble --> files
+    assemble --> summary
+
+    classDef terminal fill:#0f766e,stroke:#134e4a,color:#ffffff,stroke-width:2px
+    classDef process fill:#e0f2fe,stroke:#0369a1,color:#0c4a6e
+    classDef decision fill:#fef3c7,stroke:#d97706,color:#78350f
+    classDef evidence fill:#ede9fe,stroke:#7c3aed,color:#4c1d95
+
+    class invoke,complete terminal
+    class interpret,locate,read,trace,inspect,explain,paths,implicit,assemble process
+    class source,branch,more decision
+    class data,effects,failures,overview,flow,files,summary evidence

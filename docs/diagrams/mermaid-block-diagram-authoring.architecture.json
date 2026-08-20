@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Mermaid Block Diagram Authoring Map",
+    "subtitle": "Author-controlled placement through columns, spans, nested blocks, explicit spacing, connectors, and styles",
+    "animation": "none",
+    "visual_preset": "blueprint",
+    "quality_profile": "showcase",
+    "viewBox": [960, 930]
+  },
+  "components": [
+    {
+      "id": "block_diagram",
+      "type": "backend",
+      "label": "Block Diagram",
+      "sublabel": "manual layout control",
+      "pos": [400, 245],
+      "size": [160, 72]
+    },
+    {
+      "id": "columns",
+      "type": "database",
+      "label": "Columns",
+      "sublabel": "define the placement grid",
+      "pos": [80, 75],
+      "size": [175, 72]
+    },
+    {
+      "id": "spans",
+      "type": "cloud",
+      "label": "Column Spans",
+      "sublabel": "block:N and space:N",
+      "pos": [80, 410],
+      "size": [175, 72]
+    },
+    {
+      "id": "composite",
+      "type": "security",
+      "label": "Composite Blocks",
+      "sublabel": "nested layout boundary",
+      "pos": [400, 75],
+      "size": [160, 72]
+    },
+    {
+      "id": "shapes",
+      "type": "frontend",
+      "label": "Block Shapes",
+      "sublabel": "semantic geometry",
+      "pos": [705, 75],
+      "size": [175, 72]
+    },
+    {
+      "id": "connectors",
+      "type": "messagebus",
+      "label": "Connectors",
+      "sublabel": "edges + block arrows",
+      "pos": [705, 245],
+      "size": [175, 72]
+    },
+    {
+      "id": "spacing",
+      "type": "external",
+      "label": "Space Blocks",
+      "sublabel": "intentional empty cells",
+      "pos": [705, 410],
+      "size": [175, 72]
+    },
+    {
+      "id": "styling",
+      "type": "frontend",
+      "label": "Styling",
+      "sublabel": "style + classDef",
+      "pos": [400, 535],
+      "size": [160, 72]
+    }
+  ],
+  "connections": [
+    { "id": "block_columns", "from": "block_diagram", "to": "columns", "variant": "emphasis" },
+    { "id": "block_spans", "from": "block_diagram", "to": "spans" },
+    { "id": "block_composite", "from": "block_diagram", "to": "composite", "variant": "security" },
+    { "id": "block_shapes", "from": "block_diagram", "to": "shapes" },
+    { "id": "block_connectors", "from": "block_diagram", "to": "connectors", "variant": "emphasis" },
+    { "id": "block_spacing", "from": "block_diagram", "to": "spacing", "variant": "dashed" },
+    { "id": "block_styling", "from": "block_diagram", "to": "styling" }
+  ],
+  "cards": [
+    {
+      "dot": "violet",
+      "title": "Placement Model",
+      "items": [
+        "The author chooses the number of columns",
+        "Blocks fill cells in declaration order and wrap into new rows",
+        "A numeric suffix spans multiple columns",
+        "Column width follows the widest content in that column"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Composition",
+      "items": [
+        "Composite blocks contain their own blocks and column definition",
+        "One-column composites create vertical stacks",
+        "Space blocks reserve empty cells without adding visible content"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Visual Vocabulary",
+      "items": [
+        "Rectangles, rounded blocks, stadiums, subroutines, cylinders, circles, decisions, and more",
+        "Block arrows show right, left, up, down, or compound direction",
+        "Edges may be directed, open, or labeled"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Maintenance Rules",
+      "items": [
+        "Use classes for repeated styling and style for isolated emphasis",
+        "Keep complex diagrams modular with nested blocks",
+        "Use comments to explain non-obvious placement",
+        "Incorrect links or malformed CSS property syntax can break rendering"
+      ]
+    }
+  ]
+}

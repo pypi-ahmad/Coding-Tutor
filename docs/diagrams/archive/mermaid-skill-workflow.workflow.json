@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Mermaid Diagram Skill Workflow",
+    "subtitle": "Understand, generate, save, validate, repair, optionally render, and report",
+    "visual_preset": "signal-flow",
+    "quality_profile": "showcase",
+    "viewBox": [920, 760]
+  },
+  "lanes": [
+    { "id": "authoring", "label": "Diagram Authoring" },
+    { "id": "validation", "label": "CLI Validation" },
+    { "id": "repair", "label": "Error Recovery", "variant": "exception" },
+    { "id": "delivery", "label": "Output and Delivery" }
+  ],
+  "phases": [
+    { "id": "interpret", "label": "Interpret", "fromCol": 0, "toCol": 0 },
+    { "id": "compose", "label": "Compose", "fromCol": 1, "toCol": 2, "variant": "emphasis" },
+    { "id": "verify", "label": "Verify", "fromCol": 3, "toCol": 4, "variant": "security" },
+    { "id": "deliver", "label": "Deliver", "fromCol": 5, "toCol": 5, "variant": "dashed" }
+  ],
+  "mainPath": ["understand", "generate", "save", "validate", "report"],
+  "nodes": [
+    { "id": "understand", "lane": "authoring", "col": 0, "type": "external", "label": "Interpret", "sublabel": "type and intent", "width": 72 },
+    { "id": "generate", "lane": "authoring", "col": 1, "type": "backend", "label": "Build", "sublabel": "valid syntax", "width": 52 },
+    { "id": "save", "lane": "authoring", "col": 2, "type": "database", "label": "Save", "sublabel": "kebab-case", "width": 52 },
+    { "id": "validate", "lane": "validation", "col": 3, "type": "security", "label": "Validate", "sublabel": "run mmdc", "width": 72 },
+    { "id": "fix", "lane": "repair", "col": 4, "type": "messagebus", "label": "Fix", "sublabel": "repair", "width": 36 },
+    { "id": "report", "lane": "validation", "col": 5, "type": "frontend", "label": "Report", "sublabel": "paths and status", "width": 72 }
+  ],
+  "edges": [
+    { "id": "understand-generate", "from": "understand", "to": "generate", "role": "main", "variant": "emphasis" },
+    { "id": "generate-save", "from": "generate", "to": "save", "role": "main", "variant": "emphasis" },
+    { "id": "save-validate", "from": "save", "to": "validate", "role": "main", "variant": "security" },
+    { "id": "validate-report", "from": "validate", "to": "report", "role": "main", "variant": "emphasis", "route": "straight" },
+    { "id": "validate-fix", "from": "validate", "to": "fix", "role": "error", "variant": "security", "route": "drop" },
+    { "id": "fix-retry", "from": "fix", "to": "validate", "role": "return", "variant": "dashed", "route": "return-left" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Authoring inputs",
+      "items": [
+        "Choose the diagram grammar that matches the requested relationship.",
+        "Extract entities, hierarchy, flow, and meaningful branches.",
+        "Load only the relevant syntax example or template."
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Readable source",
+      "items": [
+        "Use meaningful identifiers and concise labels.",
+        "Group related elements and keep one consistent direction.",
+        "Split diagrams that become too dense to scan."
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Validation loop",
+      "items": [
+        "Always run mmdc against the saved .mmd source.",
+        "Fix the reported syntax issue and validate again.",
+        "Do not present an artifact as valid until the command succeeds."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Delivery contract",
+      "items": [
+        "Return the source path and successful validation status.",
+        "Render SVG by default only when a preview or image is requested.",
+        "Include the rendered path when an output image was produced."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,162 @@
+{
+  "schema_version": 1,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Mermaid Class Diagram Authoring Map",
+    "subtitle": "Build a static structure model from class declarations through members, relationships, grouping, and presentation",
+    "animation": "none",
+    "visual_preset": "blueprint",
+    "quality_profile": "showcase",
+    "viewBox": [780, 1220]
+  },
+  "lanes": [
+    { "id": "declaration", "label": "Declaration" },
+    { "id": "layout", "label": "Layout" },
+    { "id": "structure", "label": "Class Structure" },
+    { "id": "members", "label": "Members" },
+    { "id": "metadata", "label": "Metadata" },
+    { "id": "relations", "label": "Relationships" },
+    { "id": "grouping", "label": "Grouping" },
+    { "id": "presentation", "label": "Presentation" },
+    { "id": "output", "label": "Rendered Model" }
+  ],
+  "phases": [
+    { "id": "foundation", "label": "Foundation", "fromCol": 0, "toCol": 1 },
+    { "id": "model", "label": "Model classes", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "connect", "label": "Connect + present", "fromCol": 4, "toCol": 5, "variant": "dashed" }
+  ],
+  "mainPath": [
+    "declare",
+    "direction",
+    "classes",
+    "members",
+    "annotations",
+    "relationships",
+    "namespaces",
+    "presentation",
+    "render"
+  ],
+  "nodes": [
+    {
+      "id": "declare",
+      "lane": "declaration",
+      "col": 0,
+      "type": "frontend",
+      "label": "Declare",
+      "sublabel": "classDiagram"
+    },
+    {
+      "id": "direction",
+      "lane": "layout",
+      "col": 1,
+      "type": "backend",
+      "label": "Direction",
+      "sublabel": "TB · BT · LR · RL"
+    },
+    {
+      "id": "classes",
+      "lane": "structure",
+      "col": 2,
+      "type": "database",
+      "label": "Classes",
+      "sublabel": "names + labels"
+    },
+    {
+      "id": "members",
+      "lane": "members",
+      "col": 3,
+      "type": "backend",
+      "label": "Members",
+      "sublabel": "fields + methods"
+    },
+    {
+      "id": "annotations",
+      "lane": "metadata",
+      "col": 3,
+      "type": "security",
+      "label": "Annotations",
+      "sublabel": "stereotypes"
+    },
+    {
+      "id": "relationships",
+      "lane": "relations",
+      "col": 4,
+      "type": "messagebus",
+      "label": "Relations",
+      "sublabel": "type + multiplicity"
+    },
+    {
+      "id": "namespaces",
+      "lane": "grouping",
+      "col": 4,
+      "type": "cloud",
+      "label": "Namespaces",
+      "sublabel": "group related classes"
+    },
+    {
+      "id": "presentation",
+      "lane": "presentation",
+      "col": 5,
+      "type": "frontend",
+      "label": "Present",
+      "sublabel": "style + notes"
+    },
+    {
+      "id": "render",
+      "lane": "output",
+      "col": 5,
+      "type": "cloud",
+      "label": "Render",
+      "sublabel": "static structure model"
+    }
+  ],
+  "edges": [
+    { "id": "declare_direction", "from": "declare", "to": "direction", "role": "main" },
+    { "id": "direction_classes", "from": "direction", "to": "classes", "role": "main", "route": "drop", "fromSide": "bottom", "toSide": "top" },
+    { "id": "classes_members", "from": "classes", "to": "members", "role": "main", "variant": "emphasis" },
+    { "id": "members_annotations", "from": "members", "to": "annotations", "role": "main" },
+    { "id": "annotations_relations", "from": "annotations", "to": "relationships", "role": "main", "variant": "emphasis" },
+    { "id": "relations_namespaces", "from": "relationships", "to": "namespaces", "role": "main" },
+    { "id": "namespaces_presentation", "from": "namespaces", "to": "presentation", "role": "main" },
+    { "id": "presentation_render", "from": "presentation", "to": "render", "role": "main", "variant": "emphasis" }
+  ],
+  "cards": [
+    {
+      "dot": "violet",
+      "title": "Class Definition",
+      "items": [
+        "Classes may be declared explicitly or introduced by a relationship",
+        "Attributes omit parentheses; methods include parentheses",
+        "Generic types use tilde delimiters; return types follow the closing parenthesis"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Visibility + Classifiers",
+      "items": [
+        "Public +, private -, protected #, package/internal ~",
+        "Abstract methods end with an asterisk",
+        "Static fields and methods end with a dollar sign"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Relationship Vocabulary",
+      "items": [
+        "Inheritance, composition, aggregation, association, and solid link",
+        "Dependency, realization, dashed link, two-way relations, and lollipop interfaces",
+        "Labels explain intent; quoted endpoint values express multiplicity"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Grouping + Presentation",
+      "items": [
+        "Namespaces group classes and support hierarchical nesting in Mermaid 11.15+",
+        "Notes may target the diagram or one class",
+        "Styles and reusable classes control appearance",
+        "Links and callbacks require a compatible security level"
+      ]
+    }
+  ]
+}

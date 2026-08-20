@@ -1,0 +1,80 @@
+flowchart TB
+    request([Diagram request])
+
+    subgraph workflow[Core workflow]
+        direction LR
+        understand["1. Understand<br/>type, elements, source"]
+        generate["2. Generate<br/>syntax, names, styling"]
+        save["3. Save<br/>kebab-case .mmd"]
+        validate["4. Validate<br/>mmdc -i file.mmd"]
+        valid{"Valid?"}
+        report["Report source path<br/>and validation status"]
+
+        understand --> generate --> save --> validate --> valid
+        valid -->|Yes| report
+    end
+
+    subgraph recovery[5. Auto-correct errors]
+        direction LR
+        inspect["Read message<br/>and line number"]
+        fix["Fix syntax, quotes,<br/>arrows, or nodes"]
+        retry["Save and<br/>re-validate"]
+        inspect --> fix --> retry
+    end
+
+    subgraph optional[6. Render only on request]
+        direction LR
+        requested{"Preview or image?"}
+        svg["SVG default"]
+        alternatives["PNG or PDF alternative"]
+        requested -->|Yes| svg
+        requested -->|Alternative format| alternatives
+    end
+
+    request --> understand
+    valid -->|No| inspect
+    retry --> validate
+    report --> requested
+    requested -->|No| complete([Complete])
+    svg --> complete
+    alternatives --> complete
+
+    subgraph catalog[Supported diagram families]
+        direction LR
+        basic["Basic<br/>Flowchart · Sequence · Class<br/>State · ER"]
+        planning["Planning<br/>Gantt · Journey<br/>Timeline · Kanban"]
+        data["Data visualization<br/>Pie · XY · Quadrant<br/>Sankey · Radar · Treemap"]
+        technical["Technical and organizational<br/>Git · C4 · Requirement · Architecture<br/>Block · Packet · Mindmap · ZenUML"]
+    end
+
+    subgraph analysis[Code analysis mappings]
+        direction LR
+        classes["Class diagram<br/>types, members, inheritance"]
+        sequences["Sequence diagram<br/>calls, async work, APIs"]
+        flows["Flowchart<br/>branches, loops, entry and exit"]
+        states["State diagram<br/>states, status, transitions"]
+    end
+
+    subgraph guidance[On-demand guidance]
+        examples["examples/<br/>selected grammar only"]
+        patterns["templates/common-patterns.md<br/>reusable structures"]
+        quality["Quality guardrails<br/>clear IDs · concise labels · subgraphs<br/>consistent direction · split dense diagrams"]
+    end
+
+    understand -. choose grammar .-> catalog
+    understand -. map source code .-> analysis
+    generate -. load as needed .-> examples
+    generate -. reuse pattern .-> patterns
+    generate -. apply .-> quality
+
+    classDef terminal fill:#0f766e,stroke:#134e4a,color:#ffffff,stroke-width:2px
+    classDef process fill:#e0f2fe,stroke:#0369a1,color:#0c4a6e
+    classDef decision fill:#fef3c7,stroke:#d97706,color:#78350f
+    classDef recoveryNode fill:#fee2e2,stroke:#dc2626,color:#7f1d1d
+    classDef reference fill:#ede9fe,stroke:#7c3aed,color:#4c1d95
+
+    class request,complete terminal
+    class understand,generate,save,validate,report,svg,alternatives process
+    class valid,requested decision
+    class inspect,fix,retry recoveryNode
+    class basic,planning,data,technical,classes,sequences,flows,states,examples,patterns,quality reference

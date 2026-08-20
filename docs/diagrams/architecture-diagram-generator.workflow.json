@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Architecture Diagram Generator",
+    "subtitle": "Project evidence becomes one of four maintainable Mermaid views",
+    "visual_preset": "signal-flow",
+    "quality_profile": "showcase",
+    "viewBox": [920, 760]
+  },
+  "lanes": [
+    { "id": "pipeline", "label": "Generation Pipeline" },
+    { "id": "evidence", "label": "Codebase Evidence" },
+    { "id": "output", "label": "Diagram Delivery" }
+  ],
+  "phases": [
+    { "id": "discover", "label": "Discover", "fromCol": 0, "toCol": 1 },
+    { "id": "model", "label": "Model", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "author", "label": "Author and Deliver", "fromCol": 4, "toCol": 5, "variant": "dashed" }
+  ],
+  "mainPath": ["scan", "inspect", "identify", "select_view", "generate", "deliver"],
+  "nodes": [
+    { "id": "scan", "lane": "pipeline", "col": 0, "type": "external", "label": "Scan", "sublabel": "project", "width": 36 },
+    { "id": "inspect", "lane": "pipeline", "col": 1, "type": "database", "label": "Inspect", "sublabel": "key files", "width": 48 },
+    { "id": "identify", "lane": "pipeline", "col": 2, "type": "backend", "label": "Map", "sublabel": "links", "width": 36 },
+    { "id": "select_view", "lane": "pipeline", "col": 3, "type": "security", "label": "Select", "sublabel": "view", "width": 44 },
+    { "id": "generate", "lane": "pipeline", "col": 4, "type": "backend", "label": "Build", "sublabel": "Mermaid", "width": 40 },
+    { "id": "deliver", "lane": "pipeline", "col": 5, "type": "frontend", "label": "Deliver", "sublabel": "markdown", "width": 48 },
+    { "id": "structure", "lane": "evidence", "col": 0, "type": "database", "label": "Files", "sublabel": "structure", "width": 44 },
+    { "id": "imports", "lane": "evidence", "col": 1, "type": "messagebus", "label": "Imports", "sublabel": "modules", "width": 48 },
+    { "id": "dependencies", "lane": "evidence", "col": 2, "type": "cloud", "label": "Deps", "sublabel": "packages", "width": 40 },
+    { "id": "models", "lane": "evidence", "col": 3, "type": "database", "label": "Models", "sublabel": "entities", "width": 48 },
+    { "id": "mermaid", "lane": "output", "col": 5, "type": "database", "label": "Mermaid", "sublabel": ".mmd or .md", "width": 56 }
+  ],
+  "edges": [
+    { "id": "scan-inspect", "from": "scan", "to": "inspect", "role": "main", "variant": "emphasis" },
+    { "id": "inspect-identify", "from": "inspect", "to": "identify", "role": "main", "variant": "emphasis" },
+    { "id": "identify-select", "from": "identify", "to": "select_view", "role": "main", "variant": "emphasis" },
+    { "id": "select-generate", "from": "select_view", "to": "generate", "role": "main", "variant": "emphasis" },
+    { "id": "generate-deliver", "from": "generate", "to": "deliver", "role": "main", "variant": "emphasis" },
+    { "id": "structure-scan", "from": "structure", "to": "scan", "role": "async", "variant": "dashed" },
+    { "id": "imports-inspect", "from": "imports", "to": "inspect", "role": "async", "variant": "dashed" },
+    { "id": "deps-identify", "from": "dependencies", "to": "identify", "role": "async", "variant": "dashed" },
+    { "id": "models-select", "from": "models", "to": "select_view", "role": "async", "variant": "dashed" },
+    { "id": "deliver-mermaid", "from": "deliver", "to": "mermaid", "role": "return", "variant": "dashed" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "System architecture",
+      "items": [
+        "Summarize verified clients, interfaces, services, workers, storage, and external systems.",
+        "Use component boundaries and directional relationships without inventing missing infrastructure."
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Data flow",
+      "items": [
+        "Trace request and response paths through actual handlers, services, persistence, and integrations.",
+        "Show important transformations and side effects along the path."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Dependency graph",
+      "items": [
+        "Derive module and package relationships from imports and dependency configuration.",
+        "Separate internal ownership from third-party dependencies."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Database schema",
+      "items": [
+        "Extract entities, fields, keys, and cardinality from verified database models.",
+        "Emit an ER diagram only for relationships supported by the source."
+      ]
+    }
+  ]
+}

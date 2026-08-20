@@ -1,13 +1,161 @@
 # Architecture
 
+## Runtime system architecture
+
 ```mermaid
 flowchart LR
-  S[Downloaded sources] --> I[Inspect and normalize]
-  I --> D[(Local DuckDB)]
-  U[Streamlit UI] <--> D
-  U -->|Explicit AI action| P[Selected provider]
-  P -->|Validated JSON| U
+    User["Learner in a browser"]
+
+    subgraph App["Local Streamlit process"]
+        Router["app.py<br/>navigation and catalog routing"]
+        Coding["Coding"]
+        Quiz["Quiz"]
+        AIQ["AI Questions"]
+        Interview["Interview"]
+        Progress["Progress"]
+        Documents["PDF / DOCX / TXT parser"]
+        Workflows["Domain workflows<br/>generation, evaluation, quiz, interview"]
+        Prompts["Version-controlled<br/>Markdown prompts"]
+        Providers["Provider registry<br/>and adapters"]
+        Validation["Strict response<br/>parsing and validation"]
+        DBAccess["DuckDB connections<br/>and migrations"]
+        Boundary["Learner code remains text<br/>and is never executed"]
+    end
+
+    subgraph Storage["Local persistent storage"]
+        Catalogs[("algorithm.duckdb<br/>data_analysis.duckdb<br/>interview.duckdb")]
+    end
+
+    subgraph External["External services used only by explicit actions"]
+        AIAPIs["Selected provider API<br/>OpenAI · Agnes AI · Google Gemini"]
+        Firecrawl["Firecrawl MCP"]
+    end
+
+    User <--> Router
+    Router --> Coding
+    Router --> Quiz
+    Router --> AIQ
+    Router --> Interview
+    Router --> Progress
+
+    Coding --> Workflows
+    Quiz --> Workflows
+    AIQ --> Workflows
+    Interview --> Documents --> Workflows
+    Progress --> DBAccess
+    Prompts --> Workflows
+    Workflows --> Providers
+    Workflows <--> DBAccess
+    Workflows -. "optional generation research" .-> Firecrawl
+    Firecrawl -. "bounded untrusted context" .-> Workflows
+    Workflows -.-> Boundary
+
+    Providers --> AIAPIs --> Validation --> Workflows
+    DBAccess <--> Catalogs
 ```
+
+The UI, domain logic, provider adapters, and database connections run in one local Python process. There is no separate API server, worker, message queue, authentication service, or learner-code execution service.
+
+## Explicit AI action lifecycle
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant UI as Streamlit mode
+    participant Flow as Domain workflow
+    participant DB as Active DuckDB catalog
+    participant Web as Firecrawl MCP
+    participant Prompt as Markdown prompt loader
+    participant Provider as Selected AI provider
+
+    User->>UI: Browse locally or request an AI action
+    UI->>Flow: Validated settings and user input
+    Flow->>DB: Load question, references, or session state
+    DB-->>Flow: Local records
+
+    alt Local-only browsing
+        Flow-->>UI: Local question or progress
+    else Explicit generation, review, planning, or assessment
+        opt Question generation, web enabled, and local context insufficient
+            Flow->>Web: Bounded topic query
+            Web-->>Flow: Source URLs and clipped excerpts
+        end
+        Flow->>Prompt: Load and render registered template
+        Prompt-->>Flow: Bounded prompt content
+        Flow->>Provider: Chat request
+        Provider-->>Flow: Response text
+        Flow->>Flow: Parse and validate response
+        alt Valid response
+            Flow->>DB: Persist generated item, attempt, session, or report
+            Flow-->>UI: Structured result
+        else Provider or validation failure
+            Flow-->>UI: Sanitized failure, preserving durable state where possible
+        end
+    end
+
+    UI-->>User: Render local data or AI-estimated feedback
+    Note over User,Provider: Learner code is transmitted as text when required and is never executed by Coding Tutor
+```
+
+Typing and local catalog browsing do not contact an external service. Firecrawl is generation context only and never participates in scoring.
+
+## Dataset and catalog data flow
+
+```mermaid
+flowchart LR
+    HF["Public Hugging Face<br/>coding datasets"]
+    GitHub["Approved GitHub<br/>interview sources"]
+
+    DownloadCoding["download_datasets.py"]
+    DownloadInterview["download_interview_sources.py<br/>authenticated gh api"]
+
+    RawAlgorithm["Dataset/algorithm_problems"]
+    RawAnalysis["Dataset/data_analysis_problems"]
+    RawInterview["Dataset/interview_sources/raw"]
+    Manifest["Interview manifest<br/>revision, hash, license, ingestion decision"]
+
+    ImportCoding["import_datasets.py"]
+    ImportInterview["import_interview_sources.py"]
+    ImportSelectedAI["import_user_ai_interview_questions.py"]
+    NormalizeAlgorithm["Inspect and normalize<br/>algorithm records"]
+    NormalizeAnalysis["Inspect and normalize<br/>data-analysis records"]
+    NormalizeInterview["Parse allowed sources,<br/>record provenance, deduplicate"]
+
+    Algorithm[("algorithm.duckdb")]
+    Analysis[("data_analysis.duckdb")]
+    InterviewDB[("interview.duckdb")]
+
+    CodingRuntime["Coding and Quiz runtime"]
+    InterviewRuntime["AI Questions and Interview runtime"]
+    ProgressRuntime["Progress runtime"]
+
+    HF --> DownloadCoding
+    DownloadCoding --> RawAlgorithm
+    DownloadCoding --> RawAnalysis
+    GitHub --> DownloadInterview
+    DownloadInterview --> RawInterview
+    DownloadInterview --> Manifest
+
+    RawAlgorithm --> ImportCoding
+    RawAnalysis --> ImportCoding
+    RawInterview --> ImportInterview
+    RawInterview --> ImportSelectedAI
+    Manifest --> ImportInterview
+    ImportCoding --> NormalizeAlgorithm --> Algorithm
+    ImportCoding --> NormalizeAnalysis --> Analysis
+    ImportInterview --> NormalizeInterview
+    ImportSelectedAI --> NormalizeInterview
+    NormalizeInterview --> InterviewDB
+
+    CodingRuntime <--> Algorithm
+    CodingRuntime <--> Analysis
+    InterviewRuntime <--> InterviewDB
+    ProgressRuntime --> Algorithm
+    ProgressRuntime --> Analysis
+    ProgressRuntime --> InterviewDB
+```
+
+Download and import commands are offline preparation steps. Normal application use reads and writes the three consolidated catalogs rather than querying raw dataset directories.
 
 ## Local embedded storage
 

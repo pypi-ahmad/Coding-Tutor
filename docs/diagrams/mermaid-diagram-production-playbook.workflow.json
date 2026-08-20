@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Mermaid Diagram Production Playbook",
+    "subtitle": "A validated authoring loop with diagram selection, code-analysis guidance, templates, and delivery rules",
+    "visual_preset": "blueprint",
+    "quality_profile": "showcase",
+    "viewBox": [920, 820]
+  },
+  "lanes": [
+    { "id": "authoring", "label": "Core Workflow" },
+    { "id": "recovery", "label": "Validation Recovery", "variant": "exception" },
+    { "id": "guidance", "label": "On-Demand Guidance" },
+    { "id": "delivery", "label": "Delivery Contract" }
+  ],
+  "phases": [
+    { "id": "scope", "label": "Scope", "fromCol": 0, "toCol": 1 },
+    { "id": "author", "label": "Author", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "assure", "label": "Assure", "fromCol": 4, "toCol": 4, "variant": "security" },
+    { "id": "handoff", "label": "Handoff", "fromCol": 5, "toCol": 5, "variant": "dashed" }
+  ],
+  "mainPath": ["scope_request", "choose_type", "build_source", "save_file", "validate_cli", "report_output"],
+  "nodes": [
+    { "id": "scope_request", "lane": "authoring", "col": 0, "type": "external", "label": "Scope", "sublabel": "intent", "width": 36 },
+    { "id": "choose_type", "lane": "authoring", "col": 1, "type": "backend", "label": "Choose", "sublabel": "grammar", "width": 44 },
+    { "id": "build_source", "lane": "authoring", "col": 2, "type": "backend", "label": "Build", "sublabel": "Mermaid", "width": 44 },
+    { "id": "save_file", "lane": "authoring", "col": 3, "type": "database", "label": "Save", "sublabel": ".mmd", "width": 36 },
+    { "id": "validate_cli", "lane": "authoring", "col": 4, "type": "security", "label": "Check", "sublabel": "mmdc", "width": 36 },
+    { "id": "report_output", "lane": "authoring", "col": 5, "type": "frontend", "label": "Report", "sublabel": "paths", "width": 44 },
+    { "id": "read_error", "lane": "recovery", "col": 3, "type": "security", "label": "Read", "sublabel": "error", "width": 36 },
+    { "id": "repair_source", "lane": "recovery", "col": 4, "type": "messagebus", "label": "Fix", "sublabel": "retry", "width": 36 },
+    { "id": "examples", "lane": "guidance", "col": 1, "type": "database", "label": "Examples", "sublabel": "by type", "width": 60 },
+    { "id": "templates", "lane": "guidance", "col": 2, "type": "database", "label": "Patterns", "sublabel": "on demand", "width": 60 }
+  ],
+  "edges": [
+    { "id": "scope-choose", "from": "scope_request", "to": "choose_type", "role": "main", "variant": "emphasis" },
+    { "id": "choose-build", "from": "choose_type", "to": "build_source", "role": "main", "variant": "emphasis" },
+    { "id": "build-save", "from": "build_source", "to": "save_file", "role": "main", "variant": "emphasis" },
+    { "id": "save-check", "from": "save_file", "to": "validate_cli", "role": "main", "variant": "security", "route": "straight" },
+    { "id": "check-report", "from": "validate_cli", "to": "report_output", "role": "main", "variant": "emphasis" },
+    { "id": "check-error", "from": "validate_cli", "to": "read_error", "role": "error", "variant": "security" },
+    { "id": "error-fix", "from": "read_error", "to": "repair_source", "role": "branch", "variant": "security", "route": "straight" },
+    { "id": "fix-recheck", "from": "repair_source", "to": "validate_cli", "role": "return", "variant": "dashed" },
+    { "id": "examples-choose", "from": "examples", "to": "choose_type", "role": "async", "variant": "dashed" },
+    { "id": "templates-build", "from": "templates", "to": "build_source", "role": "async", "variant": "dashed" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Supported families",
+      "items": [
+        "Basic: flowchart, sequence, class, state, and entity relationship.",
+        "Planning: Gantt, journey, timeline, and Kanban.",
+        "Data: pie, XY, quadrant, Sankey, radar, and treemap.",
+        "Technical and organizational: Git, C4, requirements, architecture, block, packet, mindmap, and ZenUML."
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Code analysis mapping",
+      "items": [
+        "Class diagrams extract types, members, inheritance, interfaces, and ownership.",
+        "Sequence diagrams trace calls, asynchronous work, APIs, and activation periods.",
+        "Flowcharts map branches, loops, entry points, and exits.",
+        "State diagrams derive states and event-driven transitions."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Readability guardrails",
+      "items": [
+        "Use meaningful identifiers, concise labels, subgraphs, and consistent class definitions.",
+        "Keep one direction, document complex sections, and split oversized diagrams.",
+        "Load only the example or common pattern required by the selected grammar."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Validation and output",
+      "items": [
+        "Validate every saved .mmd file with Mermaid CLI.",
+        "Read diagnostics, fix the reported line, and repeat until successful.",
+        "Render SVG, PNG, or PDF only when a preview or image is explicitly requested.",
+        "Return source and rendered paths with truthful validation status."
+      ]
+    }
+  ]
+}

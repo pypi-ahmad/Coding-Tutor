@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Mermaid ER Diagram Authoring Map",
+    "subtitle": "Model a domain through singular entities, meaningful attributes, crow's-foot relationships, and logical grouping",
+    "animation": "none",
+    "visual_preset": "editorial",
+    "quality_profile": "showcase",
+    "viewBox": [780, 1220]
+  },
+  "lanes": [
+    { "id": "declaration", "label": "Declaration" },
+    { "id": "layout", "label": "Layout" },
+    { "id": "entities", "label": "Entities" },
+    { "id": "attributes", "label": "Attributes" },
+    { "id": "relationships", "label": "Relationships" },
+    { "id": "cardinality", "label": "Cardinality + Identity" },
+    { "id": "grouping", "label": "Logical Grouping" },
+    { "id": "presentation", "label": "Presentation" },
+    { "id": "output", "label": "Rendered ER Model" }
+  ],
+  "phases": [
+    { "id": "foundation", "label": "Foundation", "fromCol": 0, "toCol": 1 },
+    { "id": "domain", "label": "Model domain", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "connect", "label": "Connect + present", "fromCol": 4, "toCol": 5, "variant": "dashed" }
+  ],
+  "mainPath": [
+    "declare",
+    "layout",
+    "entities",
+    "attributes",
+    "relationships",
+    "cardinality",
+    "subgraphs",
+    "presentation",
+    "render"
+  ],
+  "nodes": [
+    {
+      "id": "declare",
+      "lane": "declaration",
+      "col": 0,
+      "type": "frontend",
+      "label": "Declare",
+      "sublabel": "erDiagram"
+    },
+    {
+      "id": "layout",
+      "lane": "layout",
+      "col": 1,
+      "type": "backend",
+      "label": "Layout",
+      "sublabel": "TB · BT · LR · RL"
+    },
+    {
+      "id": "entities",
+      "lane": "entities",
+      "col": 2,
+      "type": "database",
+      "label": "Entities",
+      "sublabel": "names + aliases"
+    },
+    {
+      "id": "attributes",
+      "lane": "attributes",
+      "col": 3,
+      "type": "backend",
+      "label": "Attributes",
+      "sublabel": "type + name + keys"
+    },
+    {
+      "id": "relationships",
+      "lane": "relationships",
+      "col": 4,
+      "type": "messagebus",
+      "label": "Relations",
+      "sublabel": "two entities + label"
+    },
+    {
+      "id": "cardinality",
+      "lane": "cardinality",
+      "col": 4,
+      "type": "security",
+      "label": "Cardinality",
+      "sublabel": "range + identity"
+    },
+    {
+      "id": "subgraphs",
+      "lane": "grouping",
+      "col": 5,
+      "type": "cloud",
+      "label": "Subgraphs",
+      "sublabel": "logical domains"
+    },
+    {
+      "id": "presentation",
+      "lane": "presentation",
+      "col": 5,
+      "type": "frontend",
+      "label": "Present",
+      "sublabel": "styles + classes"
+    },
+    {
+      "id": "render",
+      "lane": "output",
+      "col": 5,
+      "type": "cloud",
+      "label": "Render",
+      "sublabel": "Dagre or ELK"
+    }
+  ],
+  "edges": [
+    { "id": "declare_layout", "from": "declare", "to": "layout", "role": "main" },
+    { "id": "layout_entities", "from": "layout", "to": "entities", "role": "main", "route": "drop", "fromSide": "bottom", "toSide": "top" },
+    { "id": "entities_attributes", "from": "entities", "to": "attributes", "role": "main", "variant": "emphasis" },
+    { "id": "attributes_relations", "from": "attributes", "to": "relationships", "role": "main" },
+    { "id": "relations_cardinality", "from": "relationships", "to": "cardinality", "role": "main", "variant": "emphasis" },
+    { "id": "cardinality_subgraphs", "from": "cardinality", "to": "subgraphs", "role": "main" },
+    { "id": "subgraphs_presentation", "from": "subgraphs", "to": "presentation", "role": "main" },
+    { "id": "presentation_render", "from": "presentation", "to": "render", "role": "main", "variant": "emphasis" }
+  ],
+  "cards": [
+    {
+      "dot": "violet",
+      "title": "Entity + Attribute Rules",
+      "items": [
+        "Use singular entity names; quote names containing spaces",
+        "Attributes use type and name, with optional PK, FK, UK, and comments",
+        "Nullable attribute types may end with a question mark in Mermaid 11.16+",
+        "Include foreign-key attributes only when they add meaning to the chosen model"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Crow's-Foot Cardinality",
+      "items": [
+        "Zero or one, exactly one, zero or more, and one or more",
+        "Each endpoint combines a minimum marker with a maximum marker",
+        "Relationship labels read from the first entity's perspective"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Relationship Identity",
+      "items": [
+        "A solid line represents an identifying relationship",
+        "A dashed line represents a non-identifying relationship",
+        "Use identifying links when a child cannot exist independently"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Organization + Rendering",
+      "items": [
+        "Subgraphs organize related entities and may be nested",
+        "Subgraph relationships always reference the subgraph ID",
+        "Styles and class definitions control appearance",
+        "ELK is an alternative layout for larger diagrams"
+      ]
+    }
+  ]
+}

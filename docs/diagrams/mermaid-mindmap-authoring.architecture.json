@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Mermaid Mindmap Authoring Map",
+    "subtitle": "A central concept branches into hierarchy, node shapes, content, styling, integration, and layout",
+    "animation": "none",
+    "visual_preset": "editorial",
+    "quality_profile": "showcase",
+    "viewBox": [940, 900]
+  },
+  "components": [
+    {
+      "id": "mindmap",
+      "type": "backend",
+      "label": "Mindmap",
+      "sublabel": "central concept",
+      "pos": [390, 235],
+      "size": [160, 72]
+    },
+    {
+      "id": "hierarchy",
+      "type": "database",
+      "label": "Hierarchy",
+      "sublabel": "indentation defines parentage",
+      "pos": [80, 70],
+      "size": [170, 72]
+    },
+    {
+      "id": "shapes",
+      "type": "frontend",
+      "label": "Node Shapes",
+      "sublabel": "square · rounded · circle · cloud",
+      "pos": [80, 390],
+      "size": [170, 72]
+    },
+    {
+      "id": "content",
+      "type": "cloud",
+      "label": "Content",
+      "sublabel": "Unicode + Markdown strings",
+      "pos": [690, 70],
+      "size": [170, 72]
+    },
+    {
+      "id": "styling",
+      "type": "external",
+      "label": "Icons + Classes",
+      "sublabel": "host-supplied integrations",
+      "pos": [690, 235],
+      "size": [170, 72]
+    },
+    {
+      "id": "integration",
+      "type": "security",
+      "label": "Integration",
+      "sublabel": "lazy asynchronous loading",
+      "pos": [690, 390],
+      "size": [170, 72]
+    },
+    {
+      "id": "layout",
+      "type": "messagebus",
+      "label": "Layout",
+      "sublabel": "default or tidy-tree",
+      "pos": [390, 520],
+      "size": [160, 72]
+    }
+  ],
+  "connections": [
+    { "id": "mindmap_hierarchy", "from": "mindmap", "to": "hierarchy", "variant": "emphasis" },
+    { "id": "mindmap_shapes", "from": "mindmap", "to": "shapes" },
+    { "id": "mindmap_content", "from": "mindmap", "to": "content", "variant": "emphasis" },
+    { "id": "mindmap_styling", "from": "mindmap", "to": "styling" },
+    { "id": "mindmap_integration", "from": "mindmap", "to": "integration", "variant": "security" },
+    { "id": "mindmap_layout", "from": "mindmap", "to": "layout", "variant": "dashed" }
+  ],
+  "cards": [
+    {
+      "dot": "violet",
+      "title": "Hierarchy Rules",
+      "items": [
+        "The first node is the root concept",
+        "Greater indentation creates children",
+        "Sibling nodes share an indentation level",
+        "Mermaid resolves ambiguous indentation to the nearest known parent"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Node Vocabulary",
+      "items": [
+        "Default, square, rounded square, circle, bang, cloud, and hexagon",
+        "Markdown strings support emphasis, wrapping, and multiline labels",
+        "Unicode is supported in labels"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Host Responsibilities",
+      "items": [
+        "The host must provide icon fonts before icon syntax can work",
+        "CSS classes referenced by nodes must be supplied by the host",
+        "Icon integration remains experimental"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Runtime Status",
+      "items": [
+        "Mindmaps use lazy asynchronous rendering",
+        "Mindmap support is bundled with Mermaid from version 9.4",
+        "The tidy-tree layout requires its corresponding layout registration",
+        "The feature remains experimental and may evolve"
+      ]
+    }
+  ]
+}

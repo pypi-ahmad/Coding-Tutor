@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Code Walkthrough Skill Workflow",
+    "subtitle": "From a feature or file request to an evidence-backed execution trace",
+    "visual_preset": "editorial",
+    "quality_profile": "showcase",
+    "viewBox": [920, 780]
+  },
+  "lanes": [
+    { "id": "trace", "label": "Execution Trace" },
+    { "id": "evidence", "label": "Evidence Capture" },
+    { "id": "output", "label": "Walkthrough Output" }
+  ],
+  "phases": [
+    { "id": "orient", "label": "Orient", "fromCol": 0, "toCol": 1 },
+    { "id": "follow", "label": "Follow Code", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "explain", "label": "Explain", "fromCol": 4, "toCol": 5, "variant": "dashed" }
+  ],
+  "mainPath": ["invoke", "entry", "forward", "read_chain", "synthesize", "publish"],
+  "nodes": [
+    { "id": "invoke", "lane": "trace", "col": 0, "type": "external", "label": "Invoke", "sublabel": "target", "width": 44 },
+    { "id": "entry", "lane": "trace", "col": 1, "type": "frontend", "label": "Entry", "sublabel": "trigger", "width": 40 },
+    { "id": "forward", "lane": "trace", "col": 2, "type": "backend", "label": "Trace", "sublabel": "calls", "width": 40 },
+    { "id": "read_chain", "lane": "trace", "col": 3, "type": "database", "label": "Verify", "sublabel": "read files", "width": 44 },
+    { "id": "synthesize", "lane": "trace", "col": 4, "type": "backend", "label": "Write", "sublabel": "steps", "width": 36 },
+    { "id": "publish", "lane": "trace", "col": 5, "type": "frontend", "label": "Publish", "sublabel": "walkthrough", "width": 52 },
+    { "id": "branches", "lane": "evidence", "col": 3, "type": "messagebus", "label": "Branches", "sublabel": "both paths", "width": 56 },
+    { "id": "implicit", "lane": "evidence", "col": 2, "type": "security", "label": "Implicit", "sublabel": "middleware", "width": 52 },
+    { "id": "data_shape", "lane": "output", "col": 4, "type": "database", "label": "Data", "sublabel": "shapes", "width": 44 },
+    { "id": "side_effects", "lane": "output", "col": 5, "type": "cloud", "label": "Effects", "sublabel": "I/O", "width": 48 }
+  ],
+  "edges": [
+    { "id": "invoke-entry", "from": "invoke", "to": "entry", "role": "main", "variant": "emphasis" },
+    { "id": "entry-forward", "from": "entry", "to": "forward", "role": "main", "variant": "emphasis" },
+    { "id": "forward-read", "from": "forward", "to": "read_chain", "role": "main", "variant": "emphasis" },
+    { "id": "read-synthesize", "from": "read_chain", "to": "synthesize", "role": "main", "variant": "emphasis" },
+    { "id": "synthesize-publish", "from": "synthesize", "to": "publish", "role": "main", "variant": "emphasis" },
+    { "id": "read-branches", "from": "read_chain", "to": "branches", "role": "branch", "variant": "dashed" },
+    { "id": "forward-implicit", "from": "forward", "to": "implicit", "role": "branch", "variant": "security" },
+    { "id": "synthesize-data", "from": "synthesize", "to": "data_shape", "role": "async", "variant": "dashed" },
+    { "id": "publish-effects", "from": "publish", "to": "side_effects", "role": "async", "variant": "dashed" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Entry-point proof",
+      "items": [
+        "Locate the actual route, listener, CLI command, lifecycle hook, or callable.",
+        "Record the file, line, symbol, trigger, and initial input.",
+        "Do not infer execution from filenames alone."
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Verified forward trace",
+      "items": [
+        "Read every implementation file in the call chain before explaining it.",
+        "Describe validation, transformations, external calls, returns, exceptions, and side effects.",
+        "Document every meaningful condition and both sides of each branch."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Hidden behavior",
+      "items": [
+        "Include middleware, decorators, hooks, handlers, and framework dispatch.",
+        "Track request data through DTOs, domain models, persistence rows, and responses.",
+        "Use short source excerpts only where they clarify a key transition."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Walkthrough sections",
+      "items": [
+        "Overview, entry point, execution flow, and numbered trace.",
+        "Data flow, key files with line numbers, and side effects.",
+        "Database operations, external APIs, emitted events, file changes, and logs."
+      ]
+    }
+  ]
+}

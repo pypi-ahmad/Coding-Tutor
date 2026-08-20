@@ -1,0 +1,47 @@
+flowchart LR
+    request([Diagram request]) --> understand[Understand request]
+    understand --> choose[Choose diagram type]
+    choose --> generate[Generate Mermaid source]
+    generate --> save[Save kebab-case .mmd file]
+    save --> validate[Validate with mmdc]
+    validate --> valid{Validation succeeds?}
+
+    valid -->|No| diagnose[Read CLI diagnostics]
+    diagnose --> correct[Correct Mermaid syntax]
+    correct --> validate
+
+    valid -->|Yes| preview{Preview requested?}
+    preview -->|No| report[Report source path and status]
+    preview -->|Yes| render[Render SVG by default]
+    render --> report
+    report --> complete([Complete])
+
+    subgraph authoring[Authoring]
+        understand
+        choose
+        generate
+        save
+    end
+
+    subgraph verification[Validation and repair]
+        validate
+        valid
+        diagnose
+        correct
+    end
+
+    subgraph delivery[Delivery]
+        preview
+        render
+        report
+    end
+
+    classDef terminal fill:#0f766e,stroke:#134e4a,color:#ffffff,stroke-width:2px
+    classDef process fill:#e0f2fe,stroke:#0369a1,color:#0c4a6e
+    classDef decision fill:#fef3c7,stroke:#d97706,color:#78350f
+    classDef recovery fill:#fee2e2,stroke:#dc2626,color:#7f1d1d
+
+    class request,complete terminal
+    class understand,choose,generate,save,validate,render,report process
+    class valid,preview decision
+    class diagnose,correct recovery

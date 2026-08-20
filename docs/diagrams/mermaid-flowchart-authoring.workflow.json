@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Mermaid Flowchart Authoring Map",
+    "subtitle": "From graph declaration to semantic nodes, relationships, composition, styling, and rendering",
+    "animation": "none",
+    "visual_preset": "signal-flow",
+    "quality_profile": "showcase",
+    "viewBox": [780, 1200]
+  },
+  "lanes": [
+    { "id": "declaration", "label": "Declaration" },
+    { "id": "layout", "label": "Layout" },
+    { "id": "semantics", "label": "Node Semantics" },
+    { "id": "relationships", "label": "Relationships" },
+    { "id": "composition", "label": "Composition" },
+    { "id": "presentation", "label": "Presentation" },
+    { "id": "interaction", "label": "Interaction" },
+    { "id": "output", "label": "Rendered Diagram" }
+  ],
+  "phases": [
+    { "id": "foundation", "label": "Foundation", "fromCol": 0, "toCol": 1 },
+    { "id": "topology", "label": "Topology", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "finish", "label": "Compose + finish", "fromCol": 4, "toCol": 5, "variant": "dashed" }
+  ],
+  "mainPath": [
+    "declare",
+    "direction",
+    "nodes",
+    "edges",
+    "subgraphs",
+    "styles",
+    "interaction",
+    "render"
+  ],
+  "nodes": [
+    {
+      "id": "declare",
+      "lane": "declaration",
+      "col": 0,
+      "type": "frontend",
+      "label": "Declare",
+      "sublabel": "flowchart or graph"
+    },
+    {
+      "id": "direction",
+      "lane": "layout",
+      "col": 1,
+      "type": "backend",
+      "label": "Direction",
+      "sublabel": "TB · TD · BT · RL · LR"
+    },
+    {
+      "id": "nodes",
+      "lane": "semantics",
+      "col": 2,
+      "type": "database",
+      "label": "Nodes",
+      "sublabel": "IDs, labels, and shapes"
+    },
+    {
+      "id": "edges",
+      "lane": "relationships",
+      "col": 3,
+      "type": "messagebus",
+      "label": "Edges",
+      "sublabel": "links + labels"
+    },
+    {
+      "id": "subgraphs",
+      "lane": "composition",
+      "col": 4,
+      "type": "cloud",
+      "label": "Subgraphs",
+      "sublabel": "group related topology"
+    },
+    {
+      "id": "styles",
+      "lane": "presentation",
+      "col": 4,
+      "type": "frontend",
+      "label": "Style",
+      "sublabel": "classDef and curves"
+    },
+    {
+      "id": "interaction",
+      "lane": "interaction",
+      "col": 5,
+      "type": "external",
+      "label": "Interaction",
+      "sublabel": "clicks + tooltips"
+    },
+    {
+      "id": "render",
+      "lane": "output",
+      "col": 5,
+      "type": "cloud",
+      "label": "Render",
+      "sublabel": "Dagre or ELK"
+    }
+  ],
+  "edges": [
+    { "id": "declare_direction", "from": "declare", "to": "direction", "role": "main" },
+    { "id": "direction_nodes", "from": "direction", "to": "nodes", "role": "main", "route": "drop", "fromSide": "bottom", "toSide": "top" },
+    { "id": "nodes_edges", "from": "nodes", "to": "edges", "role": "main", "variant": "emphasis" },
+    { "id": "edges_subgraphs", "from": "edges", "to": "subgraphs", "role": "main" },
+    { "id": "subgraphs_styles", "from": "subgraphs", "to": "styles", "role": "main" },
+    { "id": "styles_interaction", "from": "styles", "to": "interaction", "role": "main" },
+    { "id": "interaction_render", "from": "interaction", "to": "render", "role": "main", "variant": "emphasis" }
+  ],
+  "cards": [
+    {
+      "dot": "violet",
+      "title": "Semantic Shape Families",
+      "items": [
+        "Process, decision, event, start, stop, and subprocess",
+        "Database, datastore, document, storage, input, and output",
+        "Cloud, browser, console, person, comment, icon, and image",
+        "Expanded shape metadata syntax is available in Mermaid 11.3+"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Relationship Vocabulary",
+      "items": [
+        "Arrow, open, dotted, thick, invisible, circle, and cross links",
+        "Edge labels and additional dashes control meaning and minimum rank",
+        "Edge IDs enable per-edge animation and curve configuration"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Composition + Presentation",
+      "items": [
+        "Subgraphs group nodes and may define local direction",
+        "Classes are the reliable way to apply reusable node styles",
+        "Markdown strings wrap and format labels",
+        "Interactions require a compatible security level"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Parser Guardrails",
+      "items": [
+        "Do not use lowercase end as a flowchart node label",
+        "Avoid an unspaced lowercase o or x immediately after a link",
+        "Quote labels containing punctuation or syntax-sensitive characters",
+        "Use comments on their own lines with a double-percent prefix"
+      ]
+    }
+  ]
+}

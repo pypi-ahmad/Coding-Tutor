@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Mermaid Architecture Diagram Authoring Map",
+    "subtitle": "Groups, services, port-aware edges, junctions, alignment, layout controls, and icon sources",
+    "visual_preset": "blueprint",
+    "quality_profile": "showcase",
+    "viewBox": [960, 720]
+  },
+  "components": [
+    {
+      "id": "groups",
+      "type": "cloud",
+      "label": "Groups",
+      "sublabel": "Boundaries and nesting",
+      "pos": [40, 260],
+      "size": [150, 68]
+    },
+    {
+      "id": "services",
+      "type": "backend",
+      "label": "Services",
+      "sublabel": "Named resources",
+      "pos": [250, 260],
+      "size": [150, 68]
+    },
+    {
+      "id": "junctions",
+      "type": "messagebus",
+      "label": "Junctions",
+      "sublabel": "Four-way routing",
+      "pos": [460, 260],
+      "size": [150, 68]
+    },
+    {
+      "id": "edges",
+      "type": "security",
+      "label": "Edges",
+      "sublabel": "Ports and arrows",
+      "pos": [670, 260],
+      "size": [150, 68]
+    },
+    {
+      "id": "nesting",
+      "type": "cloud",
+      "label": "Nested Membership",
+      "sublabel": "Use the in keyword",
+      "pos": [250, 70],
+      "size": [150, 68]
+    },
+    {
+      "id": "alignment",
+      "type": "frontend",
+      "label": "Alignment",
+      "sublabel": "Rows, columns, grids",
+      "pos": [670, 70],
+      "size": [150, 68]
+    },
+    {
+      "id": "layout",
+      "type": "external",
+      "label": "Layout Runtime",
+      "sublabel": "fCoSE tuning and seed",
+      "pos": [670, 450],
+      "size": [150, 68]
+    },
+    {
+      "id": "icons",
+      "type": "database",
+      "label": "Icon Sources",
+      "sublabel": "Built-in and custom packs",
+      "pos": [250, 450],
+      "size": [150, 68]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "architecture-beta model",
+      "wraps": ["groups", "services", "junctions", "edges", "nesting", "alignment"]
+    }
+  ],
+  "connections": [
+    { "id": "groups-services", "from": "groups", "to": "services", "variant": "emphasis" },
+    { "id": "services-junctions", "from": "services", "to": "junctions", "variant": "emphasis" },
+    { "id": "junctions-edges", "from": "junctions", "to": "edges", "variant": "emphasis" },
+    { "id": "nesting-services", "from": "nesting", "to": "services" },
+    { "id": "alignment-edges", "from": "alignment", "to": "edges" },
+    { "id": "layout-edges", "from": "layout", "to": "edges", "variant": "dashed" },
+    { "id": "icons-services", "from": "icons", "to": "services", "variant": "dashed" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Core declarations",
+      "items": [
+        "Declare identifiers before another component references them.",
+        "Place icons in parentheses and display labels in brackets.",
+        "Use in to place groups or services inside a parent group."
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Connection semantics",
+      "items": [
+        "Choose T, B, L, or R ports on both ends of every edge.",
+        "Add arrowheads to show direction; use junctions for shared routes.",
+        "Use the group modifier for edges that cross group boundaries."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Placement and rendering",
+      "items": [
+        "Align rows for vertical port pairs and columns for horizontal port pairs.",
+        "Combine row and column constraints for grids without contradictory ordering.",
+        "Use a nonzero seed for reproducible fCoSE placement."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Icon support",
+      "items": [
+        "Built-ins are cloud, database, disk, internet, and server.",
+        "Register an icon pack before using a namespaced custom icon.",
+        "Keep labels short or increase iconSize when a label cannot wrap cleanly."
+      ]
+    }
+  ]
+}

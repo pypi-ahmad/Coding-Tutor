@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "Mermaid ZenUML Authoring Map",
+    "subtitle": "Participants, message forms, nested calls, control fragments, comments, and renderer registration",
+    "visual_preset": "editorial",
+    "quality_profile": "showcase",
+    "viewBox": [860, 860]
+  },
+  "participants": [
+    { "id": "author", "type": "external", "label": "Author", "sublabel": "ZenUML source" },
+    { "id": "client", "type": "frontend", "label": "Client", "sublabel": "actor or alias" },
+    { "id": "service", "type": "backend", "label": "Service", "sublabel": "sync call target" },
+    { "id": "worker", "type": "messagebus", "label": "Worker", "sublabel": "async receiver" },
+    { "id": "store", "type": "database", "label": "Store", "sublabel": "annotated participant" },
+    { "id": "renderer", "type": "cloud", "label": "Renderer", "sublabel": "ZenUML plugin" }
+  ],
+  "segments": [
+    { "from": 150, "to": 300, "label": "Declare participants" },
+    { "from": 315, "to": 550, "label": "Compose interactions" },
+    { "from": 565, "to": 720, "label": "Render and integrate" }
+  ],
+  "messages": [
+    { "id": "declare-order", "from": "author", "to": "client", "y": 180, "label": "declare participant order", "variant": "default" },
+    { "id": "declare-alias", "from": "author", "to": "service", "y": 225, "label": "assign alias and label", "variant": "default" },
+    { "id": "declare-annotator", "from": "author", "to": "store", "y": 270, "label": "apply Database annotator", "variant": "default" },
+    { "id": "sync-call", "from": "client", "to": "service", "y": 345, "label": "sync method call", "variant": "emphasis" },
+    { "id": "create-object", "from": "service", "to": "store", "y": 390, "label": "new object", "variant": "emphasis" },
+    { "id": "async-event", "from": "service", "to": "worker", "y": 435, "label": "async event", "variant": "dashed" },
+    { "id": "nested-read", "from": "service", "to": "store", "y": 480, "label": "nested sync call", "variant": "default" },
+    { "id": "reply-result", "from": "store", "to": "service", "y": 525, "label": "return result", "variant": "return" },
+    { "id": "submit-source", "from": "author", "to": "renderer", "y": 595, "label": "submit ZenUML source", "variant": "emphasis" },
+    { "id": "render-diagram", "from": "renderer", "to": "author", "y": 640, "label": "render sequence diagram", "variant": "return" },
+    { "id": "register-plugin", "from": "author", "to": "renderer", "y": 685, "label": "register external diagram", "variant": "security" }
+  ],
+  "activations": [
+    { "participant": "service", "from": 338, "to": 540, "type": "backend" },
+    { "participant": "store", "from": 384, "to": 532, "type": "database" },
+    { "participant": "worker", "from": 428, "to": 458, "type": "messagebus" },
+    { "participant": "renderer", "from": 588, "to": 698, "type": "cloud" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Participants",
+      "items": [
+        "Participants may be implicit or explicitly ordered before the first message.",
+        "Aliases separate compact identifiers from descriptive labels.",
+        "Annotators select participant symbols such as Actor or Database."
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Messages and nesting",
+      "items": [
+        "ZenUML supports synchronous, asynchronous, creation, and reply messages.",
+        "Synchronous and creation messages can contain nested interactions in braces.",
+        "Replies use assignment, return, or the return/reply annotator."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Control fragments",
+      "items": [
+        "Loops include while, for, forEach, foreach, and loop.",
+        "Conditional, optional, parallel, and try/catch/finally blocks use braces.",
+        "Message-level comments use double slashes and support Markdown."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Web integration",
+      "items": [
+        "ZenUML is loaded through Mermaid's external-diagram registration API.",
+        "Import Mermaid and the ZenUML module before calling registerExternalDiagrams.",
+        "The renderer uses experimental lazy loading and asynchronous rendering."
+      ]
+    }
+  ]
+}

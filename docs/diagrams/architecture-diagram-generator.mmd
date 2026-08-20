@@ -1,0 +1,64 @@
+flowchart TB
+    request(["Architecture diagram request"])
+
+    subgraph discovery[1. Discover project evidence]
+        direction LR
+        structure["File and directory structure"]
+        keyfiles["Entry points and key source files"]
+        imports["Imports and internal dependencies"]
+        packages["Package and runtime dependencies"]
+        models["Database models and migrations"]
+    end
+
+    scan["Scan project structure"]
+    inspect["Read relevant source and configuration"]
+    identify["Identify verified components,<br/>relationships, and boundaries"]
+    choose{"Requested diagram type?"}
+
+    request --> scan --> inspect --> identify --> choose
+    structure -. evidence .-> scan
+    keyfiles -. evidence .-> inspect
+    imports -. evidence .-> identify
+    packages -. evidence .-> identify
+    models -. evidence .-> identify
+
+    subgraph outputs[2. Generate the selected Mermaid view]
+        direction LR
+        system["System Architecture<br/>components and integrations"]
+        dataflow["Data Flow<br/>request and response paths"]
+        dependencies["Dependency Graph<br/>modules and packages"]
+        schema["Database Schema<br/>entities and cardinality"]
+    end
+
+    choose -->|System architecture| system
+    choose -->|Data flow| dataflow
+    choose -->|Dependency graph| dependencies
+    choose -->|Database schema| schema
+
+    grounded{"Every node and edge<br/>supported by code?"}
+    refine["Remove unsupported claims<br/>or inspect additional evidence"]
+    mermaid["Generate focused Mermaid source"]
+    validate["Validate Mermaid syntax"]
+    deliver["Write markdown or .mmd file"]
+    complete(["Maintainable architecture diagram"])
+
+    system --> grounded
+    dataflow --> grounded
+    dependencies --> grounded
+    schema --> grounded
+    grounded -->|No| refine --> inspect
+    grounded -->|Yes| mermaid --> validate --> deliver --> complete
+
+    classDef terminal fill:#0f766e,stroke:#134e4a,color:#ffffff,stroke-width:2px
+    classDef evidence fill:#ede9fe,stroke:#7c3aed,color:#4c1d95
+    classDef process fill:#e0f2fe,stroke:#0369a1,color:#0c4a6e
+    classDef decision fill:#fef3c7,stroke:#d97706,color:#78350f
+    classDef output fill:#dcfce7,stroke:#16a34a,color:#14532d
+    classDef correction fill:#fee2e2,stroke:#dc2626,color:#7f1d1d
+
+    class request,complete terminal
+    class structure,keyfiles,imports,packages,models evidence
+    class scan,inspect,identify,mermaid,validate,deliver process
+    class choose,grounded decision
+    class system,dataflow,dependencies,schema output
+    class refine correction

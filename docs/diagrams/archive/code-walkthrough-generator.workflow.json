@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Code Walkthrough Generator",
+    "subtitle": "Verified execution tracing from an open-ended request to a source-backed explanation",
+    "animation": "none",
+    "visual_preset": "editorial",
+    "quality_profile": "showcase",
+    "viewBox": [760, 1100]
+  },
+  "lanes": [
+    { "id": "request", "label": "Invocation" },
+    { "id": "scope", "label": "Request Analysis" },
+    { "id": "discovery", "label": "Implementation Discovery" },
+    { "id": "entry", "label": "Entry-Point Verification" },
+    { "id": "trace", "label": "Execution Trace" },
+    { "id": "analysis", "label": "Behavior Analysis" },
+    { "id": "output", "label": "Walkthrough Output" },
+    { "id": "evidence", "label": "Evidence Recovery", "variant": "exception" }
+  ],
+  "phases": [
+    { "id": "understand", "label": "Understand", "fromCol": 0, "toCol": 1 },
+    { "id": "verify", "label": "Locate + verify", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "explain", "label": "Trace + explain", "fromCol": 4, "toCol": 5, "variant": "dashed" }
+  ],
+  "mainPath": [
+    "invoke",
+    "classify",
+    "locate",
+    "entrypoint",
+    "read_chain",
+    "analyze",
+    "walkthrough"
+  ],
+  "nodes": [
+    {
+      "id": "invoke",
+      "lane": "request",
+      "col": 0,
+      "type": "external",
+      "label": "Invoke",
+      "sublabel": "target"
+    },
+    {
+      "id": "classify",
+      "lane": "scope",
+      "col": 1,
+      "type": "frontend",
+      "label": "Classify",
+      "sublabel": "intent"
+    },
+    {
+      "id": "locate",
+      "lane": "discovery",
+      "col": 2,
+      "type": "backend",
+      "label": "Locate",
+      "sublabel": "source + wiring"
+    },
+    {
+      "id": "entrypoint",
+      "lane": "entry",
+      "col": 3,
+      "type": "security",
+      "label": "Verify Entry",
+      "sublabel": "trigger + input"
+    },
+    {
+      "id": "read_chain",
+      "lane": "trace",
+      "col": 3,
+      "type": "backend",
+      "label": "Read Chain",
+      "sublabel": "calls + files"
+    },
+    {
+      "id": "analyze",
+      "lane": "analysis",
+      "col": 4,
+      "type": "backend",
+      "label": "Analyze",
+      "sublabel": "behavior"
+    },
+    {
+      "id": "walkthrough",
+      "lane": "output",
+      "col": 5,
+      "type": "cloud",
+      "label": "Walkthrough",
+      "sublabel": "source-backed"
+    },
+    {
+      "id": "evidence_gap",
+      "lane": "evidence",
+      "col": 4,
+      "type": "security",
+      "label": "Gap?",
+      "width": 40
+    },
+    {
+      "id": "inspect_more",
+      "lane": "evidence",
+      "col": 3,
+      "type": "messagebus",
+      "label": "More",
+      "width": 40
+    }
+  ],
+  "edges": [
+    { "id": "invoke_classify", "from": "invoke", "to": "classify", "role": "main" },
+    { "id": "classify_locate", "from": "classify", "to": "locate", "role": "main", "route": "drop", "fromSide": "bottom", "toSide": "top" },
+    { "id": "locate_entry", "from": "locate", "to": "entrypoint", "role": "main", "variant": "emphasis" },
+    { "id": "entry_chain", "from": "entrypoint", "to": "read_chain", "role": "main" },
+    { "id": "chain_analysis", "from": "read_chain", "to": "analyze", "role": "main", "variant": "emphasis" },
+    { "id": "analysis_output", "from": "analyze", "to": "walkthrough", "role": "main", "variant": "emphasis" },
+    { "id": "analysis_gap", "from": "analyze", "to": "evidence_gap", "role": "branch", "variant": "security" },
+    { "id": "gap_more", "from": "evidence_gap", "to": "inspect_more", "role": "error", "variant": "security" },
+    { "id": "more_chain", "from": "inspect_more", "to": "read_chain", "role": "return", "variant": "dashed" }
+  ],
+  "cards": [
+    {
+      "dot": "violet",
+      "title": "Accepted Targets",
+      "items": [
+        "Feature, workflow, endpoint, command, job, or event",
+        "Function, class, module, file, or database operation",
+        "Authentication, data-processing, ML, AI, or RAG pipeline"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Entry-Point Evidence",
+      "items": [
+        "File path, line number, and function or class",
+        "The event or framework behavior that triggers execution",
+        "The initial input entering the flow"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Trace Every Relevant Stage",
+      "items": [
+        "Purpose, callers, callees, inputs, outputs, transformations",
+        "Validation, branches, early returns, and exceptions",
+        "External calls, persistence, and other side effects"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Accuracy Rules",
+      "items": [
+        "Read implementation files rather than trusting names or comments",
+        "Follow the architecture present in the repository",
+        "Return to discovery whenever a link cannot be verified"
+      ]
+    }
+  ]
+}

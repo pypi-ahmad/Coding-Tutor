@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "diagram_type": "lifecycle",
+  "meta": {
+    "title": "Mermaid State Diagram Authoring Map",
+    "subtitle": "Define finite states, connect transitions, add hierarchical behavior, and finish with readable presentation",
+    "animation": "none",
+    "visual_preset": "signal-flow",
+    "quality_profile": "showcase",
+    "viewBox": [980, 900]
+  },
+  "lanes": [
+    { "id": "main", "label": "Core state model" },
+    { "id": "constructs", "label": "Behavior constructs" }
+  ],
+  "states": [
+    {
+      "id": "declared",
+      "type": "start",
+      "label": "Declared",
+      "sublabel": "stateDiagram-v2",
+      "lane": "main",
+      "col": 0,
+      "step": "01"
+    },
+    {
+      "id": "states_defined",
+      "type": "active",
+      "label": "States",
+      "sublabel": "IDs + descriptions",
+      "lane": "main",
+      "col": 1,
+      "step": "02"
+    },
+    {
+      "id": "transitions_defined",
+      "type": "active",
+      "label": "Transitions",
+      "sublabel": "arrows + events",
+      "lane": "main",
+      "col": 2,
+      "step": "03"
+    },
+    {
+      "id": "behavior_structured",
+      "type": "decision",
+      "label": "Structured",
+      "sublabel": "hierarchy + branching",
+      "lane": "main",
+      "col": 3,
+      "step": "04"
+    },
+    {
+      "id": "rendered",
+      "type": "success",
+      "label": "Rendered",
+      "sublabel": "finite-state model",
+      "lane": "main",
+      "col": 4,
+      "step": "05"
+    },
+    {
+      "id": "composite",
+      "type": "active",
+      "label": "Composite",
+      "lane": "constructs",
+      "col": 0,
+      "width": 80
+    },
+    {
+      "id": "choice",
+      "type": "decision",
+      "label": "Choice",
+      "lane": "constructs",
+      "col": 1,
+      "width": 80
+    },
+    {
+      "id": "parallel",
+      "type": "active",
+      "label": "Parallel",
+      "lane": "constructs",
+      "col": 2,
+      "width": 80
+    }
+  ],
+  "transitions": [
+    {
+      "id": "states_composite",
+      "from": "states_defined",
+      "to": "composite",
+      "variant": "dashed"
+    },
+    {
+      "id": "composite_choice",
+      "from": "composite",
+      "to": "choice",
+      "variant": "default"
+    },
+    {
+      "id": "choice_parallel",
+      "from": "choice",
+      "to": "parallel",
+      "variant": "default",
+      "route": "straight"
+    },
+    {
+      "id": "parallel_structured",
+      "from": "parallel",
+      "to": "behavior_structured",
+      "variant": "emphasis"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "violet",
+      "title": "Core Syntax",
+      "items": [
+        "Use [*] as the initial or terminal marker",
+        "Transitions use arrows and may include event or guard labels",
+        "A description may follow the state keyword or a state ID and colon",
+        "Direction can be set globally and inside composite states"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Hierarchical Behavior",
+      "items": [
+        "Composite states contain their own initial, active, and terminal states",
+        "Choice nodes express guarded alternatives",
+        "Fork and join nodes model parallel paths",
+        "Double-dash separators define concurrent regions"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Important Constraints",
+      "items": [
+        "Internal states in different composite states cannot connect directly",
+        "classDef styles cannot target initial or terminal states",
+        "classDef styles cannot be applied to or within composite states"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Presentation",
+      "items": [
+        "Notes may appear to the left or right of a state",
+        "Use class statements or the triple-colon shorthand for styles",
+        "Use stable state IDs when display descriptions contain spaces",
+        "Comments begin with a double-percent prefix"
+      ]
+    }
+  ]
+}
