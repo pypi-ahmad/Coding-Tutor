@@ -17,6 +17,26 @@ Coding Tutor combines local DuckDB question catalogs with optional AI generation
 > [!IMPORTANT]
 > Coding Tutor never executes learner code or stored test cases. Scores, correctness percentages, corrections, and coding-quiz results are AI estimates—not deterministic judge results.
 
+## Index
+
+- [What you can do](#what-you-can-do)
+- [Application modes](#application-modes)
+- [Get started](#get-started)
+  - [Requirements](#requirements)
+  - [Install and run](#install-and-run)
+  - [Configure an AI provider](#configure-an-ai-provider)
+- [Typical workflow](#typical-workflow)
+- [Interview mode](#interview-mode)
+- [Data catalogs](#data-catalogs)
+  - [Download and import coding datasets](#download-and-import-coding-datasets)
+  - [Download and import interview sources](#download-and-import-interview-sources)
+- [Optional web research](#optional-web-research)
+- [How it works](#how-it-works)
+- [Project layout](#project-layout)
+- [Development and verification](#development-and-verification)
+- [Current limitations](#current-limitations)
+- [Documentation](#documentation)
+
 ## What you can do
 
 - Practice algorithms in Python, JavaScript/TypeScript, Java, or C++, and author SQL, Pandas, PySpark, or Polars solutions.
