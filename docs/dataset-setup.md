@@ -1,6 +1,6 @@
 # Dataset Setup Guide
 
-Coding Tutor imports practice questions from seven public Hugging Face datasets. The raw files are **not included in the repository** because they total roughly 8 GB. This guide explains how to download them and load them into the local DuckDB database.
+Coding Tutor imports practice questions from seven public Hugging Face datasets. The raw files are **not included in the repository** and can require substantial download time and disk space. This guide explains how to download them and load them into the local DuckDB database.
 
 ---
 
@@ -69,6 +69,12 @@ uv run python scripts/download_datasets.py --datasets leetcode taco
 uv run python scripts/download_datasets.py --include-codecontests
 ```
 
+That command downloads the normal dataset set plus CodeContests. To download only CodeContests, combine the flags:
+
+```powershell
+uv run python scripts/download_datasets.py --datasets codecontests --include-codecontests
+```
+
 ### Preview without downloading
 
 ```bash
@@ -132,7 +138,7 @@ uv run python scripts/import_datasets.py
 uv run python scripts/import_datasets.py --datasets leetcode spider
 ```
 
-Available keys are `leetcode`, `apps`, `codecontests`, `taco`, `spider`, `sqlctx`, and `querypls`. Use `--dataset-root PATH` for a different read-only source location or `--database PATH` for a different DuckDB file. Omitting `--database` respects `CODING_TUTOR_DB` and otherwise uses `coding_tutor.duckdb`.
+Available keys are `leetcode`, `apps`, `codecontests`, `taco`, `spider`, `sqlctx`, and `querypls`. Use `--dataset-root PATH` for a different read-only source location or `--database PATH` for a different DuckDB file. Omitting `--database` respects `CODING_TUTOR_DB` and otherwise uses the legacy `coding_tutor.duckdb` default. For the normal three-catalog setup, pass the explicit runtime catalog paths shown below.
 
 The importer never renames, moves, overwrites, or extracts into the downloaded source directories. Provenance stores the relative source path, original ID where available, Hugging Face revision metadata where present, license, attribution, and import timestamp.
 
@@ -157,7 +163,7 @@ conn.execute("""
 ## Build the three runtime catalogs
 
 ```powershell
-uv run python scripts/import_datasets.py --datasets leetcode codecontests apps taco --database Dataset/catalogs/algorithm.duckdb
+uv run python scripts/import_datasets.py --datasets leetcode apps taco --database Dataset/catalogs/algorithm.duckdb
 uv run python scripts/import_datasets.py --datasets spider sqlctx querypls --database Dataset/catalogs/data_analysis.duckdb
 
 gh auth status
@@ -165,6 +171,13 @@ uv run python scripts/download_interview_sources.py --list
 uv run python scripts/download_interview_sources.py
 uv run python scripts/import_interview_sources.py
 uv run python scripts/import_user_ai_interview_questions.py
+```
+
+CodeContests is not part of the default download because its downloaded source card does not state a license. After reviewing and accepting that constraint, add it explicitly:
+
+```powershell
+uv run python scripts/download_datasets.py --datasets codecontests --include-codecontests
+uv run python scripts/import_datasets.py --datasets codecontests --database Dataset/catalogs/algorithm.duckdb
 ```
 
 The unified app queries these consolidated catalogs. `Dataset/algorithm_problems`, `Dataset/data_analysis_problems`, and `Dataset/interview_sources` remain the raw inputs used by import commands.

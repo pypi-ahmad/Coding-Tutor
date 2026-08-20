@@ -135,8 +135,15 @@ Normal app use reads the consolidated DuckDB files, not the raw dataset director
 uv run python scripts/download_datasets.py --list
 uv run python scripts/download_datasets.py
 
-uv run python scripts/import_datasets.py --datasets leetcode codecontests apps taco --database Dataset/catalogs/algorithm.duckdb
+uv run python scripts/import_datasets.py --datasets leetcode apps taco --database Dataset/catalogs/algorithm.duckdb
 uv run python scripts/import_datasets.py --datasets spider sqlctx querypls --database Dataset/catalogs/data_analysis.duckdb
+```
+
+CodeContests is excluded by default because its downloaded source card does not state a license. After reviewing and accepting that constraint, download and import it explicitly:
+
+```powershell
+uv run python scripts/download_datasets.py --datasets codecontests --include-codecontests
+uv run python scripts/import_datasets.py --datasets codecontests --database Dataset/catalogs/algorithm.duckdb
 ```
 
 ### Download and import interview sources
@@ -155,7 +162,7 @@ Imports are idempotent: stable source identities prevent duplicate records. Some
 
 ## Optional web research
 
-Web research is off by default. During AI Questions or Interview generation it runs when fewer than three local references are available. During Coding generation it runs only for a specific topic that is absent from the local reference context. Local-only question selection never invokes it. Source links are retained with generated material.
+Web research is off by default. When AI Questions or Interview needs to generate a question, enabled research runs only if fewer than three local references are available. During Coding generation it runs only for a specific topic that is absent from the local reference context. Local-only question selection never invokes it. Source links are retained with generated material.
 
 - Web content is treated as untrusted input.
 - Research is used for question generation, never grading.
@@ -241,6 +248,7 @@ Start with the [documentation index](docs/README.md), or go directly to:
 - [Usage](docs/USAGE.md)
 - [Technical Reference](docs/TECHNICAL_REFERENCE.md)
 - [Architecture](docs/ARCHITECTURE.md)
+- [Contributor diagram catalog](docs/diagrams/README.md)
 - [AI behavior](docs/AI_BEHAVIOR.md)
 - [Security and privacy](docs/SECURITY_AND_PRIVACY.md)
 - [Datasets and attribution](docs/DATASETS.md)

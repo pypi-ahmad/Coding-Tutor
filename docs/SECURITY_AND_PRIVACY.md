@@ -56,7 +56,7 @@ Automated configuration tests verify these ignore patterns and verify that `.env
 
 ## Local storage
 
-DuckDB is the only application database technology. Normal unified operation uses `Dataset/catalogs/algorithm.duckdb`, `Dataset/catalogs/data_analysis.duckdb`, and `Dataset/catalogs/interview.duckdb`. `CODING_TUTOR_DB` is an advanced/test override that can intentionally route activity to one path. Startup creates missing parent directories and applies migrations per opened catalog.
+DuckDB is the only application database technology. Normal unified operation uses `Dataset/catalogs/algorithm.duckdb`, `Dataset/catalogs/data_analysis.duckdb`, and `Dataset/catalogs/interview.duckdb`. `CODING_TUTOR_DB` is an advanced/test override used by Coding, Quiz, Progress, and imports that omit `--database`; AI Questions and Interview explicitly continue to use the interview catalog. Startup creates missing parent directories and applies migrations per opened catalog.
 
 The database can contain:
 

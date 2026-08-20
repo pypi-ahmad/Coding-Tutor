@@ -95,7 +95,7 @@ Each interview question is stored before display. MCQs are scored locally; theor
 
 ### Research question material with Firecrawl
 
-During AI Questions or Interview generation, enabled Web research runs when fewer than three local references are available. Local-only selection does not invoke it. During Coding generation, it runs only when the selected topic is not `general` and that topic is absent from the serialized local reference context. The app sends a normalized topic query to Firecrawl MCP, accepts at most five results, selectively scrapes at most three pages, and clips each excerpt to 6,000 characters. The resulting text is untrusted generation context and stored citation provenance.
+When AI Questions or Interview needs an AI-generated item, enabled Web research runs only if fewer than three local references are available. Local-only selection does not invoke it. During Coding generation, it runs only when the selected topic is not `general` and that topic is absent from the serialized local reference context. The app sends a normalized topic query to Firecrawl MCP, accepts at most five results, selectively scrapes at most three pages, and clips each excerpt to 6,000 characters. The resulting text is untrusted generation context and stored citation provenance.
 
 Firecrawl never receives raw JD/resume text, learner answers, provider credentials, or database contents. Its output is not used for assessment or scoring. If research fails, the app warns the user and continues generation without web material.
 

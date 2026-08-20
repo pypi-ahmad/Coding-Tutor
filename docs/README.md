@@ -8,6 +8,7 @@ Documentation is organized by purpose:
 | How-to | [How to Use Coding Tutor](USAGE.md) | Complete Coding, Quiz, AI Questions, Interview, Progress, and data-management tasks. |
 | Reference | [Technical Reference](TECHNICAL_REFERENCE.md) | Look up modes, modules, catalogs, schema, providers, Firecrawl, and tests. |
 | Reference | [Datasets](DATASETS.md) | Review supported source formats, normalization, licenses, and caveats. |
+| Reference | [Contributor Diagram Catalog](diagrams/README.md) | Find canonical diagram sources, generated previews, Archify specifications, and archived variants. |
 | Explanation | [Architecture](ARCHITECTURE.md) | Understand the design choices and trade-offs. |
 | Decisions | [Architecture Decisions](ARCHITECTURE_DECISIONS.md) | Review accepted technical decisions and their implementation evidence. |
 | Explanation | [AI Behavior](AI_BEHAVIOR.md) | Understand provider requests, validation, persistence, and limitations. |

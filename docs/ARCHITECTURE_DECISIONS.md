@@ -6,7 +6,7 @@ Commit hashes and dates below come from the repository's local Git history. File
 
 ## ADR-001: Use DuckDB for embedded application persistence
 
-**Status:** Accepted
+**Status:** Superseded by ADR-013
 
 ### Context
 
@@ -318,3 +318,31 @@ Return `GenerationResult`/`GenerationFailure` and `SolutionGenerationResult`/`So
 
 - Typed generation and solution failure handling was introduced or refined in commit `d759332` on 2026-08-19.
 - Current evidence: [question-generation results](../src/coding_tutor/generation/generator.py), [teaching-solution results](../src/coding_tutor/evaluation/solutions.py), [generation UI handling](../src/coding_tutor/ui/main_page.py), [solution UI handling](../src/coding_tutor/ui/solution_view.py), [generation tests](../tests/test_generation.py), [solution tests](../tests/test_solutions.py), and [UI tests](../tests/test_ui.py).
+
+## ADR-013: Route activities across three DuckDB catalogs
+
+**Status:** Accepted
+
+### Context
+
+The original application used one default DuckDB file. Algorithm practice, data-analysis practice, and interview workflows now have independent source catalogs, schemas, import lifecycles, and progress views. Normal unified operation needs deterministic ownership for each activity without requiring separate database services.
+
+### Decision
+
+Use `Dataset/catalogs/algorithm.duckdb` for algorithm Coding and Quiz activity, `Dataset/catalogs/data_analysis.duckdb` for data-analysis Coding and Quiz activity, and `Dataset/catalogs/interview.duckdb` for AI Questions and Interview activity. Progress reads the applicable catalogs together.
+
+Retain `CODING_TUTOR_DB` as an advanced compatibility and test override for Coding, Quiz, Progress, and import commands that omit `--database`. AI Questions and Interview continue to open the interview catalog explicitly.
+
+### Consequences
+
+- Normal runtime storage is separated by activity while remaining local and embedded.
+- The unified Progress page combines results across the three catalogs.
+- Raw dataset directories remain import inputs and are not queried during normal practice.
+- The override is intentionally not a universal replacement for all three runtime catalogs.
+- Users must back up each catalog that contains activity they want to retain.
+
+### Date and evidence
+
+- Independent catalog profiles were introduced in commit `14fa303` on 2026-08-20.
+- AI Questions and Interview catalog routing was introduced in commit `e38e305` on 2026-08-20.
+- Current evidence: [catalog routing](../src/coding_tutor/catalog.py), [application entry point](../app.py), [interview service](../src/coding_tutor/interview/service.py), and [progress UI](../src/coding_tutor/ui/progress_page.py).

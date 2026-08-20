@@ -79,6 +79,17 @@ Without a key, the application may use Firecrawl's limited keyless mode. Restart
 
 If no question is available, relax the filters or import the algorithm datasets. Dataset-provided starter and reference code may be Python-only; the editor supplies a generic template and can request an AI teaching solution for another selected language.
 
+### Build an algorithm catalog in the app
+
+If algorithm source files are already present but their imports are incomplete:
+
+1. Select **Coding**, **Algorithm**, and either **Curated questions** or **Mixed**.
+2. Select **Build question catalog**.
+3. Wait for each available algorithm source to finish importing.
+4. Review the completion or failure message, then retry any failed source after resolving the reported problem.
+
+This algorithm-only action attempts pending LeetCodeDataset, CodeContests, APPS, and TACO imports against the active algorithm database, including a `CODING_TUTOR_DB` override when configured. It does not download missing datasets or build the data-analysis catalog. An absent source is reported as a failed import. CodeContests remains subject to its unresolved source-license status.
+
 ### Practice a data-analysis question
 
 1. Select **Coding** and choose **Data analysis**.
@@ -95,10 +106,11 @@ The app does not run the SQL or Python-family text. PySpark and Polars do not ne
 1. Configure an AI provider.
 2. Select **AI generated** as the source.
 3. Choose the question type, difficulty, method, and optional topic.
-4. Select the generation action.
-5. Wait for validation and storage to complete.
+4. Optionally enable **Web research** for a specific non-general topic.
+5. Select **Generate question**.
+6. Wait for validation and storage to complete.
 
-Malformed or incomplete provider output is rejected. A rejected response does not become a usable question.
+Enabled web research runs only when the selected topic is absent from the local reference context. Malformed or incomplete provider output is rejected. A rejected response does not become a usable question.
 
 ### Use Mixed question selection
 
@@ -200,6 +212,8 @@ MCQs are scored locally. Theory and coding answers require the selected provider
 
 The app searches only when local reference material is insufficient. Source links are retained with generated material. Firecrawl failure produces a warning and the app continues with local/model-only generation. Live web content is never used for grading.
 
+The Interview **Web research** toggle follows the same boundary: it applies only when an AI-generated turn is needed and fewer than three local references are available. Local-only interview questions never invoke Firecrawl.
+
 ## Use Interview mode
 
 ### Start a tech interview
@@ -280,14 +294,26 @@ uv run python scripts/download_datasets.py
 
 Raw files are stored below `Dataset/algorithm_problems` and `Dataset/data_analysis_problems`.
 
+CodeContests is skipped by default because its downloaded source card does not state a license. After reviewing and accepting that constraint, download it explicitly:
+
+```powershell
+uv run python scripts/download_datasets.py --datasets codecontests --include-codecontests
+```
+
 ### Build the coding catalogs
 
 ```powershell
-uv run python scripts/import_datasets.py --datasets leetcode codecontests apps taco --database Dataset/catalogs/algorithm.duckdb
+uv run python scripts/import_datasets.py --datasets leetcode apps taco --database Dataset/catalogs/algorithm.duckdb
 uv run python scripts/import_datasets.py --datasets spider sqlctx querypls --database Dataset/catalogs/data_analysis.duckdb
 ```
 
 Imports are idempotent. Existing stable source identities are skipped.
+
+If you opted into CodeContests, import it separately:
+
+```powershell
+uv run python scripts/import_datasets.py --datasets codecontests --database Dataset/catalogs/algorithm.duckdb
+```
 
 ### Download and import interview sources
 
@@ -308,7 +334,7 @@ The downloader records source revisions, hashes, licenses, and ingestion decisio
 ```powershell
 # Download coding sources, then build both coding catalogs
 uv run python scripts/download_datasets.py
-uv run python scripts/import_datasets.py --datasets leetcode codecontests apps taco --database Dataset/catalogs/algorithm.duckdb
+uv run python scripts/import_datasets.py --datasets leetcode apps taco --database Dataset/catalogs/algorithm.duckdb
 uv run python scripts/import_datasets.py --datasets spider sqlctx querypls --database Dataset/catalogs/data_analysis.duckdb
 
 # Download allowed interview sources, then import both interview collections
@@ -320,14 +346,14 @@ uv run python scripts/import_user_ai_interview_questions.py
 
 ### Use a custom database path
 
-Set `CODING_TUTOR_DB` before launch only when you intentionally want the advanced single-path override:
+Set `CODING_TUTOR_DB` before launch only when you intentionally want Coding, Quiz, and Progress to use an advanced override path:
 
 ```powershell
 $env:CODING_TUTOR_DB = "$PWD\local-data\coding-tutor.duckdb"
 uv run --locked streamlit run app.py
 ```
 
-For normal unified operation, leave it unset so each activity uses its dedicated catalog.
+Imports that omit `--database` also honor this value. AI Questions and Interview explicitly use `Dataset/catalogs/interview.duckdb`, even when the override is set. Because Progress reads the override path while it is configured, AI Questions and Interview records written to the dedicated interview catalog will not appear there until the override is removed. For normal unified operation, leave it unset so each activity uses its dedicated catalog.
 
 ## Verify a development checkout
 

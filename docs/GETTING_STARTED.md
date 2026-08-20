@@ -35,9 +35,11 @@ Datasets are optional when you use AI generation. To prepare local coding questi
 ```powershell
 uv run python scripts/download_datasets.py --list
 uv run python scripts/download_datasets.py
-uv run python scripts/import_datasets.py --datasets leetcode codecontests apps taco --database Dataset/catalogs/algorithm.duckdb
+uv run python scripts/import_datasets.py --datasets leetcode apps taco --database Dataset/catalogs/algorithm.duckdb
 uv run python scripts/import_datasets.py --datasets spider sqlctx querypls --database Dataset/catalogs/data_analysis.duckdb
 ```
+
+CodeContests is skipped by default because its downloaded source card does not state a license. See [Dataset Setup](dataset-setup.md) if you intentionally want to download and import it.
 
 To prepare local AI and interview questions:
 
@@ -87,7 +89,7 @@ JD-based interviews can parse PDF, DOCX, or TXT files up to 5 MB. Raw JD/resume 
 | `Dataset/catalogs/data_analysis.duckdb` | Data-analysis questions, attempts, quizzes, and solution views |
 | `Dataset/catalogs/interview.duckdb` | AI Questions, interview sessions, turns, and reports |
 
-Leave `CODING_TUTOR_DB` unset for normal unified operation. It is an advanced/test override for intentionally routing activity to one path.
+Leave `CODING_TUTOR_DB` unset for normal unified operation. It is an advanced/test override for Coding, Quiz, imports that omit `--database`, and Progress. AI Questions and Interview continue to use `Dataset/catalogs/interview.duckdb`.
 
 ## Next steps
 

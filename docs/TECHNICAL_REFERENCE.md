@@ -10,24 +10,9 @@ Learner Python, JavaScript/TypeScript, Java, C++, SQL, Pandas, PySpark, and Pola
 
 ## Architecture
 
-```mermaid
-flowchart LR
-    Raw[Raw dataset inputs] --> Import[Download and import scripts]
-    Import --> Algorithm[(algorithm.duckdb)]
-    Import --> Analysis[(data_analysis.duckdb)]
-    Import --> Interview[(interview.duckdb)]
-    Algorithm <--> UI[Streamlit modes]
-    Analysis <--> UI
-    Interview <--> UI
-    UI -->|Explicit AI action| Provider[Selected AI provider]
-    UI -->|Optional question research| Firecrawl[Firecrawl MCP]
-    Firecrawl --> Provider
-    Provider --> Validate[Strict response validation]
-    Validate --> UI
-    Validate --> Algorithm
-    Validate --> Analysis
-    Validate --> Interview
-```
+See [Architecture](ARCHITECTURE.md) for the canonical Mermaid views of the runtime system, explicit AI-action lifecycle, and dataset-to-catalog flow.
+
+Contributor-facing Mermaid sources, generated previews, Archify specifications, and archived variants are indexed separately in the [Contributor Diagram Catalog](diagrams/README.md).
 
 All provider and dataset operations are synchronous. Streamlit session state holds transient controls and editor drafts. Durable questions, attempts, quiz state, AI-question sessions, interview sessions, and reports are stored in the catalog that owns the activity.
 
@@ -85,7 +70,7 @@ Coding editor keys include the question ID and method. A baseline key tracks whe
 
 `database_for_question_type()` maps algorithms to the algorithm catalog and data analysis to the data-analysis catalog. `interview_database()` returns the interview catalog. `get_db()` caches a migrated connection per resolved path rather than using one global connection.
 
-`CODING_TUTOR_DB` is an advanced/test override. When present, it can direct activity to one path; it is not the normal unified-app storage model.
+`CODING_TUTOR_DB` is an advanced/test override rather than the normal unified-app storage model. Coding and Quiz use it as their active database, Progress reads all activity views from that path, and the dataset importer uses it when `--database` is omitted. AI Questions and Interview bypass the override because their service explicitly opens `interview_database()`. Consequently, Progress does not show records written to the dedicated interview catalog while the override is set.
 
 ## Environment variables
 
@@ -96,7 +81,7 @@ Coding editor keys include the question ID and method. A baseline key tracks whe
 | `AGNES_API_KEY` | Configures Agnes AI when non-blank. |
 | `GOOGLE_API_KEY` | Configures Google Gemini when non-blank. |
 | `FIRECRAWL_API_KEY` | Optional bearer credential for Firecrawl MCP; absence selects keyless access. |
-| `CODING_TUTOR_DB` | Advanced override for the resolved DuckDB path. |
+| `CODING_TUTOR_DB` | Advanced override for Coding, Quiz, Progress, and imports without `--database`; AI Questions and Interview still use the interview catalog. |
 | `CODING_TUTOR_CATALOG` | Selects a fixed catalog profile when using catalog-specific launching. |
 | `HF_TOKEN` | Optional Hugging Face downloader credential. |
 | `HUGGING_FACE_HUB_TOKEN` | Fallback Hugging Face credential name. |
@@ -206,7 +191,7 @@ Only one turn can be pending. Submitted MCQs are scored locally; theory and codi
 
 The implementation calls `firecrawl_search` with at most five results. It selectively calls `firecrawl_scrape` for at most three short-result pages and bounds every stored excerpt to 6,000 characters. Results are treated as untrusted provider context and stored as source provenance for generated AI Questions or Interview items.
 
-Web research is used only when explicitly enabled. During AI Questions or Interview generation, it is requested when fewer than three local references are available; local-only selection does not invoke it. Coding generation requests it only for a non-`general` topic that is absent from the serialized local reference context. It never participates in scoring and never receives raw JD/resume text, learner answers, provider credentials, or database contents. A Firecrawl failure produces a warning and generation continues without web material.
+Web research is used only when explicitly enabled. When AI Questions or Interview needs an AI-generated item, research is requested only if fewer than three local references are available; local-only selection does not invoke it. Coding generation requests it only for a non-`general` topic that is absent from the serialized local reference context. It never participates in scoring and never receives raw JD/resume text, learner answers, provider credentials, or database contents. A Firecrawl failure produces a warning and generation continues without web material.
 
 ## DuckDB schema
 
