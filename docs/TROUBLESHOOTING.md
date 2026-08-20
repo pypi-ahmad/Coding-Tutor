@@ -203,7 +203,7 @@ Question generation reports:
 The provider request failed. Check network access, credentials, quota, and model access.
 ```
 
-Practice assessment reports that the provider could not complete the assessment, or solution/quiz generation displays its provider-error or retry message.
+Coding assessment reports that the provider could not complete the assessment, or solution/quiz/AI-question/interview generation displays its provider-error or retry message.
 
 **Likely cause**
 
@@ -327,7 +327,7 @@ A verified source file has the configured format and required fields but the imp
 
 **Symptom**
 
-Practice displays a message such as:
+Coding displays a message such as:
 
 ```text
 No curated algorithm questions for PYTHON at Easy difficulty. Try a different difficulty or import datasets.
@@ -450,6 +450,14 @@ Quiz Mode enters the answering view with the requested number of distinct questi
 
 Enough complete curated questions match every stored filter, but retry still reports a smaller available count. Include the safe count message and filter values; do not attach the database or raw dataset records.
 
+## Firecrawl is keyless or unavailable
+
+If the app reports keyless access even after setting `FIRECRAWL_API_KEY`, close and restart the terminal and Streamlit. Windows user-environment changes are not inherited by processes that were already running. Confirm only that the variable exists; never print or paste its value into logs. When Firecrawl is unavailable, the app preserves the session and falls back to local/model-only question generation with a warning.
+
+## A JD or resume cannot be read
+
+Uploads must be PDF, DOCX, or TXT and no larger than 5 MB. Encrypted, damaged, or image-only scanned PDFs are rejected because the app does not perform OCR. Convert the document to selectable text and retry. Raw documents are not stored in DuckDB.
+
 ## PySpark or another learner solution does not run
 
 **Symptom**
@@ -463,7 +471,7 @@ This is the implemented behavior, not a missing runtime dependency. The editor s
 **Verified resolution steps**
 
 1. Use the editor to write the selected method.
-2. Select **Done** for AI-estimated feedback, understanding that no code is executed.
+2. Select **Submit solution** for AI-estimated feedback, understanding that no code is executed.
 3. Run code in a separate environment only after reviewing it and accepting responsibility for that environment's safety and data access.
 
 Installing PySpark into this project does not enable execution in the application.

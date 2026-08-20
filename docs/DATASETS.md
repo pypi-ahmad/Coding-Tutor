@@ -187,6 +187,30 @@ uv run python scripts/import_datasets.py --datasets leetcode apps taco
 
 The import CLI also implements `--dataset-root` and `--database`. Omitting `--database` uses `CODING_TUTOR_DB` when set and otherwise uses `coding_tutor.duckdb`. See [Dataset Setup](dataset-setup.md) for the command reference and [Troubleshooting](TROUBLESHOOTING.md) for verified import failures.
 
+## Interview question sources
+
+Interview material is downloaded to `Dataset/interview_sources/raw` and normalized into `Dataset/catalogs/interview.duckdb`. The downloader uses authenticated GitHub CLI requests, pins each source revision, calculates file hashes, and writes license and ingestion decisions to `Dataset/interview_sources/manifest.json`.
+
+```powershell
+gh auth status
+uv run python scripts/download_interview_sources.py --list
+uv run python scripts/download_interview_sources.py
+uv run python scripts/import_interview_sources.py
+uv run python scripts/import_user_ai_interview_questions.py
+```
+
+Only sources marked `ingestion_allowed` are normalized. Raw-only sources remain local research inputs and do not become application questions. RecruitView is deferred because its non-commercial/access constraints require separate approval. Repeated imports skip stable source identities.
+
+## Runtime catalogs
+
+| Catalog | Imported material |
+| --- | --- |
+| `Dataset/catalogs/algorithm.duckdb` | LeetCodeDataset, APPS, TACO, and CodeContests algorithm records |
+| `Dataset/catalogs/data_analysis.duckdb` | Spider, sql-create-context, and QueryPls reference records |
+| `Dataset/catalogs/interview.duckdb` | Allowed interview sources and project-maintained AI interview questions |
+
+Raw dataset directories are import inputs and are not queried during normal app use.
+
 ## Licensing and redistribution cautions
 
 The Coding Tutor MIT license covers this project's source code only. It does not relicense downloaded or normalized dataset content.

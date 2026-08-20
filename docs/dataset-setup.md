@@ -153,6 +153,23 @@ conn.execute("""
 
 ---
 
+## Build the three runtime catalogs
+
+```powershell
+uv run python scripts/import_datasets.py --datasets leetcode codecontests apps taco --database Dataset/catalogs/algorithm.duckdb
+uv run python scripts/import_datasets.py --datasets spider sqlctx querypls --database Dataset/catalogs/data_analysis.duckdb
+
+gh auth status
+uv run python scripts/download_interview_sources.py --list
+uv run python scripts/download_interview_sources.py
+uv run python scripts/import_interview_sources.py
+uv run python scripts/import_user_ai_interview_questions.py
+```
+
+The unified app queries these consolidated catalogs. `Dataset/algorithm_problems`, `Dataset/data_analysis_problems`, and `Dataset/interview_sources` remain the raw inputs used by import commands.
+
+The interview downloader records revisions, SHA-256 hashes, license metadata, and whether ingestion is allowed. It requires an authenticated `gh` installation. Raw-only sources are downloaded for later review but are not imported into usable question rows.
+
 ## Troubleshooting
 
 | Symptom | Likely cause | Fix |
