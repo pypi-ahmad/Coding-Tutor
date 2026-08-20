@@ -1,6 +1,6 @@
 [project]
 name = "coding-tutor"
-version = "0.1.2"
+version = "0.2.0"
 description = "AI-powered local coding tutor"
 readme = "README.md"
 requires-python = ">=3.11"
