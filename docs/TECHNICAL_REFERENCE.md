@@ -4,7 +4,7 @@ This reference describes Coding Tutor as implemented in the current source tree.
 
 ## Runtime boundaries
 
-Coding Tutor is a single-user Streamlit application with five modes: **Coding**, **Quiz**, **AI Questions**, **Interview**, and **Progress**. It reads consolidated local DuckDB catalogs and makes external requests only for explicit AI or web-research actions.
+Coding Tutor is a single-user Streamlit application with five modes: **Coding**, **Quiz**, **AI Questions**, **Interview**, and **Progress**. At Streamlit runtime, it reads consolidated local DuckDB catalogs and makes external requests only for explicit AI or web-research actions. Separately invoked dataset download scripts can contact their documented GitHub or Hugging Face sources.
 
 Learner Python, JavaScript/TypeScript, Java, C++, SQL, Pandas, PySpark, and Polars text is never executed. Stored tests, fixtures, and expected results are provider context, not deterministic verification. Every displayed score or correctness percentage for free-text or code answers is an AI estimate.
 
@@ -49,6 +49,7 @@ All provider and dataset operations are synchronous. Streamlit session state hol
 | Path | Responsibility |
 | --- | --- |
 | `src/coding_tutor/catalog.py` | Catalog profiles and activity-to-database routing. |
+| `src/coding_tutor/methods.py` | Canonical internal method IDs, UI labels, syntax mappings, and method groups. |
 | `src/coding_tutor/database/` | Connections, schema, migrations, and coding progress queries. |
 | `src/coding_tutor/dataset/` | Source catalogs, inspection, parsing, normalization, and provenance. |
 | `src/coding_tutor/evaluation/` | Static assessment, teaching solutions, and attempt persistence. |
@@ -108,15 +109,58 @@ Coding editor keys include the question ID and method. A baseline key tracks whe
 
 Provider calls return text that domain services parse into exact schemas. Unexpected keys, missing fields, invalid types, out-of-range scores, or malformed JSON cause rejection. Provider exceptions are converted into bounded user-safe errors; raw exception details and credential values are not rendered.
 
+## Prompt architecture
+
+Runtime prompts are registered, version-controlled Markdown resources in `src/coding_tutor/prompts/`. `load_prompt()` accepts only filenames in `PROMPT_NAMES`; `render_prompt()` rejects missing, extra, or non-string placeholder values. `shared_rules.md` supplies the common system instruction for static reasoning, JSON-only responses, and untrusted-input handling.
+
+AI Questions and Interview use these templates through builders in `interview/prompts.py`:
+
+| Template | Purpose |
+| --- | --- |
+| `ai_question_generator.md` | Generate a non-adaptive AI Questions item. |
+| `adaptive_interview_question_generator.md` | Generate an Interview item from the blueprint and recent scored turns. |
+| `ai_answer_evaluator.md` | Score a theory or coding answer without execution. |
+| `interview_plan_generator.md` | Create a Tech or JD-based interview blueprint. |
+| `final_interview_report.md` | Create coaching feedback from the blueprint and scored turns. |
+
+Prompt builders JSON-serialize caller-supplied values before placing them inside marked data blocks. They bound reference material to 24,000 characters, adaptive context and candidate answers to 12,000 characters, question/rubric data to 18,000 characters, each JD/resume input to 30,000 characters, the final-report blueprint to 12,000 characters, and scored turns to 30,000 characters. Smaller role, level, setting, and method fields have separate limits.
+
+`generate_question()` selects the standard template when `adaptive_context` is absent and the adaptive template when it is present. AI Questions always use the standard path. Generated Interview questions receive the editable blueprint and at most the last three scored turns, including question, submitted answer or option, score, gaps, and next focus. The adaptive template requires a standalone question, prevents disclosure of scoring metadata, and asks the model not to repeat earlier questions. Local catalog questions do not receive adaptive context.
+
+Question, assessment, blueprint, and report responses are parsed and validated before use. Generated-item provenance stores prompt version `interview-v1`; changing Markdown content does not change that identifier automatically.
+
+To add a prompt, create the Markdown resource, register its filename in `PROMPT_NAMES`, add a builder that supplies exactly its declared placeholders, and add the template and placeholder values to `tests/test_prompts.py`. Removing or renaming a prompt requires updating the same registry, callers, and tests. `PROMPT_VERSION` in `interview/ai.py` is a deliberate metadata constant: update it explicitly when a release needs a new semantic prompt identifier. Because the database stores the identifier rather than a copy of each rendered template, use the corresponding Git revision to recover exact historical prompt text.
+
+## External request payloads
+
+Typing and local catalog browsing do not make external requests. Explicit actions can send these bounded payloads:
+
+| Action | Destination | Application data sent |
+| --- | --- | --- |
+| Generate a Coding question | Selected AI provider | Question type, difficulty, topic, method, and bounded reference context |
+| Submit a Coding solution | Selected AI provider | Question and exercise context, selected method, and learner submission |
+| Request a teaching solution | Selected AI provider | Question and exercise context plus requested method |
+| Prepare or score a Quiz | Selected AI provider when generation, MCQ preparation, or coding assessment is needed | Quiz settings or question context; coding scoring also sends the learner answer. MCQ answer correctness is calculated locally. |
+| Generate an AI Question | Selected AI provider | Selected filters and bounded local or optional web reference material; previous AI Questions answers are not sent |
+| Assess an AI Question | Selected AI provider | Question, rubric, and learner answer; MCQs are scored locally |
+| Create an interview plan | Selected AI provider | Role, level, and any extracted JD/resume text |
+| Generate an Interview question | Selected AI provider | Plan, bounded references, and for generated turns at most three recent scored turns |
+| Assess or finish an Interview | Selected AI provider | Current question/rubric and answer for assessment; blueprint and scored turns for the final report. MCQs are scored locally. |
+| Research question material | Firecrawl MCP | Normalized topic query and selected public result URLs for bounded scraping |
+
+Environment-variable values and DuckDB files are not added to these request payloads. Firecrawl does not receive learner answers, JD/resume text, provider credentials, or database contents.
+
 ## Coding mode
 
 Coding supports:
 
-- Algorithm questions with Python.
+- Algorithm questions with Python, JavaScript/TypeScript, Java, or C++.
 - Data-analysis questions with SQL, Pandas, PySpark, or Polars authoring.
 - Curated questions, AI-generated questions, or Mixed selection where the profile permits it.
 - Optional topic filtering or generation guidance.
 - Static AI review, reversible editor correction, stored references, and requested teaching solutions.
+
+Migration v8 advertises all four algorithm methods only for curated rows (`is_ai_generated=false`). Existing AI-generated rows keep their stored method metadata; newly generated algorithm questions advertise only the method selected for that generation request.
 
 Selecting **Submit solution** first stores the exact original text as a new immutable attempt. The application then validates provider/model configuration and requests static review. Successful responses store the estimated percentage, marks calculated as `percentage / 10`, mistakes, explanation, suggested correction, and optional corrected code. Failures leave the attempt with a sanitized error state.
 
@@ -142,7 +186,7 @@ AI Questions provides one question at a time from `interview.duckdb`.
 | Coding language | Python, JavaScript/TypeScript, Java, C++, or SQL |
 | Web research | Off by default; applies to generated questions |
 
-Mixed sessions alternate toward local questions on odd positions and generation on even positions. If the selected local question is unavailable, AI-generated modes create, validate, and persist a reusable `interview_items` row before presenting it.
+Mixed sessions alternate toward local questions on odd positions and generation on even positions. If the selected local question is unavailable, AI-generated modes create, validate, and persist a reusable `interview_items` row before presenting it. AI Questions generation is intentionally non-adaptive: earlier answers and scores are not included when creating the next item.
 
 MCQs are scored locally. Theory and coding answers are sent to the selected provider for immediate structured feedback. Code is treated as text and never executed.
 
@@ -152,7 +196,7 @@ Interview supports **Tech interview** and **JD-based interview**. JD-based plann
 
 Uploaded bytes and extracted text remain in memory. Extracted JD/resume text is sent to the selected provider only to create an editable interview blueprint. The application does not store that raw content in DuckDB. Generated reusable questions must be standalone and omit identifying details.
 
-The learner chooses 30, 45, 60, or 90 minutes. `start_interview()` stores an absolute UTC deadline in DuckDB, so Streamlit reruns cannot reset the timer. Questions rotate through blueprint topics, formats, and languages. Local mode relaxes topic matching before reporting that no suitable local question exists. Generated and Mixed modes can create validated questions as needed.
+The learner chooses 30, 45, 60, or 90 minutes. `start_interview()` stores an absolute UTC deadline in DuckDB, so Streamlit reruns cannot reset the timer. Questions rotate through blueprint topics, formats, and languages. Local mode relaxes topic matching before reporting that no suitable local question exists. Generated and Mixed modes can create validated questions as needed. Generated interview questions adapt from the editable blueprint and at most the last three scored turns (question, answer or selected option, score, gaps, and next focus). Local questions continue to follow plan rotation but are not adapted from answer history.
 
 Only one turn can be pending. Submitted MCQs are scored locally; theory and coding answers use provider assessment. Per-turn feedback is stored but hidden during the interview. The learner can finish early, skip the current turn, or submit the current answer at timeout. No new question is created after the deadline. Completion generates a final report from scored turns; a session with no scored answers receives a zero-score local report.
 
@@ -160,9 +204,9 @@ Only one turn can be pending. Submitted MCQs are scored locally; theory and codi
 
 `web_research.py` connects to `https://mcp.firecrawl.dev/v2/mcp` with streamable HTTP. If `FIRECRAWL_API_KEY` exists, it is sent as a bearer token. Otherwise the client attempts keyless access.
 
-The implementation calls `firecrawl_search` with at most five results. It selectively calls `firecrawl_scrape` for at most three short-result pages and bounds every stored excerpt to 6,000 characters. Results are treated as untrusted provider context and stored as source provenance for generated interview items.
+The implementation calls `firecrawl_search` with at most five results. It selectively calls `firecrawl_scrape` for at most three short-result pages and bounds every stored excerpt to 6,000 characters. Results are treated as untrusted provider context and stored as source provenance for generated AI Questions or Interview items.
 
-Web research is used only when explicitly enabled and local references are insufficient. It never participates in scoring and never receives raw JD/resume text, learner answers, provider credentials, or database contents. A Firecrawl failure produces a warning and generation continues without web material.
+Web research is used only when explicitly enabled. During AI Questions or Interview generation, it is requested when fewer than three local references are available; local-only selection does not invoke it. Coding generation requests it only for a non-`general` topic that is absent from the serialized local reference context. It never participates in scoring and never receives raw JD/resume text, learner answers, provider credentials, or database contents. A Firecrawl failure produces a warning and generation continues without web material.
 
 ## DuckDB schema
 
@@ -185,6 +229,8 @@ Migrations run transactionally for each opened catalog. The current schema inclu
 | `interview_item_generation` | Provider, model, prompt, and web-source provenance |
 | `ai_question_sessions`, `ai_question_items` | AI Questions settings, presented items, answers, and feedback |
 | `interview_sessions`, `interview_turns` | Timed plans, deadlines, prompts, answers, scores, and reports |
+
+Schema migration v8 updates curated algorithm rows to `supported_methods = '["python","javascript/typescript","java","cpp"]'`. It intentionally excludes AI-generated rows so historical generated questions retain their original language contract.
 
 The application does not encrypt, back up, rotate, or securely delete DuckDB files and does not manage operating-system permissions.
 

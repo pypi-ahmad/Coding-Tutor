@@ -73,11 +73,11 @@ Without a key, the application may use Firecrawl's limited keyless mode. Restart
 1. Select **Coding**.
 2. Choose **Algorithm** as the question type.
 3. Choose **Curated questions** as the source.
-4. Select a difficulty and optional topic.
-5. Load a question and write Python in the editor.
+4. Choose Python, JavaScript/TypeScript, Java, or C++, then select a difficulty and optional topic.
+5. Load a question and write your solution in the editor.
 6. Select **Submit solution** for static AI review.
 
-If no question is available, relax the filters or import the algorithm datasets.
+If no question is available, relax the filters or import the algorithm datasets. Dataset-provided starter and reference code may be Python-only; the editor supplies a generic template and can request an AI teaching solution for another selected language.
 
 ### Practice a data-analysis question
 
@@ -118,7 +118,7 @@ The original answer is saved before provider validation or assessment. Every sub
 
 ### Apply and restore a correction
 
-1. After assessment, select **Apply correction to editor**.
+1. After assessment, select **Apply suggested correction**.
 2. Continue editing if desired.
 3. Select **Restore pre-correction code** to return to the editor state saved before applying the correction.
 
@@ -146,12 +146,13 @@ When changing question type or method with a modified editor:
 ### Start and submit a quiz
 
 1. Configure an AI provider and select **Quiz**.
-2. Choose 1–10 total questions.
-3. Choose how many should be coding questions; the remainder are MCQs.
-4. Select **Start quiz**.
-5. Answer each item. Changes are saved as durable drafts.
-6. Select **Submit quiz**.
-7. Review item feedback and the final score after scoring finishes.
+2. In the sidebar, choose the question source, Algorithm or Data analysis, difficulty, optional topic, and solution method.
+3. Choose 1–10 total questions.
+4. Choose how many should be coding questions; the remainder are MCQs.
+5. Select **Start quiz**.
+6. Answer each item. Changes are saved as durable drafts.
+7. Select **Submit quiz**.
+8. Review item feedback and the final score after scoring finishes.
 
 MCQs are scored locally. Non-blank coding answers receive static AI review. The pass threshold is 80%, with equal item weights and no negative marking.
 
@@ -163,7 +164,7 @@ Open **Quiz** again. The active quiz and saved answers load automatically.
 
 1. Resolve the provider, connectivity, quota, or model-access problem.
 2. Restore the provider and model used when the quiz began.
-3. Select **Retry preparation** or **Retry scoring**.
+3. Select **Retry quiz creation** after a preparation failure, or **Retry assessment** after a scoring failure.
 
 Previously saved answers and successfully processed items remain unchanged.
 
@@ -180,11 +181,13 @@ Previously saved answers and successfully processed items remain unchanged.
 
 The app presents one question at a time. **Local catalog** means `Dataset/catalogs/interview.duckdb`. Generated questions are validated and stored there for later reuse.
 
+AI Questions sessions are not adaptive. Starting another question does not send earlier answers, scores, or feedback to the question generator.
+
 ### Answer an AI question
 
 1. Enter a theory or coding response, or choose an MCQ option.
 2. Select **Submit answer**.
-3. Review the immediate score, strengths, gaps, feedback, and next focus.
+3. Review the immediate AI-estimated score, feedback, and identified gaps.
 4. Continue to the next question when ready.
 
 MCQs are scored locally. Theory and coding answers require the selected provider. Code is never executed.
@@ -229,7 +232,9 @@ Uploads must be 5 MB or smaller. Image-only scans are unsupported because the ap
 2. Select **Submit answer**.
 3. Continue until the timer expires or select **Finish interview early**.
 
-The app stores per-turn scoring but withholds feedback until completion. Later questions may adapt to the plan and previous progress.
+The app stores per-turn scoring but withholds feedback until completion. For generated questions, the next question can use the editable plan and up to three recent scored turns: their questions, submitted answers or options, scores, gaps, and next-focus values. The generated question remains standalone and does not reveal that scoring metadata.
+
+Local catalog questions are selected from the interview plan but do not adapt from answer history. In Mixed mode, only the generated turns use adaptive context.
 
 ### Finish at timeout
 

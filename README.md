@@ -19,12 +19,12 @@ Coding Tutor combines local DuckDB question catalogs with optional AI generation
 
 ## What you can do
 
-- Practice Python algorithms and author SQL, Pandas, PySpark, or Polars solutions.
+- Practice algorithms in Python, JavaScript/TypeScript, Java, or C++, and author SQL, Pandas, PySpark, or Polars solutions.
 - Study LLMs, RAG, agents, LangChain, LangGraph, ML, NLP, deep learning, evaluation, safety, and infrastructure.
 - Choose curated, AI-generated, or mixed question sources.
 - Answer theory, coding, MCQ, direct, and scenario-based questions.
 - Run tech interviews or generate an interview plan from a job description and optional resume.
-- Select 30, 45, 60, or 90-minute interview sessions with adaptive follow-up questions.
+- Select 30, 45, 60, or 90-minute interview sessions with adaptive follow-up questions based on the interview plan and recent scored turns.
 - Receive structured AI review, suggested corrections, teaching solutions, and final interview coaching reports.
 - Keep questions, attempts, quiz history, and progress in local DuckDB catalogs.
 - Optionally research current source material through Firecrawl when the local catalog is insufficient.
@@ -39,7 +39,7 @@ Coding Tutor combines local DuckDB question catalogs with optional AI generation
 | **Interview** | Timed tech or JD-based interviews with a final report | `interview.duckdb` |
 | **Progress** | Review practice, quiz, AI-question, and interview history | All three catalogs |
 
-AI Questions supports Python, JavaScript/TypeScript, Java, C++, and SQL. Coding responses are reviewed as text and are never run.
+Algorithm Coding, Quiz, AI Questions, and Interview support Python, JavaScript/TypeScript, Java, and C++ where applicable. Coding responses are reviewed as text and are never run.
 
 ## Get started
 
@@ -92,7 +92,7 @@ For a guided walkthrough, see [Getting Started](docs/GETTING_STARTED.md) and [Us
 
 **Tech interview** uses role, level, topic, and format preferences. **JD-based interview** requires pasted or uploaded job-description text and accepts an optional resume. Supported uploads are PDF, DOCX, and TXT up to 5 MB; scanned documents are not OCR-processed.
 
-The generated interview plan is editable before the timer starts. During a session, the app presents one question at a time and may adapt later questions to earlier answers. The final result is a coaching report, not a hiring recommendation.
+The generated interview plan is editable before the timer starts. During a session, the app presents one question at a time and adapts generated follow-ups from the plan plus up to three recent scored turns. The final result is a coaching report, not a hiring recommendation.
 
 > [!CAUTION]
 > JD and resume text is extracted in memory and not stored in DuckDB, but it is sent to the selected AI provider to create the interview plan. Do not submit confidential or personal information unless you are authorized to share it with that provider.
@@ -135,7 +135,7 @@ Imports are idempotent: stable source identities prevent duplicate records. Some
 
 ## Optional web research
 
-Web research is off by default. When enabled for AI-generated or mixed questions, the app connects to the hosted Firecrawl MCP endpoint, searches only when local references are insufficient, and retains source links with generated material.
+Web research is off by default. During AI Questions or Interview generation it runs when fewer than three local references are available. During Coding generation it runs only for a specific topic that is absent from the local reference context. Local-only question selection never invokes it. Source links are retained with generated material.
 
 - Web content is treated as untrusted input.
 - Research is used for question generation, never grading.
@@ -158,6 +158,8 @@ Optional Firecrawl MCP ──bounded research sources──> question generation
 
 The app uses versioned schema migrations, normalized source provenance, strict generated-question validation, and atomic persistence. Applying an AI correction updates only the active editor; the submitted attempt remains unchanged.
 
+AI-backed workflows use version-controlled Markdown prompt templates with strict JSON response contracts. The application treats catalog records, web material, job descriptions, resumes, and learner answers as untrusted input.
+
 ## Project layout
 
 ```text
@@ -169,11 +171,13 @@ Coding-Tutor/
 │   └── */                         # Raw import inputs
 ├── scripts/                       # Download, import, and catalog commands
 ├── src/coding_tutor/
+│   ├── methods.py                 # Canonical methods, labels, and syntax mappings
 │   ├── database/                  # Schema, migrations, and connections
 │   ├── dataset/                   # Source inspection and normalization
 │   ├── evaluation/                # Static assessment and solutions
 │   ├── generation/                # AI question validation and storage
 │   ├── interview/                 # AI-question and interview services
+│   ├── prompts/                   # Version-controlled AI prompt templates
 │   ├── providers/                 # AI provider adapters
 │   ├── quiz/                      # Quiz state and persistence
 │   └── ui/                        # Streamlit pages and controls

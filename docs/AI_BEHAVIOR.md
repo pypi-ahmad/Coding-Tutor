@@ -59,16 +59,13 @@ No learner submission is executed, compiled, queried, or tested. Stored test cas
 
 ### Apply corrected code
 
-When a valid assessment contains corrected code, the UI displays it before offering **Apply correction to editor**. Applying it saves the current editor text in Streamlit session state so **Restore pre-correction code** can reverse the change.
+When a valid assessment contains corrected code, the UI displays it before offering **Apply suggested correction**. Applying it saves the current editor text in Streamlit session state so **Restore pre-correction code** can reverse the change.
 
 The saved attempt always retains the original submitted text. Applying or restoring an editor correction does not update that attempt.
 
 ### Provide teaching solutions
 
-**Show Solution** can display stored dataset or AI-generated reference solutions without making a new provider request. An explicit teaching-solution request can ask the selected provider for:
-
-- up to three commented Python approaches for an algorithm question; or
-- one commented solution for the currently selected data-analysis method.
+**Show Solution** can display stored dataset or AI-generated reference solutions without making a new provider request. An explicit teaching-solution request asks the selected provider for one commented solution in the selected method. Algorithm requests support Python, JavaScript/TypeScript, Java, and C++; data-analysis requests support SQL, Pandas, PySpark, and Polars.
 
 The provider response must match the exact solution schema and include commented code, an explanation, and theory. Data-analysis generation requires schema, fixture data, and expected-result context. Invalid responses are not displayed or cached.
 
@@ -88,17 +85,17 @@ MCQ scoring itself does not call a provider. The selected option ID is compared 
 
 AI Questions can select a local `interview_items` record or ask the provider to create a validated theory, coding, or MCQ item. Generation uses the selected domain, topic, difficulty, direct/scenario style, answer format, and coding language. Accepted generated items are stored for reuse with provider/model and optional web-source provenance.
 
-MCQ answers are compared locally with the stored option ID. Theory and coding answers are sent to the selected provider for structured score, strengths, gaps, feedback, and next-focus fields. Feedback is shown immediately. Code remains unexecuted text.
+MCQ answers are compared locally with the stored option ID. Theory and coding answers are sent to the selected provider for structured score, strengths, gaps, feedback, and next-focus fields. The UI immediately shows the score, feedback, and gaps; the complete structured response is stored with the answered item. Code remains unexecuted text.
 
 ### Plan and conduct interviews
 
-Tech interviews use role, level, topic, format, language, source, and duration settings. JD-based planning sends extracted job-description and optional resume text to the selected provider to produce an editable blueprint. Raw uploads and extracted text are not persisted.
+Tech interview planning sends the requested role and level to the selected provider. JD-based planning additionally sends extracted job-description and optional resume text. Both paths produce an editable blueprint; raw uploads and extracted text are not persisted.
 
-Each interview question is stored before display. MCQs are scored locally; theory and coding responses receive structured provider assessment. Per-turn feedback is stored but hidden until the interview finishes. The final provider call receives the blueprint and scored turns and returns the overall score, summary, strengths, gaps, and recommendations.
+Each interview question is stored before display. MCQs are scored locally; theory and coding responses receive structured provider assessment. Per-turn feedback is stored but hidden until the interview finishes. Generated follow-up questions receive the editable blueprint and at most the last three scored turns: question, answer or selected option, score, gaps, and next focus. Local catalog questions do not receive answer history, and AI Questions sessions use the non-adaptive generator. The final provider call receives the blueprint and all scored turns and returns the overall score, summary, strengths, gaps, and recommendations.
 
 ### Research question material with Firecrawl
 
-When Web research is enabled and fewer than three local references are available, the app sends a normalized topic query to Firecrawl MCP. It accepts at most five results, selectively scrapes at most three pages, and clips each excerpt to 6,000 characters. The resulting text is untrusted generation context and stored citation provenance.
+During AI Questions or Interview generation, enabled Web research runs when fewer than three local references are available. Local-only selection does not invoke it. During Coding generation, it runs only when the selected topic is not `general` and that topic is absent from the serialized local reference context. The app sends a normalized topic query to Firecrawl MCP, accepts at most five results, selectively scrapes at most three pages, and clips each excerpt to 6,000 characters. The resulting text is untrusted generation context and stored citation provenance.
 
 Firecrawl never receives raw JD/resume text, learner answers, provider credentials, or database contents. Its output is not used for assessment or scoring. If research fails, the app warns the user and continues generation without web material.
 
@@ -115,15 +112,21 @@ Runtime prompts are version-controlled Markdown resources under `src/coding_tuto
 | `solution_teacher.md` | Commented solutions and teaching explanations |
 | `quiz_generator.md` | Batched MCQ option generation |
 | `dataset_record_converter.md` | Registered and rendering-tested, but not called by the deterministic dataset importer |
+| `ai_question_generator.md` | Non-adaptive AI Questions generation |
+| `adaptive_interview_question_generator.md` | Interview question generation using the blueprint and up to three recent scored turns |
+| `ai_answer_evaluator.md` | Structured theory and coding answer assessment |
+| `interview_plan_generator.md` | Tech/JD interview blueprint generation |
+| `final_interview_report.md` | Final coaching report generation from scored turns |
 
 Prompt text is not reproduced here. Embedded question, dataset, and learner content is identified as untrusted input for the provider.
 
 ### Version metadata
 
-- Question generation uses prompt version `v3`, stored with each generated question.
+- Coding-question generation uses prompt version `v5`, stored with each generated question.
 - Teaching-solution generation uses `solution-v2` in its Streamlit cache key.
 - Coding assessments do not store a prompt name or version with the attempt.
 - Quiz records do not store a general prompt-version field.
+- Generated AI Questions and Interview items use `interview-v1` in generation metadata.
 
 Therefore, prompt files are version-controlled in Git, but prompt-version persistence is not uniform across every AI interaction.
 
@@ -176,7 +179,7 @@ For a non-blank coding answer, Quiz Mode sends the same assessment context descr
 | AI Questions answer | Prompt snapshot, answer or option, score, structured feedback, and sources in `ai_question_items` |
 | Interview | Editable blueprint, deadline, prompt snapshots, answers/options, hidden per-turn feedback, scores, and final report in `interview_sessions` and `interview_turns` |
 
-Generated-question metadata contains the provider, model ID, prompt version, prompt-template label, question type, difficulty, method, and topic. It does not contain credentials.
+Coding-question generation metadata contains the provider, model ID, prompt version, prompt-template label, question type, difficulty, method, and topic. AI Questions and Interview generation metadata stores origin, provider, model ID, prompt version, and web sources; it does not persist the standard-versus-adaptive template label. Neither path stores credentials.
 
 Raw provider responses are not stored as a general audit log. Validated fields are persisted for the interaction that needs them. Coding and quiz errors are stored as user-safe messages truncated to 2,000 characters.
 

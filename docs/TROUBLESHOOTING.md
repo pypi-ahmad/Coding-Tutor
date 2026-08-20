@@ -241,7 +241,7 @@ The provider response did not match the exact JSON schema or completeness rules 
 1. Retry the same action once; provider output can vary between calls.
 2. If question generation continues to fail, choose a curated question that matches the current filters.
 3. If a teaching solution reports incomplete context, use an available stored reference or choose a complete question. The application does not invent missing schema, fixture data, or expected results.
-4. For quiz preparation, use **Retry preparation**; existing durable quiz state is retained.
+4. For quiz preparation, use **Retry quiz creation**; existing durable quiz state is retained.
 
 **Confirm the issue is resolved**
 
@@ -341,12 +341,12 @@ No complete, non-AI question matches the selected type, difficulty, method, and 
 
 1. Check the import summary for the intended dataset.
 2. Reset the topic to **All topics** and try another implemented difficulty.
-3. Confirm algorithm questions use Python and data-analysis filters use SQL, Pandas, PySpark, or Polars.
+3. Confirm algorithm questions use Python, JavaScript/TypeScript, Java, or C++, and data-analysis filters use SQL, Pandas, PySpark, or Polars.
 4. Review [Datasets](DATASETS.md) to confirm whether that source can produce complete selectable questions.
 
 **Confirm the issue is resolved**
 
-The curated picker lists at least one matching question and **Load Question** opens it.
+The curated picker lists at least one matching question and **Open question** opens it.
 
 **Report a bug instead when**
 
@@ -397,7 +397,7 @@ A new database in a writable location fails reproducibly. Include the traceback 
 
 **Symptom**
 
-Quiz Mode shows **Retry preparation**, **Retry scoring**, or a warning that some AI assessments failed.
+Quiz Mode shows **Retry quiz creation**, **Retry assessment**, or a warning that some AI assessments failed.
 
 **Likely cause**
 
@@ -407,7 +407,7 @@ Question generation, MCQ preparation, or static coding assessment failed. Quiz s
 
 1. Restore the provider/model used when the quiz was started. Scoring retry rejects a different provider or model.
 2. Resolve the provider configuration or response problem described in the displayed warning.
-3. Use **Retry preparation** or **Retry scoring**. Do not start by clearing the database; drafts and completed assessments are intended to survive retry.
+3. Use **Retry quiz creation** or **Retry assessment**. Do not start by clearing the database; drafts and completed assessments are intended to survive retry.
 4. If status remains `preparing`, reload the page as the UI instructs, then retry if the error state appears.
 
 **Confirm the issue is resolved**
@@ -438,7 +438,7 @@ The database contains fewer complete, non-AI questions than the quiz requires fo
 
 1. Note the filters and question count used to start the quiz.
 2. Import additional authorized dataset records that can produce complete questions matching those filters. Follow [Dataset Setup](dataset-setup.md); rerunning an import is idempotent.
-3. Return to Quiz Mode and select **Retry preparation**. The retry uses the settings stored with the existing quiz attempt.
+3. Return to Quiz Mode and select **Retry quiz creation**. The retry uses the settings stored with the existing quiz attempt.
 
 Changing the current sidebar filters or question count does not reconfigure that stored attempt. The current UI has no abandon-or-reconfigure control for an unfinished quiz.
 
@@ -462,7 +462,7 @@ Uploads must be PDF, DOCX, or TXT and no larger than 5 MB. Encrypted, damaged, o
 
 **Symptom**
 
-There is no Run button, runtime output, or executed test result for PySpark, Python, SQL, Pandas, or Polars code.
+There is no Run button, runtime output, or executed test result for Python, JavaScript/TypeScript, Java, C++, SQL, Pandas, PySpark, or Polars code.
 
 **Likely cause**
 

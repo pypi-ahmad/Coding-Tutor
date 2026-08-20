@@ -64,7 +64,7 @@ Open <http://127.0.0.1:8551>.
 1. Select **Coding**.
 2. Select a provider and verified model.
 3. Choose **Curated questions** if you imported algorithm data, or **AI generated**.
-4. Select **Algorithm**, a difficulty, an optional topic, and Python.
+4. Select **Algorithm**, a difficulty, an optional topic, and Python, JavaScript/TypeScript, Java, or C++.
 5. Load or generate a question and write an answer.
 6. Select **Submit solution**.
 

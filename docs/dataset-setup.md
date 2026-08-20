@@ -6,12 +6,13 @@ Coding Tutor imports practice questions from seven public Hugging Face datasets.
 
 ## Quick start
 
-```bash
+```powershell
 # 1. Download all datasets (CodeContests is skipped by default — see below)
 uv run python scripts/download_datasets.py
 
-# 2. Inspect, normalize, and import questions into DuckDB
-uv run python scripts/import_datasets.py
+# 2. Inspect, normalize, and build the two coding runtime catalogs
+uv run python scripts/import_datasets.py --datasets leetcode apps taco --database Dataset/catalogs/algorithm.duckdb
+uv run python scripts/import_datasets.py --datasets spider sqlctx querypls --database Dataset/catalogs/data_analysis.duckdb
 ```
 
 The import command is idempotent — re-running it skips already-imported records.
@@ -22,15 +23,15 @@ The import command is idempotent — re-running it skips already-imported record
 
 | Key | Hugging Face repo | Type | License | Approx. size | Importer status |
 |---|---|---|---|---|---|
-| `leetcode` | [newfacade/LeetCodeDataset](https://huggingface.co/datasets/newfacade/LeetCodeDataset) | Algorithm (Python) | Apache-2.0 | ~60 MB | ✅ Complete |
-| `apps` | [codeparrot/apps](https://huggingface.co/datasets/codeparrot/apps) | Algorithm (Python) | MIT | ~130 MB | ✅ Complete |
-| `taco` | [BAAI/TACO](https://huggingface.co/datasets/BAAI/TACO) | Algorithm (Python) | Apache-2.0 | ~400 MB | ✅ Complete |
+| `leetcode` | [newfacade/LeetCodeDataset](https://huggingface.co/datasets/newfacade/LeetCodeDataset) | Algorithm | Apache-2.0 | ~60 MB | ✅ Complete |
+| `apps` | [codeparrot/apps](https://huggingface.co/datasets/codeparrot/apps) | Algorithm | MIT | ~130 MB | ✅ Complete |
+| `taco` | [BAAI/TACO](https://huggingface.co/datasets/BAAI/TACO) | Algorithm | Apache-2.0 | ~400 MB | ✅ Complete |
 | `codecontests` | [open-thoughts/CodeContests](https://huggingface.co/datasets/open-thoughts/CodeContests) | Algorithm | Not stated in the downloaded card | ~45 MB | ✅ Complete |
 | `spider` | [xlangai/spider](https://huggingface.co/datasets/xlangai/spider) | Data Analysis | CC BY-SA 4.0 | ~4 MB | ⚠ Schema only |
 | `sqlctx` | [b-mc2/sql-create-context](https://huggingface.co/datasets/b-mc2/sql-create-context) | Data Analysis | CC BY 4.0 | ~30 MB | ⚠ Schema only |
 | `querypls` | [samadpls/querypls-prompt2sql-dataset](https://huggingface.co/datasets/samadpls/querypls-prompt2sql-dataset) | Data Analysis | Apache-2.0 | ~15 MB | ⚠ Schema only |
 
-**Complete** — includes reference solutions and executable test cases.  
+**Complete** — includes reference solutions and stored test-case context suitable for curated practice and static AI review. Learner code and stored tests are not executed.
 **Schema only** — provides a schema and/or reference SQL but no shared fixture rows and expected result. These records are retained with `is_complete=false` and are not offered as learner tasks.
 
 Before reading records, the importer validates each file's real format and required fields. JSONL, JSON arrays, ordinary Parquet files, and CodeContests' Parquet-wrapped task archives are handled by separate adapters.
