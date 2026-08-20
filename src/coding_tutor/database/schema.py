@@ -55,6 +55,27 @@ CREATE TABLE IF NOT EXISTS questions (
     created_at          TIMESTAMPTZ DEFAULT now()
 );
 
+-- Licensed interview material is kept separate from executable practice questions.
+CREATE TABLE IF NOT EXISTS interview_items (
+    id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    source_id        UUID NOT NULL REFERENCES question_sources(id),
+    domain           TEXT NOT NULL,
+    topic            TEXT NOT NULL,
+    answer_format    TEXT NOT NULL CHECK (answer_format IN ('theory','coding','mcq')),
+    prompt_style     TEXT NOT NULL CHECK (prompt_style IN ('direct','scenario')),
+    difficulty       TEXT NOT NULL CHECK (difficulty IN ('Beginner','Easy','Medium','Hard','Very Hard')),
+    prompt           TEXT NOT NULL,
+    reference_answer TEXT,
+    rubric           JSON,
+    method           TEXT,
+    options          JSON,
+    correct_option   TEXT,
+    tags             JSON NOT NULL DEFAULT '[]',
+    content_hash     TEXT NOT NULL UNIQUE,
+    is_complete      BOOLEAN NOT NULL DEFAULT true,
+    created_at       TIMESTAMPTZ DEFAULT now()
+);
+
 -- Schema + fixture data for data-analysis questions
 CREATE TABLE IF NOT EXISTS question_assets (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),

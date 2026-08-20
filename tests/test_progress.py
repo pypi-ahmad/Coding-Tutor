@@ -161,7 +161,7 @@ def test_v4_migration_preserves_legacy_attempt(monkeypatch):
         [question_id],
     )
     migrations.run_migrations(conn)
-    assert migrations.get_schema_version(conn) == 5
+    assert migrations.get_schema_version(conn) == 6
     assert conn.execute(
         "SELECT submitted_code, deterministic_test_result FROM attempts"
     ).fetchone() == ("keep me", "not_run")
