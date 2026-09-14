@@ -7,7 +7,10 @@ from pathlib import Path
 
 import duckdb
 
+# Per-Streamlit-run active path; set by app.py before any get_db() call each
+# rerun so that catalog routing survives Streamlit's top-to-bottom re-execution.
 _active_path: ContextVar[str | None] = ContextVar("coding_tutor_db_path", default=None)
+# One migrated connection per resolved absolute path; shared across the process.
 _connections: dict[str, duckdb.DuckDBPyConnection] = {}
 
 

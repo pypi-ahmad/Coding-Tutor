@@ -1,3 +1,8 @@
+"""Agnes AI provider adapter — OpenAI-compatible endpoint.
+
+Uses the standard openai Python client pointed at AGNES_BASE_URL.
+Credential: AGNES_API_KEY env var. See config.py for available model options.
+"""
 import os
 from typing import Optional
 from coding_tutor.providers.base import BaseProvider, ChatMessage, ChatResponse, ModelOption

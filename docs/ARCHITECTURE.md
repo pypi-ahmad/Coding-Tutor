@@ -163,7 +163,7 @@ DuckDB keeps questions, provenance, fixture/expected-result assets, attempts, an
 
 ## Semantic classification
 
-Import catalog metadata—not the folder name—sets `algorithm` or `data_analysis`. This avoids turning directory layout into product semantics and lets validation expose curated algorithms in Python, JavaScript/TypeScript, Java, and C++ while preserving the shared analytical-asset contract.
+Import catalog metadata (not the folder name) sets `algorithm` or `data_analysis`. This avoids turning directory layout into product semantics and lets validation expose curated algorithms in Python, JavaScript/TypeScript, Java, and C++ while preserving the shared analytical-asset contract.
 
 ## One analytical problem, four expressions
 

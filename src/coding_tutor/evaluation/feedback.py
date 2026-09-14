@@ -192,7 +192,7 @@ def _parse_assessment(content: str, model_id: str, provider_name: str) -> AIAsse
         raise AssessmentError("The model returned an invalid correctness estimate.")
     return AIAssessment(
         float(percentage),
-        round(float(percentage) / 10, 1),
+        round(float(percentage) / 10, 1),  # marks = percentage / 10 (0–10 scale)
         mistakes,
         explanation,
         suggestion,

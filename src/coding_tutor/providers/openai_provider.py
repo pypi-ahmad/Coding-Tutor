@@ -1,3 +1,10 @@
+"""OpenAI provider adapter.
+
+Credentials are read fresh on every chat() call — OPENAI_API_KEY is
+required, OPENAI_BASE_URL is optional (allows OpenAI-compatible endpoints).
+The openai.OpenAI client is not cached between calls.
+See config.py for available model options.
+"""
 import os
 from typing import Optional
 from coding_tutor.providers.base import BaseProvider, ChatMessage, ChatResponse, ModelOption

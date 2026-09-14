@@ -1,3 +1,10 @@
+"""Provider protocol — shared dataclasses and the BaseProvider ABC.
+
+Defines ModelOption (a selectable model with verification metadata),
+ChatMessage, ChatResponse, and the abstract BaseProvider interface.
+See registry.py for how providers are instantiated; see config.py
+for the concrete model lists each provider exposes.
+"""
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Optional

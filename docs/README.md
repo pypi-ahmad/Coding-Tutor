@@ -14,6 +14,7 @@ Documentation is organized by purpose:
 | Explanation | [AI Behavior](AI_BEHAVIOR.md) | Understand provider requests, validation, persistence, and limitations. |
 | Reference | [Security and Privacy](SECURITY_AND_PRIVACY.md) | Review credential, storage, external-data, and code-execution boundaries. |
 | How-to | [Troubleshooting](TROUBLESHOOTING.md) | Resolve verified setup and runtime failures. |
+| Reference | [Runbook](RUNBOOK.md) | Start/stop commands, error-string lookup, and database recovery quick-reference. |
 | Release preparation | [Open-source Checklist](OPEN_SOURCE_CHECKLIST.md) | Record decisions required before publication. |
 
 Additional material:
