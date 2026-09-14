@@ -140,7 +140,7 @@ Treat editor content as text and send it, with bounded question context, to the 
 
 ### Alternatives considered
 
-- **Subprocess-based learner-code execution — Superseded.** It existed in the initial commit and was removed rather than represented as secure isolation.
+- **Subprocess-based learner-code execution (superseded):** It existed in the initial commit and was removed rather than represented as secure isolation.
 
 ### Date and evidence
 

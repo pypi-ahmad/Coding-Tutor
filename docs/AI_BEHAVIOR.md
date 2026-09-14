@@ -1,6 +1,6 @@
 # AI Behavior
 
-This document explains the AI behavior implemented by Coding Tutor. It describes current provider adapters, model selection, request content, validation, persistence, and failure handling—not planned capabilities.
+This document explains the AI behavior implemented by Coding Tutor. It describes current provider adapters, model selection, request content, validation, persistence, and failure handling, not planned capabilities.
 
 > The editor is a text editor. Learner code is reviewed through AI static analysis and is not executed by the application. Any correctness percentage or mark is an AI estimate, not a verified test result.
 

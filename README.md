@@ -15,7 +15,7 @@
 Coding Tutor combines local DuckDB question catalogs with optional AI generation and review. Practice algorithms and data analysis, study scenario-based AI topics, run a timed interview, and revisit progress without sending learner code to an execution service.
 
 > [!IMPORTANT]
-> Coding Tutor never executes learner code or stored test cases. Scores, correctness percentages, corrections, and coding-quiz results are AI estimates—not deterministic judge results.
+> Coding Tutor never executes learner code or stored test cases. Scores, correctness percentages, corrections, and coding-quiz results are AI estimates, not deterministic judge results.
 
 ## Index
 

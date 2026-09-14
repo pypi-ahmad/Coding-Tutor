@@ -224,7 +224,7 @@ The requested question, assessment, teaching solution, or quiz content appears a
 
 **Report a bug instead when**
 
-The provider and model work for other requests, but this application fails reproducibly with the same safe input and settings. Include the operation, provider/model identifiers, and sanitized UI message—not the key or submitted private content.
+The provider and model work for other requests, but this application fails reproducibly with the same safe input and settings. Include the operation, provider/model identifiers, and sanitized UI message, not the key or submitted private content.
 
 ## The provider returns malformed or incomplete content
 
@@ -391,7 +391,7 @@ The app starts, migrations complete without an error, and a new submission can b
 
 **Report a bug instead when**
 
-A new database in a writable location fails reproducibly. Include the traceback or safe UI message, schema version if available, and operating system—never the database file itself if it contains learner data.
+A new database in a writable location fails reproducibly. Include the traceback or safe UI message, schema version if available, and operating system. Never attach the database file if it contains learner data.
 
 ## Quiz preparation or scoring remains in an error state
 
