@@ -280,6 +280,7 @@ def submit_ai_answer(session_id: str, item: dict, answer: str, provider_name: st
 
 def start_interview(interview_type: str, duration: int, source_mode: str, blueprint: dict,
                     web_enabled: bool, provider_name: str, model) -> str:
+    # Deadline is stored as absolute UTC TIMESTAMPTZ so Streamlit reruns cannot reset it.
     deadline = datetime.now(timezone.utc) + timedelta(minutes=duration)
     row = connection().execute(
         """INSERT INTO interview_sessions

@@ -35,6 +35,9 @@ def main():
         label_visibility="collapsed",
     )
 
+    # CODING_TUTOR_DB overrides everything; otherwise, fixed profiles pin the
+    # database, and the "all" profile routes Coding/Quiz to the coding catalog
+    # matching the current question type, and all other pages to interview.duckdb.
     if os.environ.get("CODING_TUTOR_DB"):
         set_active_db(os.environ["CODING_TUTOR_DB"])
     elif profile.key != "all":

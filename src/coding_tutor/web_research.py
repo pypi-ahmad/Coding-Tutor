@@ -101,6 +101,8 @@ async def _research(query: str) -> list[WebSource]:
                                     if isinstance(data, dict):
                                         excerpt = str(data.get("markdown") or data.get("content") or excerpt)
                             except Exception:
+                                # Per-URL scrape failures are non-fatal; the search
+                                # excerpt already captured above is used instead.
                                 pass
                         sources.append(WebSource(title, url, excerpt[:MAX_SOURCE_CHARS]))
                     return sources

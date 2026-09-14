@@ -108,6 +108,8 @@ def generate_question(
         logger.warning("Generation context unavailable (%s)", type(exc).__name__)
         references = []
 
+    # Web research only fires when a specific topic was requested AND that topic
+    # is absent from the local reference context. "general" never triggers it.
     if web_enabled and topic != "general":
         haystack = json.dumps(references, ensure_ascii=False).casefold()
         if topic.casefold() not in haystack:
@@ -209,6 +211,9 @@ def _save_generated_question(
     conn = get_db()
     conn.execute("BEGIN TRANSACTION")
     try:
+        # Algorithm questions expose only the requested method; data_analysis
+        # questions expose all DATA_ANALYSIS_METHODS because the asset contract
+        # requires solutions for every method when the question is complete.
         supported_methods = (
             [method] if question_type == "algorithm"
             else list(QUESTION_METHODS[question_type])

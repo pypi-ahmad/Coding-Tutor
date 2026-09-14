@@ -163,6 +163,8 @@ MIGRATIONS: list[tuple[int, str, str]] = [
     (
         8,
         "multi-language curated algorithm questions",
+        # AI-generated rows are excluded: their supported_methods were set
+        # individually at generation time and must not be overwritten here.
         """UPDATE questions
            SET supported_methods = '["python","javascript/typescript","java","cpp"]'
            WHERE question_type = 'algorithm'
