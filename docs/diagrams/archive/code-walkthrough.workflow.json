@@ -7,13 +7,11 @@
     "animation": "none",
     "visual_preset": "blueprint",
     "quality_profile": "showcase",
-    "viewBox": [720, 820]
+    "viewBox": [920, 466]
   },
   "lanes": [
-    { "id": "request", "label": "Request" },
-    { "id": "discovery", "label": "Code Discovery" },
+    { "id": "discover", "label": "Request and Discovery" },
     { "id": "trace", "label": "Execution Trace" },
-    { "id": "output", "label": "Walkthrough" },
     { "id": "evidence", "label": "Evidence Check", "variant": "exception" }
   ],
   "phases": [
@@ -25,15 +23,12 @@
   "mainPath": [
     "walkthrough_request",
     "resolve_target",
-    "verify_entry",
-    "read_chain",
-    "trace_behavior",
-    "publish_walkthrough"
+    "verify_entry"
   ],
   "nodes": [
     {
       "id": "walkthrough_request",
-      "lane": "request",
+      "lane": "discover",
       "col": 0,
       "type": "external",
       "label": "Request",
@@ -41,16 +36,16 @@
     },
     {
       "id": "resolve_target",
-      "lane": "discovery",
-      "col": 1,
+      "lane": "discover",
+      "col": 2,
       "type": "frontend",
       "label": "Target",
       "width": 40
     },
     {
       "id": "verify_entry",
-      "lane": "discovery",
-      "col": 2,
+      "lane": "discover",
+      "col": 4,
       "type": "backend",
       "label": "Entry",
       "width": 40
@@ -58,7 +53,7 @@
     {
       "id": "read_chain",
       "lane": "trace",
-      "col": 3,
+      "col": 4,
       "type": "backend",
       "label": "Read",
       "width": 40
@@ -66,7 +61,7 @@
     {
       "id": "trace_behavior",
       "lane": "trace",
-      "col": 4,
+      "col": 2,
       "type": "backend",
       "label": "Trace",
       "width": 40
@@ -74,7 +69,7 @@
     {
       "id": "evidence_gap",
       "lane": "evidence",
-      "col": 4,
+      "col": 2,
       "type": "security",
       "label": "Gap?",
       "width": 40
@@ -82,15 +77,15 @@
     {
       "id": "inspect_more",
       "lane": "evidence",
-      "col": 3,
+      "col": 4,
       "type": "messagebus",
       "label": "More",
       "width": 40
     },
     {
       "id": "publish_walkthrough",
-      "lane": "output",
-      "col": 5,
+      "lane": "trace",
+      "col": 0,
       "type": "cloud",
       "label": "Walkthrough",
       "sublabel": "verified flow"
@@ -101,9 +96,9 @@
     { "id": "target_to_entry", "from": "resolve_target", "to": "verify_entry", "role": "main" },
     { "id": "entry_to_chain", "from": "verify_entry", "to": "read_chain", "role": "main" },
     { "id": "chain_to_behavior", "from": "read_chain", "to": "trace_behavior", "role": "main", "variant": "emphasis" },
-    { "id": "behavior_to_check", "from": "trace_behavior", "to": "evidence_gap", "role": "branch", "variant": "security" },
-    { "id": "gap_to_inspection", "from": "evidence_gap", "to": "inspect_more", "role": "error", "variant": "security" },
-    { "id": "inspection_to_chain", "from": "inspect_more", "to": "read_chain", "role": "return", "variant": "dashed" },
+    { "id": "behavior_to_check", "from": "trace_behavior", "to": "evidence_gap", "role": "branch", "variant": "security", "route": "straight", "fromSide": "bottom", "toSide": "top" },
+    { "id": "gap_to_inspection", "from": "evidence_gap", "to": "inspect_more", "role": "error", "variant": "security", "route": "straight" },
+    { "id": "inspection_to_chain", "from": "inspect_more", "to": "read_chain", "role": "return", "variant": "dashed", "route": "straight", "fromSide": "top", "toSide": "bottom" },
     { "id": "behavior_to_output", "from": "trace_behavior", "to": "publish_walkthrough", "role": "main", "variant": "emphasis" }
   ],
   "cards": [

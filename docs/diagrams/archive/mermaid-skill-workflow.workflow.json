@@ -6,13 +6,12 @@
     "subtitle": "Understand, generate, save, validate, repair, optionally render, and report",
     "visual_preset": "signal-flow",
     "quality_profile": "showcase",
-    "viewBox": [920, 760]
+    "viewBox": [920, 466]
   },
   "lanes": [
     { "id": "authoring", "label": "Diagram Authoring" },
     { "id": "validation", "label": "CLI Validation" },
-    { "id": "repair", "label": "Error Recovery", "variant": "exception" },
-    { "id": "delivery", "label": "Output and Delivery" }
+    { "id": "repair", "label": "Error Recovery", "variant": "exception" }
   ],
   "phases": [
     { "id": "interpret", "label": "Interpret", "fromCol": 0, "toCol": 0 },
@@ -58,20 +57,11 @@
     },
     {
       "dot": "rose",
-      "title": "Validation loop",
+      "title": "Validate + deliver",
       "items": [
-        "Always run mmdc against the saved .mmd source.",
-        "Fix the reported syntax issue and validate again.",
-        "Do not present an artifact as valid until the command succeeds."
-      ]
-    },
-    {
-      "dot": "emerald",
-      "title": "Delivery contract",
-      "items": [
-        "Return the source path and successful validation status.",
-        "Render SVG by default only when a preview or image is requested.",
-        "Include the rendered path when an output image was produced."
+        "Run mmdc on the saved .mmd; fix syntax and rerun until it succeeds.",
+        "Return the source path and successful validation status; never claim validity early.",
+        "Render SVG only when requested and include its path when produced."
       ]
     }
   ]

@@ -3,21 +3,16 @@
   "diagram_type": "workflow",
   "meta": {
     "title": "Code Walkthrough Generator",
-    "subtitle": "Verified execution tracing from an open-ended request to a source-backed explanation",
+    "subtitle": "From an open-ended request to a source-backed execution trace",
     "animation": "none",
     "visual_preset": "editorial",
     "quality_profile": "showcase",
-    "viewBox": [760, 1100]
+    "viewBox": [920, 466]
   },
   "lanes": [
-    { "id": "request", "label": "Invocation" },
-    { "id": "scope", "label": "Request Analysis" },
-    { "id": "discovery", "label": "Implementation Discovery" },
-    { "id": "entry", "label": "Entry-Point Verification" },
-    { "id": "trace", "label": "Execution Trace" },
-    { "id": "analysis", "label": "Behavior Analysis" },
-    { "id": "output", "label": "Walkthrough Output" },
-    { "id": "evidence", "label": "Evidence Recovery", "variant": "exception" }
+    { "id": "discover", "label": "Discover" },
+    { "id": "trace", "label": "Verify and Trace" },
+    { "id": "output", "label": "Output and Recovery" }
   ],
   "phases": [
     { "id": "understand", "label": "Understand", "fromCol": 0, "toCol": 1 },
@@ -27,16 +22,12 @@
   "mainPath": [
     "invoke",
     "classify",
-    "locate",
-    "entrypoint",
-    "read_chain",
-    "analyze",
-    "walkthrough"
+    "locate"
   ],
   "nodes": [
     {
       "id": "invoke",
-      "lane": "request",
+      "lane": "discover",
       "col": 0,
       "type": "external",
       "label": "Invoke",
@@ -44,24 +35,24 @@
     },
     {
       "id": "classify",
-      "lane": "scope",
-      "col": 1,
+      "lane": "discover",
+      "col": 2,
       "type": "frontend",
       "label": "Classify",
       "sublabel": "intent"
     },
     {
       "id": "locate",
-      "lane": "discovery",
-      "col": 2,
+      "lane": "discover",
+      "col": 4,
       "type": "backend",
       "label": "Locate",
       "sublabel": "source + wiring"
     },
     {
       "id": "entrypoint",
-      "lane": "entry",
-      "col": 3,
+      "lane": "trace",
+      "col": 4,
       "type": "security",
       "label": "Verify Entry",
       "sublabel": "trigger + input"
@@ -69,15 +60,15 @@
     {
       "id": "read_chain",
       "lane": "trace",
-      "col": 3,
+      "col": 2,
       "type": "backend",
       "label": "Read Chain",
       "sublabel": "calls + files"
     },
     {
       "id": "analyze",
-      "lane": "analysis",
-      "col": 4,
+      "lane": "trace",
+      "col": 0,
       "type": "backend",
       "label": "Analyze",
       "sublabel": "behavior"
@@ -85,23 +76,23 @@
     {
       "id": "walkthrough",
       "lane": "output",
-      "col": 5,
+      "col": 0,
       "type": "cloud",
       "label": "Walkthrough",
       "sublabel": "source-backed"
     },
     {
       "id": "evidence_gap",
-      "lane": "evidence",
-      "col": 4,
+      "lane": "output",
+      "col": 2,
       "type": "security",
       "label": "Gap?",
       "width": 40
     },
     {
       "id": "inspect_more",
-      "lane": "evidence",
-      "col": 3,
+      "lane": "output",
+      "col": 4,
       "type": "messagebus",
       "label": "More",
       "width": 40
@@ -109,14 +100,14 @@
   ],
   "edges": [
     { "id": "invoke_classify", "from": "invoke", "to": "classify", "role": "main" },
-    { "id": "classify_locate", "from": "classify", "to": "locate", "role": "main", "route": "drop", "fromSide": "bottom", "toSide": "top" },
+    { "id": "classify_locate", "from": "classify", "to": "locate", "role": "main", "route": "straight" },
     { "id": "locate_entry", "from": "locate", "to": "entrypoint", "role": "main", "variant": "emphasis" },
-    { "id": "entry_chain", "from": "entrypoint", "to": "read_chain", "role": "main" },
-    { "id": "chain_analysis", "from": "read_chain", "to": "analyze", "role": "main", "variant": "emphasis" },
+    { "id": "entry_chain", "from": "entrypoint", "to": "read_chain", "role": "main", "route": "straight" },
+    { "id": "chain_analysis", "from": "read_chain", "to": "analyze", "role": "main", "variant": "emphasis", "route": "straight" },
     { "id": "analysis_output", "from": "analyze", "to": "walkthrough", "role": "main", "variant": "emphasis" },
-    { "id": "analysis_gap", "from": "analyze", "to": "evidence_gap", "role": "branch", "variant": "security" },
-    { "id": "gap_more", "from": "evidence_gap", "to": "inspect_more", "role": "error", "variant": "security" },
-    { "id": "more_chain", "from": "inspect_more", "to": "read_chain", "role": "return", "variant": "dashed" }
+    { "id": "analysis_gap", "from": "analyze", "to": "evidence_gap", "role": "branch", "variant": "security", "fromSide": "right", "toSide": "left", "via": [[207, 243], [207, 367]] },
+    { "id": "gap_more", "from": "evidence_gap", "to": "inspect_more", "role": "error", "variant": "security", "route": "straight" },
+    { "id": "more_chain", "from": "inspect_more", "to": "read_chain", "role": "return", "variant": "dashed", "fromSide": "left", "toSide": "right", "via": [[410, 367], [410, 243]] }
   ],
   "cards": [
     {
@@ -130,20 +121,11 @@
     },
     {
       "dot": "amber",
-      "title": "Entry-Point Evidence",
+      "title": "Entry point + trace",
       "items": [
-        "File path, line number, and function or class",
-        "The event or framework behavior that triggers execution",
-        "The initial input entering the flow"
-      ]
-    },
-    {
-      "dot": "cyan",
-      "title": "Trace Every Relevant Stage",
-      "items": [
-        "Purpose, callers, callees, inputs, outputs, transformations",
-        "Validation, branches, early returns, and exceptions",
-        "External calls, persistence, and other side effects"
+        "Prove file:line, symbol, trigger, and initial input.",
+        "Trace purpose, callers/callees, data, transforms, validation, and branches.",
+        "Include early returns, errors, external calls, persistence, and side effects."
       ]
     },
     {
