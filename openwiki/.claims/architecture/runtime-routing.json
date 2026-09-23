@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:1cd378ee74df0d92760a5b24eb7356789618cbf57f2c18b40b2d68e3e8fcb331",
+  "claims": [
+    {
+      "id": "claim_4984e1d86d5f4296a401993bc333d9e4",
+      "statement": "The Streamlit entry point initializes profile and session state, exposes Coding, Quiz, AI Questions, Interview, and Progress, and dispatches each selection to a page renderer.",
+      "evidence": [
+        {
+          "resource": "repo://app.py#L18-L36",
+          "version": "repo-lines-v1:sha256:ec687370506affe8a7ff8e51ca2da05467ab60fe477af149e613cf81ebeef6eb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNjNWI5NDg0N2MxMDUzYTZmMGRkYjIwMDc2N2ZhMDA2NDJhZWRlMTRmMWUwZjBhNDIyZjJmYWM4NGM2ZDI2ZjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5MjIwNGM2NWY1MDJkYzE2NDU0YjYyNDA4NTZhOWFiN2FkZTAwM2E4ZTlmODYzMzNlYzBiN2M5ZTQwOTQ5MWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYzYTdjZDAwZjA5MGYzYWI3ZDlhOGU4MGQ1YmZkYjZiNDc2Mjg3ZjRkZDNiZTk1NDAwZDBjYzQ5MGJhMGRmYjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRkNDBkZWU3MGZkZGZlYzIwOGIyYzQ0OTkyOTJmMzllMjU3YjFkZmZiZjgxZGVkN2IyOWZhMGNlY2JkODEwMTEifQ"
+        },
+        {
+          "resource": "repo://app.py#L50-L68",
+          "version": "repo-lines-v1:sha256:75d21b1d06222b78f29e4ac68996c7e125de19b466a899639d59c7c1d1f29a21:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzODMyMDk4Yzg1NzhmNzIzZWI0MzgxM2YzOGQ4ZmNkOTM4M2U3YzJiMmRjYjljNTJjZGQzODZlNmJmODk2MWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjllMTg4MmU4OWNiNDFmNDBmNDhhMjY0NDcxNDcwZGQ1NWY2YjBlOWUwNWFmNTFlMDQ5NWViNGU5ZGZlZWQxOTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQwMjZlOTNlMWJlMGVmZDU5MGQxYjI0NDU1YjI1NDQzMDE5NzY1OGU0ZmNkYWM2N2U0ZTZiYThlOTI5NjVkOWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU5ZjdmN2FhMTYzMDU2N2MxYjVlNjY0NGUyMWNiZWM4M2E0MzkzM2RjNWIwZGEwZDkwY2Q1M2JhNDhlOTEwZDIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a43c2286505d48a4b299e508df389286",
+      "statement": "The catalog profile defaults to all unless CODING_TUTOR_CATALOG selects one of the all, algorithm, data_analysis, or interview profiles; fixed profiles can constrain question type, learning modes, database, and port.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/catalog.py#L12-L50",
+          "version": "repo-lines-v1:sha256:5722d9c8bdb7dd67491a895a152c6c92d32ee876647a144c02fd239571fae6ee:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4ZDhiN2VjZGYyZjU1NmNjNzVlYzBkNjE0NjZlZjZhYzI2NTRkMDRhNTcxMjkyNmJhMTFlODVjY2M4YmQ5MGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkZTZjYWIyOTNiOGQ3YTRiMGYzMjIwZTZmNTViZDU1YjA1ODNiZWI3MzcwNzNiMGM5ZmNkMzc4ZTY4NjEyMGMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMxZWQ0Yjc5MThmODdmMzg5MWFjODJmOTU1ZGFkYTBkYTE5NDllOGFhNjA3MzUwYjg1ODViMjI2NWJkNmE5NGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzZTI4MTgwMThkZGUwZjdlNzg3NzY0NGE1NjgwZmRjMjJkZWZjYzVjZTAwMGFjZDA2YzI5YTM5YzBiZTJhMzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8b86ed5589a34183b8f47ff484c512a3",
+      "statement": "CODING_TUTOR_DB overrides database routing; otherwise fixed profiles use their configured database, while the all profile routes Coding and Quiz by question type and other pages to the interview database.",
+      "evidence": [
+        {
+          "resource": "repo://app.py#L38-L48",
+          "version": "repo-lines-v1:sha256:f8bcfff145c6bdaa22dcddeeae97b38724eecdf727c1f21e29fa5a17d061c3df:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxMjlkZTVkYTlhYjRjM2UwYzM0OTY3NmJmNWJhN2M1ZDhkOTg5MzhiNTcwZWFjOGYwOWVmODJlZTU2MGE1NjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUzMDdhODIyMjg5YTNmY2U1NjNiMjYyY2U3ZDUzNDNhZTI4NWMyNjI0ZWRjNTQxNDE3OTRkMWZmM2E5NWM4ZGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNhNjc3MjIwMjkyMTUxODk3MGM2NjkzNzBiOGE4NTBhOTllZjY5ZTdlMWJlMWFjODgzNzQwNDI0OTViNDM0NDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZlMWExNzkwMTFiMTk2M2I1NDc0N2Q1MjhkZTA5YWRlNzcyMjc1NWVjYzFhODM4MjVlNTk1NTk1ZDM3MTdlMzgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2b4037bbfb144de6bc78dc6d54b38456",
+      "statement": "Applying a fixed catalog profile pins its question type and substitutes allowed learning-source and method selections when current values are unsupported.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/catalog.py#L63-L83",
+          "version": "repo-lines-v1:sha256:30bf78df62dfe1e7c2cc1fe530cd3bcc050b85486b2aed548df4b3270b21e1ae:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRiMGFkMDc5MWY4Nzg0ZWY1OTgyNzlkNTEyNWFmM2ExOTdhMjk3ZTJlMTliMzA4ZjQ1NTNjYTk2Zjk2ZGMwODYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJiYzJhNmU4ZTQ2YWFiNzk3NzVkM2RjMzUwMjJiNzIyNzlmZGFiMjYxZDg0ZDZmNjkxYjk0M2ZmOWUzNGIyMzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg3M2UzMjhiMDdkMDJjYzcxNzM2NGMzZWExZmZhMjcwMWE3YTkyYmFlNzM3ZjE4Mzk4NDU1ZjJlYmE2NjYzOTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c39f00cdd41b430dac1bac0e3ffe3d5e",
+      "statement": "The navigation test moves the Streamlit app to AI Questions and Interview and asserts that neither navigation run raises an app exception.",
+      "evidence": [
+        {
+          "resource": "repo://tests/test_interview_modes.py#L142-L160",
+          "version": "repo-lines-v1:sha256:cff5e1bb2a868e710dfa72e417dc0908adc30b98c360d497e94e18153f384919:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5NzEyMzBkODM2MWI2OWRjNDk2NDVlZmY5NGI3N2QyMDlmY2ZkNDA5ODI5N2M3NDYzMzc4NGIzNDEzYTBmYmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2NGQ1ZWI0ZTczNzc2ZGYxZjkxN2MxMTA1ODMwZjM1MGU3N2MyYWMxZjZjYTBmNDhlMjdhN2ZhODA4NjEzNWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA0YzNmNTAxMTM5MDdjMjAwMDA3M2IyZDA4MThiNGExOGRjNjEwZDkyMGM3N2U0YTc1YWY4YWMzODkwYjIzOTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdhN2NmYTJiZjE3NDI2YTI4NjkyZTc3YmI1NDk3MDgyYTRmOWE3MTJmODIyZDQ4MzMyNTUyZDI2ZWU1MWQ1MTcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a5dda09222144a8dbdbae489f82004ed",
+      "statement": "UI tests verify that an unsaved editor draft triggers a keep/discard/cancel choice when the learning method changes, and that keeping the draft preserves its editor content.",
+      "evidence": [
+        {
+          "resource": "repo://tests/test_ui.py#L160-L184",
+          "version": "repo-lines-v1:sha256:a7a4a3cfbdeb1b607fd3ed65fb753d5e63468796878b0dc61d4e20d057ddc8a3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkYzE2YmIwNmFiYzg4NjQxODA0Y2E3ODU3OWQwYTRmZTMwZTM2OGQwYzU0YmI0OTMxODIyZTU2MmY1NWFhMjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhlNzI4ZmQ3OWRhYTIzNzJhODgzNGMyY2E1YTBkNDY0Y2FmMmE1OWIzYmExNzE1OGQ2NmE4OGUxMjA4Y2M0MDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNlYWViZDU4MTdjZTllMWMwNTFiNmVjODU5N2Y2MTMzZGMzMzkyNDg0NTBlODQwZGM4YmFhMDMwNDlhNTM0YTMifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-23T14:17:19.981Z"
+  }
+}

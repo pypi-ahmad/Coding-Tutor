@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:f1ba0ca567dd45168e567719700c9ecd1cd5320ef25e1df0a644c711206d107c",
+  "claims": [
+    {
+      "id": "claim_7874733a4b99408b899f454900b3890f",
+      "statement": "Provider adapters expose credential-configuration status, model options, and chat; model options carry provider identity, model ID, and verification status, and the registry includes OpenAI, Agnes, and Gemini adapters.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/providers/base.py#L13-L59",
+          "version": "repo-lines-v1:sha256:d28122ec98c2583070c27be2b1e89c7db37a74625f77a1c82fb73f9464bbc762:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkNzBiNmYxNjkzY2RiMzU5YmUzNDg4MTA1ZGZhOGI2ZmU1NmRlOTcyY2U1NDZjNGY3MWFhMzg1NGZlMTI1YTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5NjFlNzRjNzYzZTExZmM5ZjE0MzEwNWVjMGMzOWZmM2ZhNTY5YzM4MzgwNTNiYjliMWUzYTY5NDRkZWMwMDAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1YTNhNzc1ZDZiMjk4M2Q3N2JlYWI1NTYzZGI4NTUwMjUxNjFmMjY5MDNmMjk4NjA2NjZlNTg4NWI1YjVlN2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/coding_tutor/providers/registry.py#L1-L23",
+          "version": "repo-lines-v1:sha256:96f26140a3fa023e0acedc15ccc27438dead3e6d9f53b246660d79092d4ea089:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImExNzYwODBhYmE5ZGU0YTNkYzFmNzYzMmEwOGYzMDhmMDA1OWJlODY5ZjIxMjU2ZWE4ZjUzZTMzY2MxNzE0NDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3Y2MxOTdjYjI4OWQwNWFjOTM5YTgyZTFiNjE1ZDkwODk5ZWRiMDIzMGQyNzE1ZGMxZjE4NmExMWUzZDk2YzMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7f8f224602184b3594526d2f44ee901f",
+      "statement": "Question generation validates the requested type, difficulty, method, topic, model verification, provider/model match, and provider configuration before the model call.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/generation/generator.py#L71-L101",
+          "version": "repo-lines-v1:sha256:2f10638e3c8037ec91c06b4eb4aa360934db2a718dbaeba79ad2699f9d7369a6:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzYmE1ZGM0NzZlYmMwYTU3NmE3MGMxYmZhZjIyZGQyYjY1M2RhYWY0MjJiMjkzOGJjYTg1MTExYmY0OTZiYmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc5YjM5OTA3NTI2Njk0ZjgzNTVkN2NmNzQ1ZWRiYzYxNDExMTM4OTAzMmZiOTBhYTkyNjg4MjZkYTAzYWY3NWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImViODJmZTBkNjUzYjI5MGM5ZDM3NWI5Zjk2Y2FlYjE2N2ZlM2FhMjZjOGI3OGZlMWNjNTEzMDZhMTdjOTU2MGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ2MmQ0YjFlYTM4OWUzNDU3YmE5MTBmZGI4NzQ4NzNjZTMzZWYxOGJjZWZmMGVhOTRiMmYxMjk2MTUwZmQwYzQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b15d46ffc7944f0cb5c346bc59ba3eaf",
+      "statement": "Generation first loads local catalog context; optional web research is gated by web_enabled, a specific non-general topic, and that topic being absent from local references.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/generation/generator.py#L103-L137",
+          "version": "repo-lines-v1:sha256:621c4706e89a31c441d5d9ec46bea8cdec9b58052d6f904cb526fbe6e1b22c28:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYzNmE0NzhjYjM2ZTcyZmFjZGI3ZWJiNjdkZjdhY2ZjM2JmYjdkY2ZlYzE0OWI5ODllNjJmYTBjNjk0NTcxMWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmMzg5M2U2MzJhNDNiZmM0ZTcyMGFjYTc0MzNiZDc3YzBmYjZlZTM4OWNhOTllZTkzN2E5OGM5MmVmMTYwYzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMyNGI3ZTNmNjlhNzUwN2FkMGQ5ZTIyMjIxMWQxNDBjM2UzZjEzYWY2OGIwMjBkNDlmN2EyZTk5MDIyZGIwMjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEzZTg0ZWM4Njk2NmRmMmRjOWIzM2FhNWI2Njc1OWM2NGIxZTlmNjJmZjA0NGJjOGUyNjRmMDYyNTYyMjJmYmEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_958a43e784f84bb89822a041d4de403a",
+      "statement": "Prompt loading is allowlisted and prompt rendering rejects missing, extra, or non-text values; malformed or contract-invalid provider responses are not saved as questions.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/generation/generator.py#L149-L160",
+          "version": "repo-lines-v1:sha256:73f0f34504efc2ef625eacfedcb1d5ac4ef7f8c4c6c37dfe13fb132ba621c23e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxYmI2Yjk2MzE2MjQ0NjBjNjA0MWExMzU2NDc5ZGI5MjVlMDJlOGE2ODFlZmY5ZTg4ODlhZDg5YzRiYzYzNTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNlNThiNDZlZjhhYTk2MTg4Y2Y1YWIwYjNkNWI1YTg1NTNhYTQzOWNjYWU3ZTE2MDYyZGZkNDcxZTI4MmNhYTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQyYmI3NmFlNmU4M2RiMDM2MTRkNzI1MjhhNzVmZDExOTI1NzU0ODEzYmM3NTg2YWJmZjY1NTI3MGYyZjU1YTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYwMDg3NTQ2ODFlMGI2MmRlZDYxZWQ3NzU1ZmU5YjMxMzk0NWMxMDJjNWU2OTMxOGI2NTdjNjMzZThjZWUwZGYifQ"
+        },
+        {
+          "resource": "repo://src/coding_tutor/prompts/__init__.py#L24-L42",
+          "version": "repo-lines-v1:sha256:a2202ca5ed341590e906e9834b449065d0fd006a06a679bc8e017f4e4243253d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5YzllNTk2YzhlZmNlMWE4ZTk3M2Y3YmVhYmE1YjE3MmNhZjBhNTNmZmNlZjllNGU0NDNlNzJhOGIzMmMwMTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJhOWY4YzJiYzdhMTQxYTAyMmFmM2ZlYjhhYjUwMDhlYzI1NzU3ZWYyNGFjZDA0OWY1MDg5YTc0YjdjOWFlODEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM1NzgzNjFkMmM5MTMwMzExN2YyMTA5ZmEzMjM3YTgwOGU4ZTM0N2YxZjE3OTE1M2UzNjViZjM2MGI2MzdkNTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI3MmM1NzU2ZTBlM2I0N2Q0OGQxMTcyODEwMGFkMjhiMDFkODEwM2FiODA3OGJiZmYyNGZlYTI3NjVkM2I3ZTUifQ"
+        },
+        {
+          "resource": "repo://tests/test_generation.py#L365-L371",
+          "version": "repo-lines-v1:sha256:3d61138103c3c3f7bfe26d42c896483d64c97b9a224fecab3fb780cf732b71a7:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTg2MDU4ODAyMjdmYWRkNTdhMTdjOGFiY2UyNTMxZDhmYWQ5MmQzZmZlMGUzNzNhMThlZTc2NWQ1ZTYxNmZlNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGFmZmMwZjY1OWI1NDBkMzI3NDZmOTE0YjgyNGRmYTkxZmI4M2QzZDI2N2ZmYjM4OGIwOGRiNTIwMjI3NzM2NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTdhN2RkZjYyMWYwZTJhYWZkNzEzMjk1MzNmODdiZDExMzQ5NDkyOTliN2VmNDJmZTk3N2RhYTIxZTI0MTQ4OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDViYjMxM2YzOTFmZWVhMjY4ZjYwNjE1ZjU2MTc3ZGMwZmRjMDRiMzUwMjllY2IzMjYwZTZmODVjMDJmNjNlNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_8bcb6d7c842b46e3846b7c04446951df",
+      "statement": "Generated question content, assets, and provider/model/prompt/context-source metadata are committed transactionally, with tests covering provenance, bounded context, rollback, unverified models, and secret-free provider errors.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/generation/generator.py#L199-L276",
+          "version": "repo-lines-v1:sha256:3a7a118476cd3537b1a8299212ee448e9d99f5c3fac3eaa44916e14ca4dd3a3d:eyJzZWxlY3RlZExpbmVDb3VudCI6NzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjczMDdlN2E0ODM4OGQzMjdmZTE4ODEwYWE1MjgxMGQ2ZDA1MzY0N2I5MjdmOTI4OGQ3Nzc3MDIxNzNjZWUzMDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkNzdhMTYxZjA4NmNiNTk3NTJkZmQ5MjFhMzQ0ZGRlNDQ0ODNmNGM1NGExMDc3NDZiMmZmNGE5Yzg2Zjc2NTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZmYjMwYTQ4NjMyMTg3MjFmMGY5ZTg3NDBlMjkyZmM2NmViNzE5ZjI4ODRiNDI0Yzg2MDE3OTdkYTEyY2UyYzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjViOTIwYjA1MWIzZjA4OTg4N2Y1Y2FmZGE0MjQwY2VlYzAxMmQ3ZTUyYzIxZTA3OTI0YmE5MjI2YWRhNDA1ZmEifQ"
+        },
+        {
+          "resource": "repo://tests/test_generation.py#L185-L218",
+          "version": "repo-lines-v1:sha256:d259b33c9c863da5e008aeea5f8f38bda364b5a84b04a3789e7fa3dbbc31aa7e:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhMjliOTA3YWJlODRhNmJlMTAyZDkzMTM4OGZiY2Y4OTliMGY4NjUyMDk0NGVkMDlhNmI2NGJkNmI0MWRiZmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg2MThhNzA2MDdiMGY1Mjk0YzVlOGM5N2I4Zjk0Y2RmOWZmMDg4YTU5YTE4Y2IzYTkzZGQ5NjNmMTkxMzE3ZDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQwYTc2ZmZlOTI3YWMxYzBjZWJlMzI0YWRhMWZiZDMxZTJjMWQ4ZGZkYjM3OTdkZGNlYjBkYzcxMGI2NzBmNGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhlNjdiNThkMzc0ZTg1N2VmZmY3Yjc4YmY1ODhiODNkMmMyNzIwOWM2MTg1ZDkyNzAzMGFlZGEzNzI2ZjM2NDEifQ"
+        },
+        {
+          "resource": "repo://tests/test_generation.py#L246-L264",
+          "version": "repo-lines-v1:sha256:870f48635e2614cd50b4f7dd28ae7441619dd176e13a2ff5e301762e8293775b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliY2NjZDgzMjg2MTEwOWNmMGE4YjQ2ODRlNWVkNWE0OTZlNjliZmNhZmUyMGE4Yzk5YjZmZjU4ZDdjNTRlMjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJjOTJlZjgwYmVhNTA3NmY5NjMxZDYzN2Q3MDlkZDljN2YwZWM2ZDQ2NGI2MGFjMGUyMTY1MWFlMDc3OThmYTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ2MzI0MjUxYjkxNDBlZjdlYTE3NTRjNGZmNTE5NDhhNTExYjUyZWQ4MzA3NmZkMzQ3YjJhNWEwYjk3YjMzMjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNjMDY2YjViYmVhMTYyMmRkNTFiYzJhOGY2MGI0MzE3ZDAxNjNhYzYzMTU4NTVkMjY0MTgwOTE5M2JiM2YxMGMifQ"
+        },
+        {
+          "resource": "repo://tests/test_generation.py#L380-L430",
+          "version": "repo-lines-v1:sha256:ca630c74752a4324c9189aa0a31f1429b367947917ffc225715106527780fd36:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwMDM0YzdiNzBiZWEzZmMxMjk3YTI5MDcwYjE2ODgxMWY5ZjQ3Yjc4YWZiNTQ3ZDY3NWZlYjRjNzdiY2RlOTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI3NDUxM2JjODMxOTBiNWFkMGE1YWUyMDJhODgzZWQzMjgxYjkyOWQ3ZTczMTg1OGJmMTZkYmJlZDc4YmQ0YTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIwOWY4ZDA3Y2Q2MzQwMjBiYTI1YmIyNzdkOTQ2MmJjMjdlNWRkYTA5ZWUxMDk5ZThkZDRiM2EyMzkzMDVkN2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRhZmZjMGY2NTliNTQwZDMyNzQ2ZjkxNGI4MjRkZmE5MWZiODNkM2QyNjdmZmIzODhiMDhkYjUyMDIyNzczNjQifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-23T14:17:19.981Z"
+  }
+}

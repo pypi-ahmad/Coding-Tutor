@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:2187bfbdbfe9ea40e607d9ae6eabdba7ea6214c6c71515d4ff28b11f6c8aa0de",
+  "claims": [
+    {
+      "id": "claim_465516e581f84ebda897c364a3a62ef8",
+      "statement": "The dataset documentation says adapter support does not mean a complete local snapshot was imported, and that a complete import was not run for its verification.",
+      "evidence": [
+        {
+          "resource": "repo://docs/DATASETS.md#L1-L15",
+          "version": "repo-lines-v1:sha256:b2eaaa1d6e4f46736fda6ec550cb5b92b8bd5610a3ad8d7d2ba76b329bfbb72f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmYzFkYTA5ZDE5ZDI1ZjVjMWZkOTVhNTgyMjA4YzVjYjRlZmE4MGMwOGZkM2JhNDU3ZjkzMTBjMWMwNWIzZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAyY2ViNzI3YThlNzUwNjc5M2JiOTNkODhiMjM2YWFiZmY3MWU3ZjEyNzc2MTQyMDczNzhhMTE0MTlmNTE0NjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ5MjYzNWE1MTY0NjYzYzY4ZTYyMzgyZmE3OGQ2MzAzNjBkZDdkOTViZTQ5NWQwYmZjMjgxOGVhYTc5ZjAzNzkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3cfcae858f534991a170fc37d1d5dc7b",
+      "statement": "The coding-dataset importer accepts --datasets, --dataset-root, and --database; omitting --datasets selects every supported dataset, and omitting --database uses CODING_TUTOR_DB or coding_tutor.duckdb.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/import_datasets.py#L12-L25",
+          "version": "repo-lines-v1:sha256:cac61b93e23840bc05d08ae4769762ad8afa4d77b5c20476b1106e5085028396:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAyN2QxYWJhMmQ5OGU3ZjZiZWEzMTI2NjljOTI3Yjg0OGRjMzNhMmJlOTVjYjIxY2NlZTRjYzNmMTQ2ZDBmYzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMwYzFmMTg4ZjE0MmVkN2E4MjQ2ODBiMjA3MTcyYzU1MTliYzYxNGE0OGZkYTdjZjE2N2VkYjhkZGY3OTk1NmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRlOWRiM2EzNGRhNDU4MDQxYTcxYmE3ODMzMDBlNmQ5OTc4MTMyYjVjYjlmZDBjM2YxMWE2Mzc4YmQxMTI5ZGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlkZGM4OTM3NTAxN2YxODU1OWFmNDA4Njc2MzUyZDYyYWI0MDY1ODQxM2JhMTAyZWM1MmNmYTlkNjVkMWJjOTcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9c04056328a14786bbd71e94d316916c",
+      "statement": "The dataset import process inspects matching source files and validates source format and required fields before importing; import runs record status and imported/skipped counts, including failures.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/dataset/importer.py#L29-L69",
+          "version": "repo-lines-v1:sha256:4fb2c80917585700b9602f99887042692264bbac5e7540181d9c597e7cba2902:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgzM2Y1NmI3MzU4NjVkOTUyOTY3Nzg1YTliYWZiY2YxNTVlNTJjNzBjMjQ3NjA2ZmE5OWRhNWVlNzg2NmI0YWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwZTRmYjRkNDIzZWMzZTYwYTFkMDNkYjA4OGU1N2U4YjM1MjIxZDkxMzg0OTM2YTg4ZmQ5Mzg5NzllZDlkOTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNiMGMyNDUwYzFkMjNjOGIyZjhjZGIxOWNjNzllODgxZTU0M2IyNWQ3NTg0OTAwYzM3N2M3ZDMyY2YyOWY4MjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyNTNjYzZhNzE5OGVkODRjZmNmNThkOTNmOTAxNTQzZjZiZGQyZTE5YTFlYTI4Y2Q3ODAyODVlNDAzMTkyYTgifQ"
+        },
+        {
+          "resource": "repo://src/coding_tutor/dataset/importer.py#L72-L97",
+          "version": "repo-lines-v1:sha256:dacf95e68d747ea2eb190cdb7e6cdb4790988ebae4ff32ee2c929ef0998ddc4a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM4ZDUxOTFlMWUzNWNlMGNkNTZmZWYxY2E2ZDYzZTY2NjkyNmZjNDcxYzM1NjZhNGI2YmJmYjRkMjQ0MTU2MDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4ZGIxN2FlZGJmYzhhZWIwOTMyYTA4NWIwZGIwNjk5OWFjMTBhYzcyOTEwNWJjZjViY2M2NDdkMWEwMzYxYWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgxYzE5YmUyNTRmMjMzNTUxN2FhODM2NGJhYTk3ZDM5ZjRjN2FhODYwMWQxYTg5MzJkNmYwMzdmZDY1MDExNzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/coding_tutor/dataset/inspection.py#L53-L77",
+          "version": "repo-lines-v1:sha256:1affe38bb688098f83037259a0235adce27bb3279a4e0a38ca3c695846acf584:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmMjY4OTBmNWU3NDBjNTU0YjYzOGYxMjgyODQ4ZDA4ZDkwMWZjMmVlNjIzZmVkNWQ4Mzk5ODQ2YmIwNjZlYTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdhNDcxMjY1YzA1YjM3NjU2NzhmOThjNzdjNmYwZmFlMDA5ZmViMDRiZTBlYzE0MGIyMjRiNTE3YWQxOGI3NmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1NmU3NWRhZTMxOWI3NDc2YmEyZGRjNjk3YWY1YTI0ZGRiOWZmYzJjODA5YWNmYWUwNmZkZjM3MjE1MmE5Y2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_11d9fdd9fabd49369633153aa13aa6f3",
+      "statement": "Dataset imports use stable source identities to skip already imported records on reruns, and tests verify idempotency and persisted import counts/status.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/dataset/importer.py#L29-L38",
+          "version": "repo-lines-v1:sha256:6f7897d2b3fc1192744b8dafadd18390edb450acc31f38dfb8bb7f8bd4e7278e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgzM2Y1NmI3MzU4NjVkOTUyOTY3Nzg1YTliYWZiY2YxNTVlNTJjNzBjMjQ3NjA2ZmE5OWRhNWVlNzg2NmI0YWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2YTcxNTI1NzJlZTg0ZjEwOTA2Yzc0YjlmMmE5MjQzNGRkYWIwZTNjNDI4MTNiMDRlNTk3ZWZjZWM5NTFiMjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNiMGMyNDUwYzFkMjNjOGIyZjhjZGIxOWNjNzllODgxZTU0M2IyNWQ3NTg0OTAwYzM3N2M3ZDMyY2YyOWY4MjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYyODBjYWFjOTcyODA0OGNmOTA0YWFmNTczZjAxZTgxYTZmYjJhMGFjYjFjOTAyZGE2Njc0Zjk2NzU4NmE2ZjUifQ"
+        },
+        {
+          "resource": "repo://tests/test_import.py#L16-L44",
+          "version": "repo-lines-v1:sha256:d2a81f8bef69be127ec538738024560aac05b85ef619760aefeadb13cfb6427c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA5MmY2NDIxMGY1OTNjYTFiZDA4MjJjNTg5NDkzMGM5YTRkOTYyZGZiNDE3MTVhYmYwZjliOTg2ZThmNjQ1NTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkNmEzYzMyYWExZDI0MzA3YTQ3YzBmNzk2NDg5ODY5MDVkZDEwOGFjYzNmM2M0OWVkYWFhYjJhMTBiYzBkMWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE0YTc4NzNhZWUyMWMzNDYwMWU1N2VkY2ZkOGE0MWI5M2U4ZGNkNzhlNjBlMjVhYWZmZTIxNGNkMzMyZDFiNTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYzMjFjMmQzNmQyZmY1YTA0MzkzNDlkMTczNjFlYTJiODcwM2Y4M2Q0YzQ2YjNkNmZiNTIwMzEzZTVjMmNkMmUifQ"
+        },
+        {
+          "resource": "repo://tests/test_import.py#L85-L95",
+          "version": "repo-lines-v1:sha256:28b468998f742998fd38aed5daff6d7e8fe45dd070a4e67f7d05f61c6b2ae132:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRjNmIxMjZjYTk0MTEyZjg1ZWY4NGE3NGIzNDczYTdiN2RlMDFhN2RhMzBlYWI1ZjIyZGU5ZGVkYjExZjM0MDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRkMTAwYzFiNTU3YmE3MGRjMWE1OGU0ZmMzZmYyMmFmY2MxMDAyNmFlZDNkNWY3ZDE4Nzg2YzgzYTlmOWIxZDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMzOWZjYzljNDQ0NjA3NjEwMDhjNjQyY2RmNjQ2MDRjMjJkMGRmOTg3ZTMyOGY0MjQ3NTJkNzY2MzA4Zjc2N2UifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_21e8054095004b1485b18031a99d51f5",
+      "statement": "The interview-source importer checks each manifest entry's ingestion_allowed flag and skips sources not approved for normalization; its --database option defaults to the interview catalog.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/import_interview_sources.py#L15-L25",
+          "version": "repo-lines-v1:sha256:7524add732da86dfb610508fd5d72e8f5f01053db7d9805cc83c9aed2c75b786:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2OTE0NzRkN2UxN2FlYzEyYmY5NzZlNTBkNGQ1NGIxM2RjNjhhMDQzNDExZmI4OWJiMjZmZjlkMzNjNWM4ODMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2MDFiZTAzY2ZhYWFjN2RmOTlkNDQ3OGNjYWUwYTllMDI0NTQxZjc0OGRhMDdjYjkzNGYwZDZjMmFiNjM0NjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhiMTBjZWJiZjk4NTU2MTZiMmZmOTRjM2E1ZDU0ODk1ZTgwZDNkN2RiMDAwMDQ3NzI4ZWIxOGRiMzg1N2NhOTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA2ZWRiNmJjYTUwNGNkZDE0Yjc3Y2NmZjc4MDcxMmJjYjkzNDkxYmEwYmJlMzgxNzBlZTgzYzRiYmUwNTU0ZWIifQ"
+        },
+        {
+          "resource": "repo://scripts/import_interview_sources.py#L28-L64",
+          "version": "repo-lines-v1:sha256:f817be3e69c30250b078774f6fc5fb8f6bc8a1cbbf657081873291f1af51a106:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ0YWJhMDNlMzkyM2UxYWFmNjNkNTg3NWUxMTkyZWY0ZThmMmYxMTUzZjQ1MGFhZDg1ODY5YjIxZDkwMTBkYmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNiYTQwMzkwZDczYzIxZmMxM2YwZDhjMTMwMmMzNjE3OWQ0MzM3ZGZiNTdmNTkyYTBhM2UzYmQ3NmZlMzI5ZTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIyZjM2MDA1ZGI2NmZlMTc5MWE2NmI4ODM4ZTZjMjczN2Y5OTY4MmRkNWMzODRlYjQ3ZWZmMzY2ZmNmMWNlNGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU5ZjdmN2FhMTYzMDU2N2MxYjVlNjY0NGUyMWNiZWM4M2E0MzkzM2RjNWIwZGEwZDkwY2Q1M2JhNDhlOTEwZDIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_03de36697bbe4e86997d69589b6b388f",
+      "statement": "The dataset documentation states that project source licensing does not grant rights to redistribute downloaded dataset content and advises reviewing source terms.",
+      "evidence": [
+        {
+          "resource": "repo://docs/DATASETS.md#L1-L15",
+          "version": "repo-lines-v1:sha256:b2eaaa1d6e4f46736fda6ec550cb5b92b8bd5610a3ad8d7d2ba76b329bfbb72f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmYzFkYTA5ZDE5ZDI1ZjVjMWZkOTVhNTgyMjA4YzVjYjRlZmE4MGMwOGZkM2JhNDU3ZjkzMTBjMWMwNWIzZTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAyY2ViNzI3YThlNzUwNjc5M2JiOTNkODhiMjM2YWFiZmY3MWU3ZjEyNzc2MTQyMDczNzhhMTE0MTlmNTE0NjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ5MjYzNWE1MTY0NjYzYzY4ZTYyMzgyZmE3OGQ2MzAzNjBkZDdkOTViZTQ5NWQwYmZjMjgxOGVhYTc5ZjAzNzkifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-23T14:17:19.981Z"
+  }
+}

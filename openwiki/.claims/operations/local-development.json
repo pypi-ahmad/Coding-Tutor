@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:e175301f166f893f1a698257aa8c7956c73554c000c3bd937122e4f6f4bf31b3",
+  "claims": [
+    {
+      "id": "claim_3d9fe43e8e7d4b2482515800bb9621d4",
+      "statement": "The README lists Python 3.11+, uv, and Git as requirements and documents uv sync --locked followed by a locked Streamlit launch; launch_app.cmd is an alternative Windows launcher.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L66-L84",
+          "version": "repo-lines-v1:sha256:e306ebc51158bcd2c04840c3a7515a90b9c8632e5624f911c9898c9502e468de:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEwYzg1ZGFkOTVmODVhNDE4ZWQxNDg5MzZiMGVhYjZhNDNjMWE2MmE2NjhiYmNmNzUzNDFhY2VkNDk0NmU0MGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMTZiYzUxYjc0ODc0MjRiMDY5ZmM2NDgzMWIxMTYxZDAxMzljNTZkODkxYWZlMjZjYzRhZWE0NGM0YjczZDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU3NzNhYTQ0YWEyZDk3YzYxZjNhZjE4N2I2ZGRiZDUzZmU2MWFhYmExMDE1ZDZhNDAyNWJkNDk1NTI4NjUzMjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjliMTI4Y2U1YzU1ZDMzYzU4MmNhMzE0NzU1NjM2NjA0N2UxY2JhYzBmZDhlZTE1Zjk2NTUzY2Q3ODY1ZmFmNzYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ea76e62b98d949158f0a32b4d4a96ceb",
+      "statement": "The runbook documents the default listener at 127.0.0.1:8551 and says the app is not designed for public or multi-user deployment.",
+      "evidence": [
+        {
+          "resource": "repo://docs/RUNBOOK.md#L19-L26",
+          "version": "repo-lines-v1:sha256:00f3d00fee1a6b879b4e5517e858253558ce22458e39d3c873d308537a5ac448:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDhhNWE2NWJmM2MwYjJmMjI1ZjZmOWE5MGMyZjBiYjRjOWJkZTI4MmJkZDQ1M2U2N2RkZTA4NDYxZTgzZmNkZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmZmODQ4M2RjYWIyMDIwZGIwMzI1N2ZjMTk5ZWUxOGUzMDZhMTI5ZWU3ZmFmY2QyNjQ4MTI0ZTE3M2ViYTZhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2FhNjAwMjMyMDdkZjAzZDIwNmI1Y2UwNTY0YTQyM2NmZmI2MTdmZWM2Y2Y3ZDUxNzU1NDZhZGIyZjI0MTQ1ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzE4ZDA5MDg2MTAzZDA3MjFlZjJmODFmOGZiNmEyNjllMzhkZjJkYTc5MjNhY2Y3M2UzZDkwZDVmNTNlZTFlZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_88b49fbd55c24e6f9efbea195c71cb2a",
+      "statement": "AI actions require a provider credential supplied in the process environment; the app does not load .env files, and a configured status does not verify authentication, quota, network access, or model entitlement.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L86-L98",
+          "version": "repo-lines-v1:sha256:ca8b5618d38b833e177ef684606d27a0fc4153554858f5fb6ec79df872f9f0cb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzYjliZDg3OTZiNmVjZDJhNjI0OWE3ZjRmMGI2NzMyYmY2NDlkYjI1NzMwMzRjODg5NWZkOTRmZDcyYjc5YWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkZjFiYzAyYWM4MGVkMzYxNmI0YWU5MmFiNWViOTc0MTZkOGFiYmI0ZjNjZWFkYWUzOWFlMjlhOGNkMjYxY2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc2NThiZWZhMjZhYTU5MjcwYzRlODQwMzFhZTUyMTVmMDVmYmVjMzc2N2RhZjZhYjA4OWIwNWVlYmUxYWQzNjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc0ZTFlYTRmYTg3ZjkwYTBjM2Y3NTMzZjU3OTAzM2Y1OWFiYmNmNzczYmIyY2IzZDZiNGQ0YTYzZDJjMGVhNDcifQ"
+        },
+        {
+          "resource": "repo://docs/RUNBOOK.md#L32-L50",
+          "version": "repo-lines-v1:sha256:42ad898e844f8884877bbca819b9500e3efac414bdc92f26c909b4f7f8244535:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5ZjAyNzZkMTU1Mjc0ZjI4NWY3ZDFiMjYwNjQ2M2FlZmExZjA3ZDMyMzE2ODMzYTY0Mjk4YjZkZjY2YTk3OGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljOGM0MWQ2MDAyNGQ4M2MxMDY3NDRhYWMxOTk3ZWNiMDc4ZTY0OTU4MDY5NjkyZGE5NDFjZDQ1M2NjOTlkMjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjllZTc1OTg4YTA4ZTY0ZTViNTVhYWQ5YzIzYzcwY2E3MTEzMmM4OTg2NDY1MmU2MzBjZWJjNjIwZWZjZGEwNmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkwOTQ0Mzk2NWI5MmI2YmU2MjM1MjM3OTlhNTExOTQ4ZTI3Yzc1MTgwOTJjMzYwNGE0Y2M4YTBjNzAwMjE1MjcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_784f865e5f7a4260a79ca2fffd11c260",
+      "statement": "The README documents uv sync --locked and uv run pytest -q as the development test workflow.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L215-L230",
+          "version": "repo-lines-v1:sha256:d3fe8da7520a773e9cffd6383f224733c003f815042742d5a2e5a01eb990c341:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzYmMyZTk0M2U5MDVhNjg4ZDUzNjQxYWMzYTNjOTVmNzZmYjUwMGFlMzY0MjYxYzNiODMzY2NkNWI5YmFhNjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYzU2OGVhZGRjYzQ4NDAyNmYxZTMyYWYyMmM3NWYzODUzNjJjZjJjNWMxZGQ5NjhjMDU5MmY1NzE5NTgzMzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE3MGM3ZGNmZmZjNTRhMDNlY2ViMTUxOWQ3ODQ5OWMwOTAzNmUyNjhhMjEzN2RjY2VhMTYwNmJlZGEyZjc3NDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU2OTI4NzFjOThlNzRjNzg1M2NhMzFkZWQ5ZDNjYjA4ZmIyNmYwN2E1NWQwNmMzNDIwZGU0MWQ0ZmRlOWY0OTcifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-23T14:17:19.981Z"
+  }
+}

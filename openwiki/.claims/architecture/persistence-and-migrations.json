@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:0eac50a86a6c1e5c4406de812ae58d0c06d528d885bcffa8d1fe149f7b541b68",
+  "claims": [
+    {
+      "id": "claim_ff58102540a640b39d91fddb78f14da1",
+      "statement": "When no database path is passed, the connection layer selects the active Streamlit-run path, then CODING_TUTOR_DB, then coding_tutor.duckdb.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/database/connection.py#L17-L26",
+          "version": "repo-lines-v1:sha256:444a341fc2025a05e46c668795c741efd7d819fe768fbfa9ff9e810fddd7d93a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1MWZiMTk2NWNhNjEzNDFkZGJkNzMyNWZlYjQyYTNlMTVjOTE3Y2QzY2U0NmU3MzQ4MTAwN2YxMWY5Y2I4N2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1MTg2NWE1MTVhNDM4NjYwOGYxYzg3Y2JhYWNmMmZlMzJlYTY5Y2Q4ZWYwODdmOGVhOTI5YjFmNDkyZjUxNDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjliZWEwMmI5OWRjYTY0ZThmNTQ4N2ExNTI3MTE5ODQ4NTcyNzZiMjJiOTIwNDRjZDM3ZTQ1OGUzMGQ3MDdlMzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcwMjkzOGE3MDAyOWM2OGU1NTA2MmMzNGYzMDA5YWY2Nzc0Y2Q2OTFiM2JkZTI3ZTJlOTg4ZDI0N2JjM2ZhN2YifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8a3775228200411b8e630552ee87af06",
+      "statement": "get_db resolves database paths, creates the parent directory for file-backed databases, applies migrations when opening a new cached connection, and reuses one connection per resolved path.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/database/connection.py#L29-L40",
+          "version": "repo-lines-v1:sha256:7918838e5afbc2f83e250e0411caef59cf6755e1f4eb67433f077bbd5adf3f69:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkOWE1MTNkMDcwYTk1ZjMxNzAzYzc1OTliNTRhYzQ4MGQ3ODg0YjUwOTYwMGZjNTU2MzQxZGJhMjk4MzYxMDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwN2UwYjA2NDY4ZGRiZTQzYTZlM2U2ZWNhOWJjMTViMDA5YWIxZDI4OGQyZmE5Y2MzOWRmZDFlZTBkMjA3MmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFlYWMwNDQ1MmU5N2VlZmViMTM3MTQ4OWVmNWRjOGM5OWI1NDY5NGJjM2E0ZDFhMzQ1YzY1NWRkZjUwYjNmZTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMxODk2OTg1YjZmZmI4MGQwMDlmYTg2ZGY4ZGE1NDU0NGQxYmRlODg0NDc3MjNkYWE5N2RhNDJkMmQzOGRhZjgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d52238e552244298933275ce24524cf3",
+      "statement": "get_test_db creates a fresh in-memory DuckDB connection and applies the current migrations.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/database/connection.py#L43-L48",
+          "version": "repo-lines-v1:sha256:d4d8ea688322f8591468d169fd6f2b0dcb13b5755b3828119015e7de0723300e:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMThhZjBjZTJkY2UyODUyMmZlMTUxMjFkNjQ2YzE0NmI0ZmE1MzQxYTljN2Y5MWVhOTc5ZGE4MjBiZDY1YWVjNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWVmMjc2YWU3NjhhZWVmZjJiNjI1NzNmNWVkMGQ5MDEyZGQ0NWQ4M2E1ZTcxZDk5ZDhkNmNlMDZkYjM5NWM5MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmNlNDIyNjY5MDcxZmUwYmNkZjY0YmI5MTkzYjRmNmQyMjc0MjE1MDA5MzlmZDAzNzAzN2ZiODk5OTg3MTM4MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDIzYWI4N2FjNDQ2MDMxOWQ0MzAxZDE4OTBjZWMyMmY2MjAyNWY0N2FlYTFmMTI0MTBhOGEyOWNjZDI3OGI1ZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_22e1bf8d1e5a4a858b898887ecc841df",
+      "statement": "run_migrations skips recorded versions and commits each unapplied migration's SQL and version record in a transaction; on failure it rolls back and re-raises.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/database/migrations.py#L177-L202",
+          "version": "repo-lines-v1:sha256:55709fa00517253fbcee442c4d23fdfd1fb3b2afcc5dff7a46fd0921c3a91c6b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZkNGU3ZDg3MjE3ZTBhOGRiMGE5NGJmYTAxODQwNzMyM2Q4ZjFiYzU5MTE5YWRjMGFiM2Q3ZWJmZTRjOTFiODYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzNDIyNWJkYjNjMWE3OTExNTY2OGMyMGVlODI5YjFlYjQ4ZjY5MDhmYjQyOTQwN2JmYThkYmYyYTM0NDI1NzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjZjQ1YzU0YTFmMWZlMmFkMTNjM2QwNjg2OGYwYTg4NzE1OTZiNGE1ZGM5YTVlY2FlYTZjYjgyNTc1MWQ5MTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVkYTQ1NDY5YWM2YzRlYTgzN2MwOWVmNWEyMjNjYjBiNTFhM2JmOTY4M2E1NGFmYTU3M2MxYWEzMTk2NjNhZjgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a2808381a01044cb8e0eb3525d275913",
+      "statement": "The schema stores practice questions separately from interview items, and models practice attempts, solution views, quiz attempts/items, AI-question sessions/items, and interview sessions/turns as distinct tables.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/database/schema.py#L120-L193",
+          "version": "repo-lines-v1:sha256:9bc02e7c109dc777a4d7842b631182b45cde7026f010c6a2413da6380733cfb2:eyJzZWxlY3RlZExpbmVDb3VudCI6NzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI3Mjg2MGYyN2JiM2M4N2UxZTcxNGExZGMwNTEwN2EzOTI5YTFiM2ExMTRlNjQ3YjdiMDc4MmJiNTM5YmZiZDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMxMjNiMjQzMTU3MGI0MzZjMjg3YWUyMDdlYzIwYjZjOWMwODdmNzljNmU4NDQ1YjBmYmU2Y2Y5ZWUwMmRmOTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNiOWEyNzVjNzQ4ZjcxYWE4OTFkYWNjMTU0ZjA0ZjYxOGE3ZDQzYzI1NjcxZWVkYjE1NjAyNjhmNjRmMDY3ZWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcyNzMxZmU1NjU4OWM5MzQ5MzY4NTMyMDFlMWU3ODc1ZjM5Y2VlZjFkY2EyYzQ2NDczOTM1ZjAyMmQ4OGJiZWYifQ"
+        },
+        {
+          "resource": "repo://src/coding_tutor/database/schema.py#L207-L275",
+          "version": "repo-lines-v1:sha256:bd0da6c88ab8dd90063ad41156ec4aa59134c843f6cf52817c5c3b8b5fcba575:eyJzZWxlY3RlZExpbmVDb3VudCI6NjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU3NWM0MmMzZGUzM2I0ZWNmODIzZGExNTJiNjI4NjA1ZjhlZTljZDVlYjRkZmRjMzFlZTVkNGVhNzgyYzlkYjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcwNzAzOWEzZTVmMTlkZDRhMTE3ODJkMjcxZGY2NWM5NTE2ZWMzMzNiM2JkODQ3YzMzM2MwNjBiMGRmZGUyOTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE3OWY2MDMwNDkyMzg3NjUwMjYzZmIxN2I2NmQ0NWJlY2U0Mjc4NjYxNDdjOWY2MzNhOTdjYWE3M2Q0NDZjN2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNkNTNlMDJkZDE2YWIyZmFiYzgxY2ZmZmJkNjlhNTYyOWUwNTVjNWY4Nzg4MzQ5YmQ0OTZhYTExNzdiOGRkYjYifQ"
+        },
+        {
+          "resource": "repo://src/coding_tutor/database/schema.py#L24-L76",
+          "version": "repo-lines-v1:sha256:81638e3c6d4841cce8312e4df8616626a2615d6b42f18ba1650034cd915426e5:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMxY2VjYmI3ZTkxNjY1MGVhNTlkNmVhZDk1NjA0NmUwZjY1MGZmMjRkNDE1OGIyZjA5ZjAxOWJmMTZiMmJjNDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU1MDAzYmZiOTBjYzdmOGMwYmEyNTE0YTViZDViY2RiZTI1ZTA3YzM1Y2RlN2IwZmJjMmIwYjU4ODQ0MzJmMDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk0ZWFiNTkwZjQ0MjU5NjM2YTg2YzQxMDJjNDcxMGQwYTUwMzAzNDdlMzUwNDc1ZmRiN2I2MDFkZWMzMTNmNWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI3N2ZlNThiZWEyNjc4ZWJmNDM2MzFmM2U2ZTQzODZiNTYwMGQ1YjNiMDNhMDVkOTMzYzg2MmJiZTUwNTMyMTMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4a6321eba0d54315a5bd58adfd43d18c",
+      "statement": "Database tests verify the expected tables, migration idempotency, a positive schema version, and rollback of both schema and version changes after a failing migration.",
+      "evidence": [
+        {
+          "resource": "repo://tests/test_database.py#L7-L32",
+          "version": "repo-lines-v1:sha256:8124d0246be738da47436b5449ac1afb3c8dc9cbefcb15643f278bd72018f98a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRhN2Q5ZmE1OGExZDBhZWU5MTkwZGE4YjE2MjkwZDFmNTk3OWQwOTE2MDJjYzNhNzM3N2FmNjI1YmIyYTNjMjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxOTFiYjMzM2JmMWZjMTExZGI2YTUzZjE5M2IxZTEwNzJjYThlMTEwNjFhN2NjZjRhNjkzZTU4ODRlMjhmM2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFhMzYwNTNkNjIxMWNiZjVjN2VhZDQ5OGUwNmFiNzYwMGQ2ODBkNGY5YmFhMDUyNzRmN2VhY2U3OTY0M2M1YzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxM2NmYWZmODRmOGU5YTUzNzFjYTI5Mjk5NWEzYjZmZWJmNzgzNTRhODBiYWQ2ZDQ4ZGY4ZjE5OGE5OTEyMzkifQ"
+        },
+        {
+          "resource": "repo://tests/test_progress.py#L201-L218",
+          "version": "repo-lines-v1:sha256:5d6aca14d0d7a7ef87f3f07026fb3457dbebb790f706dad2a43ec86ed9834469:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVjMTc5ZmUyY2I1NGMzOGQ0NGYyYWYzMjcwMjM1MGE4YTZkYTU0MjQxYjUzOTUzMDAxY2ZjZGY2Y2RjYzU0ZTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2NTMwOGY4NmJmNDFmNDkxMjk0MWZiMzJhYmU3MmVmM2FkN2I4NjJlMGYxMWE3NTZkN2ZhNWYxZTRiYzgwNDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNjMzg2NGQ1NzRjMDE3ZmNlMzI0OTliMjU2ZWQ2ZjM2YjkzODUzYTQ0ZTdlODA1MzMxZTM5OWNkZjdhZjIwNzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a16b8debdb344e95a0f062fb53236153",
+      "statement": "A file-backed progress test verifies that a saved practice submission remains readable after closing and reopening the same DuckDB file and rerunning migrations.",
+      "evidence": [
+        {
+          "resource": "repo://tests/test_progress.py#L126-L142",
+          "version": "repo-lines-v1:sha256:ee4fe21a36111d727e15cbe495f9f7338a1cc7be90018a10f495ff128894959d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1OWY3MWNmMDM5NjNhMGViMWUxYTcxNzMxMjI5MzA4MTE5NmZhNDEzY2M2NDA2NjRlNzY3NzViOWYyYTFlYjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJlMGU0NzM5NmE0MWI1MWUwYmU5N2I4YmEyZTJlMGJhZmRjZDNiZmM4ODYyY2I1MTA4Nzg4OGI5ODc4YTA4MjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ4Y2E5Mjk2YjA1MDE1ZDVmYTQxMDI5NzJjNmE1NjYwZTIzMzYxZTc4NzE2MjBlYmY4ZGQ4OWM0NTVhNWM0YzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNhZTY3NWM2ZDZjNTVhNTc4MGUzYmE4OWY1Nzk3OGMxY2RjNjI5NGE2ZmEzMzQ0Yjg2N2M1ZDI4NGNmNjI3OGEifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-23T14:17:19.981Z"
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:6dccf695e5a98890a80a67b70e6c2acd5277cece82f09beb7525a2f367440e53",
+  "claims": [
+    {
+      "id": "claim_232d62eea1484016ab898330852557c7",
+      "statement": "AI Questions sessions persist their source mode and settings; local mode selects catalog items without generation, while mixed mode selects local items at odd positions and generates on alternating positions.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/interview/service.py#L197-L244",
+          "version": "repo-lines-v1:sha256:6a25c5598146dc1cd6eefa1da98cb76006186b97525556bb2154fc394c8e41fe:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4YTI4YzI4ZGZkMjQ1OTE0NmM2NjM3ZGU5MGM0YzdjZDZiZjlmZDhmNjJmOWFkOTY3N2VmMDc1MjkwZWRmM2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExYjU0MDE3ZDQ0ZWQyMDg2YmNlNzg1Mzk4M2M3NDViMzViNzM2MjIxZjE1NzI3Y2VjNjRhNDk5MTA0MDJmNTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk3MDEyNGFmMjdlNmIzZmU3OWFhYjQ2YWNmOWJjYjY1NzZiNGI1Mzk1NDQwYWNjNTFlZjc3M2M4OTc2MTg0NjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAwMDY2YTg5ZjRmZjk1OTczZDU2NDI5YjY0NTBhZTM4MDZkMjJhYTU1NGQxNmU0Mjk2OGUzNjM0MDgyZTYwNjUifQ"
+        },
+        {
+          "resource": "repo://tests/test_interview_modes.py#L49-L71",
+          "version": "repo-lines-v1:sha256:20c803ca114e069e9330cdf43b70cfe8f01da40075a98da71f5a5486e445b323:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY5NWVlY2ZiOTQyNWUyNWZhNzFhMjdiNDgxOTVjYmVhNGE0ZjcyYmU2Nzg5MDRkMmU4ZjAwNDU0NDQ1NTIwZmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRhNTcyMmI0NTNhMmE4YWJhOGMwN2NmMjA3OGE0ZGYzMjZlYzFkMWM3N2MxOWJlMDhmYWM5OTZiMzU2OWI5YWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk3YTVjZTZkNmE1MzNkNjNhZWVjYjNkYTlkZTBmNmJkOGE2OGY5N2YyYTA5ZjY5YTJhY2Y2ZGY1NGU4Y2FjNWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE4MmVmZGUwYTdhYzE5OWI3YTc0Mjc4YjhlNzgwM2M3NjFhM2I2OTJjMDMzNzZmZjJmNmM2MTljOWNlOTVjMDYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_cc4e03fa8ea240ea8f174a46e0dd59a5",
+      "statement": "AI Questions scores MCQs locally against the correct option and sends non-MCQ responses to the answer assessor; the resulting score and feedback are persisted on the item.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/interview/service.py#L260-L278",
+          "version": "repo-lines-v1:sha256:267d8f50d604cd5284c048cda9f3c4b6aefaf75e35952346cad46aaf3c5bf0f1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzN2U1NWMwNWYxNGFhN2M3OWNhMjQ3YTc5ODYyMjhlZWNlOGRiZDI0MmE4MjcwZGRlMDFmNTFhYjM3MWEzODYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNjMzI2MGQ2YjNjMTU0MmU5YzA5Y2I0M2UxNTU4YWU1NGVkYWRhNGQyMGRkM2EzOTA2MGI2YjZjOWU4ZThiNDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUxYmU5ZGEyYTRmNGE3NmQwMDQ4ODAzNjBkNzA2NDUwMzE2MTY2NDdmNzg1OGM2OTljZWJhYzMxYTRkMWM0MzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjllYmZlNTA1MzFkMmRjY2M3OTA4OTBmOTc0NjBiYjA2NjFiMmIyNzIzODhhZjg5YTQyYzdiNTA4MzZjNmY0M2MifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ee90e4cb9312450fb7f331c13bfccbb0",
+      "statement": "AI Questions web research runs only on the generated-item path when web_enabled is true and fewer than three local references are available; an expected WebResearchError is surfaced as a warning.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/interview/service.py#L169-L194",
+          "version": "repo-lines-v1:sha256:ab1297904a984bab112264edee75f63bdda249f760ea6509b71a70b902378b4d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRjYTQ1YzZmMDc3YzFiMjE2OWQ3MzIzN2JmZDRlNjMyMWE2Yjg1N2Y5MWIzMTFlYjk3NGEzYWI0MDUzODgxYjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYxOTAzMjM1YzRmNDBhY2JmMjk2MDMyMmE5ZmY1OTZkYTY3MmI4MzA2MDZjNjk3MzA0NjgwZjk3YzU2ZDc0MjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQxNjRmMTc3MjY2NzNiNmVkYzZlZmJjNDVlNjlmOWZlMjVjOGQwZGI5YWQ3ZTc1MDk3ZTIwYTFkZWQ4MjZiNGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlmZjQwYzZkMzlhMWNiY2QwYzc1YzJkY2RjMmEyZDlkNzg2YTliMmQxZWE2YmUxNGU0M2M2NjU2ZmM4YTJlYjAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ec325f3e39bb4950bd52476e0a12b153",
+      "statement": "Coding question generation uses web research only when enabled for a non-general topic absent from local references.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/generation/generator.py#L103-L131",
+          "version": "repo-lines-v1:sha256:de83dd2438c1bd53fde32d55120be9ef028ff917ee6a6dda3bc4406c46d7535b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYzNmE0NzhjYjM2ZTcyZmFjZGI3ZWJiNjdkZjdhY2ZjM2JmYjdkY2ZlYzE0OWI5ODllNjJmYTBjNjk0NTcxMWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMyNGI3ZTNmNjlhNzUwN2FkMGQ5ZTIyMjIxMWQxNDBjM2UzZjEzYWY2OGIwMjBkNDlmN2EyZTk5MDIyZGIwMjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJmYTRjOGQxY2EyZjIzZDFiYzFlOTA1NzE4NjNlOTMzZTJjMTdiZThjZDU3OTBhZTUwNGQxM2RkNDg4MTYxZGQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_db6568fc82554f2fbd0544daaeb3d9b4",
+      "statement": "The Firecrawl helper limits search candidates to five, page scrapes to three, and each returned source excerpt to 6,000 characters; its access-mode helper returns authenticated or keyless without returning the API key.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/web_research.py#L1-L13",
+          "version": "repo-lines-v1:sha256:768cf1b60baf5b543eb429379f0838289c930d50ab96b64137fc6673fdb6bf72:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM1ODY3M2Y5NDM0MDJkYTg5YWU2NDJjODEzOTE3OWUyNWZjYjIyZjQyZjMwN2YyYmI0NjgxMDFhMzNjMjNkNDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2NjQyMTg5MjRmZjRhOGM2ODI5YTVjNTljN2UwMDNmMDljZmM5MDFiMTIyNWNkMzQ5YjEzNDI3Y2Q3ZjUyNDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMzOWVlN2ZjNWExMWM1YTkzN2U3OTI1M2QxZGYzZTY0NWRhMzAxMzUwNzMwZmM3MWUzNTUzNGJkYTBkZjYzYmEifQ"
+        },
+        {
+          "resource": "repo://src/coding_tutor/web_research.py#L30-L32",
+          "version": "repo-lines-v1:sha256:04c9fe82f47056d6cbaf4dae0c71a10aa585fae2e587193e91de4d2cc93fc8d3:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjU3MTNmMGY1NWJhZDE1YjdmNWQ5NzJlYWFjZTNjNTE5NjhmZWI4NmFlNDVkOTlmMzQ3NjgyYjRjNGY0MjMzYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2ViNzAyNTc1OTNkYTA2ZjY4MmEzZGRkYTU0YTlkMjYwZDRmYzUxNGY2NDUyMzdmNWNhNzRiMDhmOGRhNjFhNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTZjMmM5YTZiMmQ3M2UwMGM3MTczMmJkMzViN2ZkNzQ3N2NmMDRhZTAwOGVkZTNiMDg1NTFlNDIwNTA3MGJjYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNGUxYTgxZTBjMDljNmNjMDZjZjQ2ZTcwZTE5YzdjNDZjMDhhZDNlZTRmZjE1NTkzNTFlYTU3YjczMWE3NTYwNSJ9"
+        },
+        {
+          "resource": "repo://src/coding_tutor/web_research.py#L61-L119",
+          "version": "repo-lines-v1:sha256:e70300792ece02614ede5e242a7e24abc1276b633bafe8e393d98797b74e8605:eyJzZWxlY3RlZExpbmVDb3VudCI6NTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc0ODViNTA2ZDdmYWExNjEyMjk1NDJjNWI0N2RiMjkxNmRhMGQ3OTc3MWU3NzhlOTY0Nzk2NTgxZDdlOWMwYWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmMDdhM2RiZjJjYzlmZmZlN2Q1YjdlNmE2M2UwZjYxN2I4ZDJlOTI2YjhkZGI2NTk3N2NhODk4NTZkMDIzYzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU3MmY4MTViYWQ0M2RlODdjMmVhMWZlNzBlMTkxYTM4MzVkNTdmY2UzYjM1Mzc5NjUwM2Y5NzFlMmRhMTJlOGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_88b513dda3524e81a0629792332b4e93",
+      "statement": "Tests verify local AI Questions mode does not generate, exercise a mocked generated-question flow, and parse nested Firecrawl payloads; they do not establish live Firecrawl availability.",
+      "evidence": [
+        {
+          "resource": "repo://tests/test_interview_modes.py#L163-L176",
+          "version": "repo-lines-v1:sha256:7f1f0375f4b18bbb054fa284befccb27aee5ad60179cdb7e8c35528355e79600:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI3MDVmM2E0NDA3Y2M1MGJkOGYwYTk2MWZiODJjNzVmOTQxMzI2NmY2M2Q4Y2ExOWZjOTc4YjMzMmMyMDgzNzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0MDBiZmUxOTNmNGYyNTFjYmM5YTUyMzI2YmQ3ZjM3YmRhZGE3ODMyYmQ2ZmQwOWQzOTQ2OWE4OGQ3MDU5ZGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAyNmU3ZTc1ODE1MDc3Y2I3MmY1MGEyYzlmMTFjMjExNjBhM2VmMGE5NDU0OGRiNjBiZDY4MzY2ZmE3YjhkMDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://tests/test_interview_modes.py#L19-L71",
+          "version": "repo-lines-v1:sha256:c6d7c11f805f6123bf30f9ec9a83daf97bf2cedb8dec2c5af9b780d3bdfc2a87:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5OTVhMDUzMDBhYjEyMzdmNWY4NjJkZTJhZWRjNGIxNWE3ZmU3NjdiMTVmNzYzMmFmM2VkYWVmMDJhYmNkOWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRhNTcyMmI0NTNhMmE4YWJhOGMwN2NmMjA3OGE0ZGYzMjZlYzFkMWM3N2MxOWJlMDhmYWM5OTZiMzU2OWI5YWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhlMzI1ZTFhODM3OGQyMWQwY2NlYzYwMTNiY2JmMjIyODk5OTU3MWMyYzAxMDBiMDE4ZDQyYmEzMzViYzU3NDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE4MmVmZGUwYTdhYzE5OWI3YTc0Mjc4YjhlNzgwM2M3NjFhM2I2OTJjMDMzNzZmZjJmNmM2MTljOWNlOTVjMDYifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-23T14:17:19.981Z"
+  }
+}

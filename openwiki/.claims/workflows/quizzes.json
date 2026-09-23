@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:bab677a362f6181006df14b7d4f995d2ea35429779e296495f12e4e7a4c39f1c",
+  "claims": [
+    {
+      "id": "claim_ea40986998574ccb892b18536d3cbf5a",
+      "statement": "Quiz attempts are created durably before question preparation; quiz size is limited to 1-10 and preparation failures are saved as a retryable status.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/quiz/service.py#L31-L50",
+          "version": "repo-lines-v1:sha256:b9d8b2e19eb3caaf3069db5e8fb93b237b15afd27afad5343323c8b594a82017:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmZmIyMGE4OGM3NjRmOGM4NzI4Y2ExN2JhNjdiNDk3N2U2ZmYyMWIwZjVkMThlZDEzYzJmOGE3YmU4ZDlkMjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNmZDgzNGEwZGVmZmVkZTM4YTJiNmQzOWFmMjhiYmU2MzI1ODFjOTc4MDAzYjIwNTBjMmQ4NzQ0ZWI5MWYzMzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRlOGQxMWIwYmIxYzY1MzM5NjNjYmQzM2Y2N2NlMDJlOGQxY2Q0NWYxZmUwZTdjMGViNGVlMjM4MmRlODM1N2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlhYWUzNmU4MTU5OGE3MDY1YWJhMTE3MWI3Y2RjZTdjZTBlZTkyYWE1OGFjYjZiNzI2YTQwNTUzMWFlNTI2NDkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_faa1274b7d724a8696da41eaba32a4d2",
+      "statement": "Curated quiz questions are filtered by question type, difficulty, completeness, supported method, and optional topic; mixed source mode randomly combines available curated items with AI-generated questions.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/quiz/service.py#L135-L153",
+          "version": "repo-lines-v1:sha256:adc2470465d0fab7d16bc8789f4965245f101fbb6742f81e589e42b79892986a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmZmVhNzYwNmRiNjM5N2Q2ZTIzZTIyMGZiMzkyYjM2NGUyNzA0OTM5ZjhhYzU0N2U5MGU5MGNiOGYxNDI2NTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJlNGYwYzQ5NjQ0NjJmMjViMTA3OWMzMzNmZGNkYmYwMTAzNzhhNjlkMzQzMzkzYTc1OTRiNGE1ZjIzZDMxMTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc2ODE4MjEzNGQ4M2E5NTZkZTc5MzhkYjFlZjQ4ZmZkM2U2NzMxZDZiYTZmZjM3ZDViODY2MmJmYjAwOTk1MWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFkOWI4NmEwNzhmYjJmOGRlNjlmY2Y5YTY0M2Q5MDY1NjQ0NzQwNmJjMzQ5MjMzYzU0ZmE3NGJiMTdmN2MwZTkifQ"
+        },
+        {
+          "resource": "repo://src/coding_tutor/quiz/service.py#L82-L95",
+          "version": "repo-lines-v1:sha256:8629a5402b6a7bf357b237872986e118242ffc0f25dd99f5cbf8b5491a55bf48:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU1NzViMmVmMzI4MjU2Y2Y1NWQ3ODY2Zjk3MGZjN2JhOTgwNzQwOGFlYWUzNTkxYzc1MjEwNDhiNjYzMDNhYTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYxYzdiYTJiMjAwZjEyMjRmMzQ1YzhkNDA3MjU5NjFmYzI2YzlkZjZkNGM5YWY4ZDc0MjQ2YTU2OWJjMTQwYmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkZDk4NjE4ZTE3OWExN2Q2NzM2YWY3NmIxMDdmYWRjMjVmZTIwM2U2MzYxMTI1ZWI0MzBkNmM3NGFjM2E3NTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFkYTAxMjY5ZGEyMDRhZWZhZDQyZjFkYzgxMWY4Mzg4NzhhNmFlYmU4M2QwYmJiNDUzNmViZWM0MGJlNWYwMmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a4a139a4e69a4e31a111ec3de60673cb",
+      "statement": "Quiz question items and MCQ content are saved transactionally; MCQ validation requires the exact selected question set, four unique options per question, and a valid correct-option ID.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/quiz/persistence.py#L28-L64",
+          "version": "repo-lines-v1:sha256:28415aeffbf388268c13ca31891a87f1fc2df52a9d27654df87c74b3bef06b70:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkNjcwOWM1YzlkMjY3NTE3MWNhMGYwYmU1MGMzOGZkNTRlYjI1MzA1YTJkZTU3NzhjMzc4ZjcwNmMyNWJlMTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlMGU1NjNhMmQyNjM3ZjZhMDQzZjNmYzU2YTg3YTliMjAxZWE5ZDgxMDBlZjQ0OGNjMGRkMGNhM2FiZjk0ZmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQxZjg2OTZmZWNiMDUyMTQ3MGQxNTNlZTQ1YjExY2Q4ZDUwNGIzMjk3OTgyMDE0YTEzMzUyYzUwNWE4ODg5MGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZiYzZjOThjMDQ3MThmZDFiYmFhYTIyMjRhZTYxOTY1YzM0YzM5ZDhkNGJiMjBmMzI1YjZhMzA5NmJiNDllMDYifQ"
+        },
+        {
+          "resource": "repo://src/coding_tutor/quiz/service.py#L156-L220",
+          "version": "repo-lines-v1:sha256:0e95ddbe3d89ef263c7a5db6a3a49c677d9c4379f5c407e113b47623b2568f73:eyJzZWxlY3RlZExpbmVDb3VudCI6NjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlkZTE1YTZkZGZlNjFlYTZmZGUzZTk3NWFmYjlkZGM3Nzc1YjkwNzZlODU4YWMxYjJlNGVmNmIzODFkYmNhODkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiY2MxZDEwMGEwMGZiN2Q4MjhmYzllOTgzOTMyNGZkMmExNTNhNjYzYzg5MTQyZGEwMGUwNDBiYWMwNDhiYmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRhNDg2ZDc1YzkzZTlmMDE5OWVjNTZmZmRhOTkzYWMwYmEyMjBjNThjOGMxYWYyY2I0MGIzODUwMTYwYjFiYzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMwMDU0NGEzN2JjZmZlNTEwZTAzY2M1NzAxOWU3M2MyYmJmOTI3NTE5NDZhZDZlYmQ0NWExOWM2OWU3OGU3NmIifQ"
+        },
+        {
+          "resource": "repo://tests/test_quiz.py#L70-L92",
+          "version": "repo-lines-v1:sha256:49e731a0cfc0d315f8fdbcd9ea7efcae440980d63ff19480fb4ed9f763fba495:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1YjA4M2UyOWYyNWMzMDUzNWVkMmI5NjY1ZGZlMjMzYTI5ZGY0YTEzMTkzOTgxZTI1NjRmOTQxZTRkMjViYWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjViM2I0NTFmM2U1YTUyYWQwNmVkNTliOTQ4YWRhZjJjZTgxMDgwYjNjMmY4MjFkMTQ2YjA1YzczMzk4MTkzODEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg1OGNkZWZjOTQ1NTYxZWFmZWRkZjk4YzlkMWY4Nzc4YmM5MzZiMDRiOGM1YzVjNDViMGExYjE2ZTA4MjE1ZjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY2N2RjMWUyNGQ5OTIyOGFjYTFhMDA4Y2Q5NWNkOTZhYzE4MGEyOWUwMDA2MGEyMjgzODhjOWVjOGQxNTFkYWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ff388b53f0584513b628290368b61a51",
+      "statement": "Quiz coding answers and MCQ choices are persisted as item drafts, and persistence can load quiz state and find the latest unfinished attempt.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/quiz/persistence.py#L81-L141",
+          "version": "repo-lines-v1:sha256:50501c81b5d820391f40c84a84d251d13c6a95f58731b2ab85c2668f1d4618fb:eyJzZWxlY3RlZExpbmVDb3VudCI6NjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4N2U0NDk3N2EwMzdiOTYwZmQ1OWIyODBiNmU4YjQ1YTZiYjUxYTNmNzBkY2VkNTgzNWEyYjViZTk0NTdhMmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5ZjllYzA0ZDIzYzhlNmZkYzBhMGE1NjYwYjRjYWE4NTY1ZmVkNWFiMzNmMGEyMzUyZGNlOTI5MWFlZTRiYTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVkZDI3YmE5MjQ3NjAxZDdlZTk0ODU0NmFhYmEyYTExNzIzMmVjODJmZjI5Mjg1MjUyNGFlY2ZlMTQ3ZjE0NzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc0MjkwMDBkYzUwMmYwNDMzYTgwMDU2Nzk1YTRjMWQ3MzVlYTMwZGJiM2U5ZWYzMTAxNGQzNGM2YzkwZDM1ZWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c3b5ebe9da874491b387dff7882d9970",
+      "statement": "Quiz MCQs are scored locally; blank coding answers receive zero without an AI assessment call, while nonblank coding answers require the provider/model used to start the quiz.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/quiz/service.py#L223-L264",
+          "version": "repo-lines-v1:sha256:71717b4e389c31bcc4895fa72aec34f1e66bf929115e62634c6050c227e88b06:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRmNWY2YmEwYzVjZTM2Njk1OTFmMjJhNjA5ZTRlYWUyZDBhMmIxMzc0YmFjMWU4MmY2NGU0MTAyYWQ4YWI5NDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlMDhjNDdiNjdhODkwYWZhODU4NjdmNDI1YmJkZTYwNjE4NjI3ZjEwYzIyMmQ3YzI4ZTRlYTRiODNiMzkxZjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI0NzdiY2NmODQ3ODM1NmE4YjMzY2RjMTFiYTM4N2E2NzE1NmI0OTcxMWVjN2QwZDE1NWYxZGVhZTM2NjlmYmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVlNGU1ODRiMjY1YmViYmNjNmU1ZjNiMWE4NTg2ZTFlMTM1MThjYTA5MThkZDQ0Zjg1Y2IwMzc1Y2FiMGUzMDUifQ"
+        },
+        {
+          "resource": "repo://tests/test_quiz.py#L190-L210",
+          "version": "repo-lines-v1:sha256:ff113176368b527aa8ba97ebd8d274fea9e2097cadc0e37083daf35680709697:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyZmRkZjNjMzQwNTRjMjE2MjM1OWI1NWUzMzc2MzA1ZGQ0OTE4ZDA0MWUyMDcxZmY1MDE3YjI4NTcwYTM4OGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiYWQyMWNjOWY1MTI0Y2Q4YWE3NTYyOGY3ZjRkYzY4MzkxMGI4YTI3OGM3NWI3MzNlYzhjMmM3MDAzMmY1YzMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFlZWE2NGVkZmRmNGQ3ZDI1ZDg2YTczNzU0OTAwMTBkN2Q4NjFlZjlhYzdlYmMzODI4ODkwYjExZGY1YjYyOTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMyNmE1OWY3MjVkY2IzMTczM2I4NjdiYTJmOTdkNmNmOGZmYzVhNWI2ZGZmOThmZDg5MzNlZThmNzY4OGVmMjUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1a99bc1e740f42779e123b574133bb4b",
+      "statement": "Tests verify quizzes use separate attempt/item tables, curated selection filters, and retry after coding-assessment failure while retaining already-scored items.",
+      "evidence": [
+        {
+          "resource": "repo://tests/test_quiz.py#L144-L187",
+          "version": "repo-lines-v1:sha256:bbe30da697a04291e61f2c4c3083128cac90885738b2a4821b50983bcf72f796:eyJzZWxlY3RlZExpbmVDb3VudCI6NDQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdjMmZlZTQyYzJmMTE3NjQ4MzkwYzNmMTdkYzlhZDg2NDJiM2FkMTkxOTRhZWYxMzYxMDQyOWM5NmYyZWNlM2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZWQ4YzY2NmEzN2FiMTQzMjRmNzMwMDhkNmYzY2NjMzFhYzczNTc5MTM2ODYyNTE4NjA0MjA1Y2EwNDUxZjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiZWRiZmRlNTA1NzY3ZDA0YTk5NThlYjg4YjlhZjZiNjY1NDA0ZDcxNDBlY2Y3MzNiNWFjYzNjNDkwMGI3MmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNhM2U2Mzc0MTIwMzkxNDIyNjU1MmMzNjZhY2ZkYjFkYjBlNzQwY2VjNDBlNzljM2NkZGFkM2I0ODczNzhiMTAifQ"
+        },
+        {
+          "resource": "repo://tests/test_quiz.py#L32-L92",
+          "version": "repo-lines-v1:sha256:33a7b4895ee8b836ce1489d76f380eec18295167847759053ebf5780fdbd007f:eyJzZWxlY3RlZExpbmVDb3VudCI6NjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5ZjI2Yjk5OWMwZTBlNmZlNzI2MTY4ZThmN2U0YjBhMTk0M2UwM2QxMTc2NmRiNGFhMjdjYmE5YjU4ZTZhMDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjViM2I0NTFmM2U1YTUyYWQwNmVkNTliOTQ4YWRhZjJjZTgxMDgwYjNjMmY4MjFkMTQ2YjA1YzczMzk4MTkzODEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhlMzI1ZTFhODM3OGQyMWQwY2NlYzYwMTNiY2JmMjIyODk5OTU3MWMyYzAxMDBiMDE4ZDQyYmEzMzViYzU3NDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY2N2RjMWUyNGQ5OTIyOGFjYTFhMDA4Y2Q5NWNkOTZhYzE4MGEyOWUwMDA2MGEyMjgzODhjOWVjOGQxNTFkYWQifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-23T14:17:19.981Z"
+  }
+}

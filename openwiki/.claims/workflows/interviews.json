@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:53bfa6012a767c452b814a479816b6b011e0ba7fba455d1d0fb850031c8b0719",
+  "claims": [
+    {
+      "id": "claim_923dc4a0f4d24aa18487c12485bf2963",
+      "statement": "Interview blueprint validation requires non-empty topics and supported answer formats and validates generated language choices as non-blank strings.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/interview/ai.py#L139-L152",
+          "version": "repo-lines-v1:sha256:2d05c94872aa7d5e3384cb430c27b31daac4b5ba9bd73f2677463e0dce406164:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkNjYyMGE3MGEwMTM1NzdjMmM0Y2M1ZmIwZmIyYTE2MzUyZGNjZjNiNzk5OTg4YmQ1NTZmNTFiNTYyMmI2MjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0ZmE3NGRlOGIyNWY5ODUyZDVjMTdiNDdjMzM4NDdiNzNiNjE0NjZkNzA5NzJhYzVmNjU3ZTU3NDc3OGI3ZTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM3Yjg5NWRmOWM3MGEwYjEzMzA4NjIyOGY3YTIyNmIzMWVkYzljY2NkZjYyMWViZjBlMzFjM2U1ODZhNzhlNWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU2YjkwNTk2NDQ0NGE0NGMxZTY0OWUzZGNjMzJhMmZlZjZiMTliYWMwZWM2M2I0YjE2OWI1M2I4NDI1NmU5NGEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0737ddbf1d36426f963399c52a388d46",
+      "statement": "Interview document extraction accepts PDF, DOCX, and TXT up to 5 MB, returns no more than 100,000 characters, and rejects empty selectable text such as a scanned PDF without OCR.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/interview/documents.py#L1-L40",
+          "version": "repo-lines-v1:sha256:8a34c159f8eb8e64f6f71eae54b1d21fc11a7ebdc4f279b64eb6905cef702339:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzNTI1ZjBiNmNhOWFkYjFlYWYxZThhNTY3MDE4OThjYTIzMDcwY2M5ZGI0NjZlMzNkZTY1MTRhN2ZlMjE4MGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRiMDkyNTU0NzM1NGRkNWE5NTFlZDFhZGJhYzlkOGQ3ZTA4Zjk1MWE5MGEwODNkMDQ5NWU2OGY2NDc2ZTg4NDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_615f07a0395244b1b3ef4dab0e76d3b8",
+      "statement": "The interview session stores its type, duration, source mode, blueprint, web setting, provider/model, and absolute UTC deadline; turn creation follows blueprint order and blocks while a turn is pending.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/interview/service.py#L281-L293",
+          "version": "repo-lines-v1:sha256:4ba78da66b1e16b9458d406ecaa98ef34f72c97994c2184d0a70523e3a0db92c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwZmUyOGE3MGM0OGMxMGIxOGZkOTY1ZTRkZjBkYWY2ODcyZjUwMDUyZjZjNDhiYzhhNThmMDA2Zjk0NzQ5NjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI3OTMyNzVlYzgwYjljOGQ3ODUxM2IyMTA5OWE4M2E0ZWU1NjMxZTczOTdmZTY5MzQ0NzQ5MTcxYWI3NjhmNjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFmNjYwMDhkZmMzYTNjYzc3MGQyMTdhYzhiYzI4Yjk5ZDYzMDFhM2MwNTI1YTdhNjI0ZmJmNWNkZGJhODdlMDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU1MDUzYzhiMzZmNmVhZDBlYmI1YmMwZDZkYjNmMjA1ZjliOTFjYjViYzhhNWY1OTExMTM4NTU4MjYwYjU4OTkifQ"
+        },
+        {
+          "resource": "repo://src/coding_tutor/interview/service.py#L346-L395",
+          "version": "repo-lines-v1:sha256:31671993b8fca553a8ffde0542528bf6f979ce6ffd6b177dcebc47eaf42ab6ec:eyJzZWxlY3RlZExpbmVDb3VudCI6NTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYzYTE4ZGZlMzI4MDM4YTIzYjg3Yjg4NDc1MmM1MDE5OTgzZDJkYjA5NDlkZWZhZDk1YmYwZDM2YzAyNmUwODQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjExYjU0MDE3ZDQ0ZWQyMDg2YmNlNzg1Mzk4M2M3NDViMzViNzM2MjIxZjE1NzI3Y2VjNjRhNDk5MTA0MDJmNTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc2ODliNGQ0NjhlZjc0MGQxZDlhNGIzMjY4NzNhODE5ZmZhMWE2ZjRmZjM1OWFiZjA0ODFhNTZmNjM2M2M1YjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMzODMwYjdiZjM0OGRkOTc3NTQ5YzkwMDEwNTJmZjEwMDQ0NTdmNmQ2MDQ1ODkyZWIyODMyZGQ1ZmQwNmUyOTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_802d95cd5d5b4239983cbfedf1732cff",
+      "statement": "Adaptive question context includes the blueprint and at most the last three scored turns, and a test verifies the fourth-answer window is used for the next generated question.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/interview/service.py#L330-L344",
+          "version": "repo-lines-v1:sha256:b2def64cc4984c5dae87c27d2d4d28d6ed0b07f331efffbe04d375f2aee1910e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU3NjFjOWZkM2FmYmU3Nzc5YzZiZDdmYzVjOTdmZDczYjEyZGNlNjFjZDE4ZWQyOTMxZjEzMzU1MmQ5NzgzMDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlkODYxYTA5ZDBjZjBkMDBhN2RkNTU3NzQwMmEwMzc5OWIzZmE0ZGUxZmVkZGNkNGM1NzQ2MDdiNTdkYzEwYTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFhYmM1ZjIwMWY0ZDkxYzIxZjdlM2RlNDM2MjVmMTc2NzI3MjAyMzdjMTg2ZmQ5N2UxYzY0ZjUzZjY4Nzc3OWMifQ"
+        },
+        {
+          "resource": "repo://tests/test_interview_modes.py#L102-L133",
+          "version": "repo-lines-v1:sha256:f50e57b4eb2431e234af2f941876bbb9ad6b3174c2796efd5c7a502befd1cea9:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlYzYyMGU0ZDA5ODI4OGU4NTgwODBlMGIxYTc4ODY0MjE2M2ZmYjliMjJiNjA4YTEzZTBhM2M3YzJmNzFlOTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjczZTFlMDkzYjEzMWE5ZWE4MmYwYzMxODZjYzBhOWMyODkyNzE0NWJmMGMyYjQ2ODRhMjMzNzExNzc0OWQ1YmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg3NThhZDU1YTYwM2E5MzFjMDFjNmM2NjIyMzc3ZTg5ZmMzNTFkOTc0MGMzMGFjZDY2NTQ1MTNiOWFmNmNjYTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI2ZWM3M2U2OWYwY2VlZjRmMmI5ZDk1NDBhOTdjNDE1NzU3ZWRlNzA4YmYxZGQ5MDk1ZmRiMDE0OGRlYjM4MjgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4fe3e78f3bc6412da5beb273c763350e",
+      "statement": "Interview MCQs are scored locally while other formats use provider assessment; turns are persisted, can be skipped, and a session finish stores a report, including a fallback when no answers were submitted.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/interview/service.py#L398-L443",
+          "version": "repo-lines-v1:sha256:62b3d9588736a34c970148338927671d116eb6814c98bf1f474d8dacf37ee053:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI5ZTIwYTM4OTY4MTQxOWQ0NTk5YWVlZDU3NTVmNDIzMDZkYjRiMzc4YTllZTkxZGJlMzNlZTUwZTc2OWE0MzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRjYzM0ZWQ1MDFlOWFkNTllZDlhODhiZThjOTNhNGU2ZDA3YjY3NjJjNmM0ZjU2YzIzNWU3YTA1NmMyNTBhYjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiYTBjMDNiMzZmMTQ0NDRiZGY5NDQzNDQ4MWU1YTIzMWRkN2Q5OWM0NTlkNjRkMDdlZWRhYjZjM2Q4MjJjOTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://tests/test_interview_modes.py#L74-L100",
+          "version": "repo-lines-v1:sha256:45e358d92d931478cbc9f542cf3fccd17cbbb3f718192c681ee8160d1ed80276:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5MDAyMDA2ZjNmYWY5MmZjZWFhNDA1ODgwYjljNjJhZjZkMTEzZjQ2NWRiNzdkMzM2MzA1MGI5NzRjNGIzMWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQzNGNhZTg5YTZjYTU2YmQwYmM1ZmJhYTk4MzE5YjdkNzVmMjA3ZGFlYWE2NmVmNWRjN2IzZWQwOGMxY2M3NjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg5YzFiYzQ0MGNkNGYwYzM2NDIzMjI4NDIxNmVhOTNmOTQxMjQ2NDkzYWU2OGUxOTdkZWNjN2YxMjkwMzExYzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4bcf8bb6846f434ba9b412f202eb3441",
+      "statement": "A test confirms interview_sessions has no jd, resume, or document_text columns.",
+      "evidence": [
+        {
+          "resource": "repo://tests/test_interview_modes.py#L74-L100",
+          "version": "repo-lines-v1:sha256:45e358d92d931478cbc9f542cf3fccd17cbbb3f718192c681ee8160d1ed80276:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5MDAyMDA2ZjNmYWY5MmZjZWFhNDA1ODgwYjljNjJhZjZkMTEzZjQ2NWRiNzdkMzM2MzA1MGI5NzRjNGIzMWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQzNGNhZTg5YTZjYTU2YmQwYmM1ZmJhYTk4MzE5YjdkNzVmMjA3ZGFlYWE2NmVmNWRjN2IzZWQwOGMxY2M3NjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg5YzFiYzQ0MGNkNGYwYzM2NDIzMjI4NDIxNmVhOTNmOTQxMjQ2NDkzYWU2OGUxOTdkZWNjN2YxMjkwMzExYzUifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-23T14:17:19.981Z"
+  }
+}

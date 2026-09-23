@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:9692c85571036c4d535d55d824274f8cd5bafb6fc478fb66d682c2c127f555e7",
+  "claims": [
+    {
+      "id": "claim_d90c44944cb246b39dc6d9d0d54a2d5f",
+      "statement": "Coding Tutor is a local Streamlit application with coding, quiz, AI Questions, interview, and progress modes backed by local DuckDB catalogs.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L1-L18",
+          "version": "repo-lines-v1:sha256:2e0688b1f9f0bfbc502152aa0e9a207cb0e0d4ea4449d017690d653fa7bf6c65:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJkNWE3ZDQzMjViMTVmMTI1ZmRiYWY5NjI2OTMwZTgzZjc1OWI0ODIyNmZmM2QzYTRiZDQyYjBiZGZiYTA0MjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwMzZkZjQ1MzAwZGE0YTczMWE5ZGU2ZTc5MDc3Mzg2ODYzZDdjY2M1M2RjOTIzMjE1MTM2YzUyZThjMzliZjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdmNDFkNjQxOWM5MDc4ZDFhYmQyZmZmY2EwODZlZjA2YzMwNGU2MjdlM2JiMjcwNzljZDdhODA1ZGNjODhkNjcifQ"
+        },
+        {
+          "resource": "repo://README.md#L52-L62",
+          "version": "repo-lines-v1:sha256:a67eadc7729871096e04467dd865deb0c284ed9fdd18c0868ab3cbc38d22ed40:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxZTA0YmM4YWEyNmE5ZDU0NjkzYTVmNjE0MGVkMzAzZDA4ODhjZjMyNDUxNjIwNTY1MzZiYjM4YzgzNzg4MzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1OGM0MDRlNDA1NTM4YTk4ZTk5ZDRlM2M2YzVjMGY2NDk5YWI4NWM0MzA5NmNlNjFhNzYyOTQ2OTVhZTRjZDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZlNjI4MGE4YTJlZGNjYTM1NWM3ODQzZDRiMDVlYzcxNDUwYjZhOTYxYThlNWJiMWYzZWVjYzhlYzExNTgxMjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU3NzNhYTQ0YWEyZDk3YzYxZjNhZjE4N2I2ZGRiZDUzZmU2MWFhYmExMDE1ZDZhNDAyNWJkNDk1NTI4NjUzMjMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_572aee8b22be40d9bb0bf894307e19eb",
+      "statement": "The repository entry point is app.py; src/coding_tutor contains the database, dataset, evaluation, generation, interview, prompt, provider, quiz, and UI modules, with unit and Streamlit AppTest coverage under tests/.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L190-L212",
+          "version": "repo-lines-v1:sha256:7b92e57b6abb763200d78e2399677dc444d7000c1b6ef092df4d492f206c2fb1:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxZDA2NjI5Y2Q0NzhkMGNmNDNlMTM4Y2RhNjRlOTJlZTgxNjczZjA5NzRlMDkxNzQ2NDU4Y2Y4YjQzYzIyNjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2NzRkNDgwOTI3YTU0OWE4ZTE5MDQ5ZjEwYTY1YmIwNTNjYWI4ZDhmMzQwYTQ5OWJhYzhkMTQwNTIzYTMxN2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYzNjM3Y2Q3ODIyNDE0MmJhMzk5Y2E0NWMxMTc4MGMwYzdlZWQyMTdlYzBjMjg1MjY5NDkyMzYyODY0ZmJhNWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY1NjM4MDU3ZDA4NGQ4MmZiYjRkMWQ3OGUyY2FkMWVmMDA5YzdhNGE4NDc5MWE5NTc5YjMyNzA2OWNkMDI1OGIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f0d3e72dd0544be386536c74a68c7d43",
+      "statement": "The documented high-level flow imports raw datasets into DuckDB catalogs, persists learner attempts, and sends static review context to a selected AI provider; optional Firecrawl research is limited to question generation.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L174-L188",
+          "version": "repo-lines-v1:sha256:3284520bff360ae4411d260e25684946fb9834408297091152d965f19ca8a206:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhOTIyYTQ3ZDVkNmRjNDAzZDEwNjYxYzBhYmVhNzFkMmZkZTg3YzRmZGI5M2FlZTRiY2RlNTFiNzBhYTZkZjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc1ZDA3YjA3YmJkYTUyNjFjYmFkNmNiOThjZGExOWU4OTRjNjAxZmVmMTM5YThhMTc3NmYxZWFmYzQyNzQ2MTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNjMGJmNjM4MDA0YmMyNzJiNmJlNThmNjhhNWM3MmQ1MWNjODU0OTIzMTNhYTBiMjRhYjM4NjkxMzAwMTZlZjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI2MjhiNDMwYzhhMWQ2ZjE4OTdiZGZiOGVlZTcwNWYxZTUxM2I1M2ZlMjMwZDgyY2YwYzA3OGIzZGQ3OWQ5ZmIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b710fa027e3d4a02b916ab45ed628b50",
+      "statement": "The README documents uv run pytest -q as the test-suite command.",
+      "evidence": [
+        {
+          "resource": "repo://README.md#L215-L222",
+          "version": "repo-lines-v1:sha256:3f54d369c838f1cd6e12e5ae787cd9cad8c791d1e2958aea7af44cdaba747769:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDNiYzJlOTQzZTkwNWE2ODhkNTM2NDFhYzNhM2M5NWY3NmZiNTAwYWUzNjQyNjFjM2I4MzNjY2Q1YjliYWE2OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2VjNTY4ZWFkZGNjNDg0MDI2ZjFlMzJhZjIyYzc1ZjM4NTM2MmNmMmM1YzFkZDk2OGMwNTkyZjU3MTk1ODMzMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTcwYzdkY2ZmZmM1NGEwM2VjZWIxNTE5ZDc4NDk5YzA5MDM2ZTI2OGEyMTM3ZGNjZWExNjA2YmVkYTJmNzc0MCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDJkMTM1ZjFmNzg5MjgwMjVhMDY0ZmRmMzRhMjk1OGE1MTE3NzU4YTQzYzM2YjI4ZjlhMWFmNzM0NDlkY2RlMCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_b480cfec7d9f482ea61d3dbaeb4fb927",
+      "statement": "The documentation index organizes project material into tutorials, how-to guides, references, architecture explanations, security guidance, and runbooks.",
+      "evidence": [
+        {
+          "resource": "repo://docs/README.md#L1-L25",
+          "version": "repo-lines-v1:sha256:a15bfc2f59beeca24235ec9b07a5877426fc146a74d58e1fa54098a85459832a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlNDQwZWI1OTYzZWYzODRkNmU2MTNhYzFmNjU1OWQ3MTk2M2EwNDUyZmMzOTEwMDZiODgwNDJlYWM1YjhkODAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1MmQ2MmRiM2I0OGM2YTlmMjk5ODJmZjAyN2IwNzJlOGUxYTExYTQ2NTZkNWFiMDc2NjIxNzhmYThlMDIzNjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-23T14:17:19.981Z"
+  }
+}

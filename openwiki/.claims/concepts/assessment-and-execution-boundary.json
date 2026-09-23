@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:9a614c9afab07443b41b6bef3703b973b20e4c8b1977b3ca695b790f0f828ab3",
+  "claims": [
+    {
+      "id": "claim_4fda541e5d024db286ce5953729d589d",
+      "statement": "The application does not execute learner code; stored test cases are static provider context, and provider-generated correctness and marks are AI estimates.",
+      "evidence": [
+        {
+          "resource": "repo://docs/SECURITY_AND_PRIVACY.md#L144-L152",
+          "version": "repo-lines-v1:sha256:307d8e5841d7bb763e843bba6a4b598baef17f9e5ba2b6c787bed1e21db89e11:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTcxMTYyNDc1NWNmOTdjMGU5MzExMDg0ZWVkZjBlNTY5ZjZiNzY4MmFjMTE5ZmQ2Yzk1ZDc3OTI1N2UxZjBlOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjQ3ODcyNzgwMGI5OTA3ZGE0ZGMyZWFiMjI3MTRmYzMwYzQ2ZDY0MTMwOWQzYmI2NWU3ZGEzZTk3YzI5OTljMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWJkZmFlYjY4MWIwYTA4N2ZjNmNlNTE1NDVhZDI5ZWY1ZDIzODI2OGU1MjUxZGNiMDY3NmExZmM5YmRlZTRmMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDc4NGEwMTlkZjUzMGQwMDEwMTExZDFmNWUwM2ZlOWI4OTljYTYxMThhNjU3NjE0NzY0OTUzZGNkYWQ4NDVmZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_7fd8027ea8ba4786bdea95e782e39a07",
+      "statement": "Assessment validates the submission, supported method, verified model/provider match, and configured provider before making a provider call.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/evaluation/feedback.py#L42-L79",
+          "version": "repo-lines-v1:sha256:b4aa3960d295df6fe344834e378ad1083f39b6273cb596a09e1d6b23dfbee373:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZiNjA4MjVmZjdmMzlkNWM5NDk0OGIwZDM2ZGJmMWRmNTM3OGQ2OWVhNjkzM2ZmZjQwNGY3ZDFlODgyMzYxOTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgxMTdlZjA5NmI4ZTIzZmMzN2M5YTMyMDI2ZTJiNjIzMTNhOGIxN2I2NzIxZGM0NDlhOTE1NzdhMDBkYzhiNGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNlNzg4ZjliYjcxNjA1ZjlmNjlmZjc4MmIyMGRjZjM5YzJlMDcwOWE4ZWViMGVkZjViNTA3MjViZmI5MTI0NTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZhMDU3YjMwNTk5MjRkZmVhYTcyZjBlMGU4OGY2MGFjYmRkYWRkY2I1NDk0NDlhYTdjNjk2YTk3Mjg3Yzg5ZTAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1a989b9747834e6fbc77a9fe0e6d17a4",
+      "statement": "Assessment context may include the question, submission, reference solution, selected assets, and reference cases, with clipping and query limits applied to several fields.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/evaluation/feedback.py#L82-L149",
+          "version": "repo-lines-v1:sha256:d44d67415d19d399ad240c0d73acba82b192f74891cadd6face10b18b5415220:eyJzZWxlY3RlZExpbmVDb3VudCI6NjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhkMWU2MGUwYTUyY2E0OTJlYzY5MDc1ZDM2YTY4YzFjNjllOTIyMzYyOWIxYWU0NGEzMTJhNTU2M2NjY2M2ZWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhOGZjOWM1ZGQxNGU0YmI2YzU2ZmRkOTM2OGY1Mjg3NDEyYzc4YjlkZWE1ODkwOTViNmI4Zjg4ZjcyNzlhNDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRlOGQxMWIwYmIxYzY1MzM5NjNjYmQzM2Y2N2NlMDJlOGQxY2Q0NWYxZmUwZTdjMGViNGVlMjM4MmRlODM1N2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFkYTUyZWIwNTBiMzZmODVjYTE1NjYyZDQ0ZWZmNzQ1YjkxZGFkNzk3ZjFiYTA3OWIyMzJmNDI5ZDIwMzQ5MjQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fa81d87eddf64f1695858c1684836192",
+      "statement": "A practice attempt is first persisted with deterministic_test_result set to not_run and assessment_status pending; completion updates assessment fields and failure records an error.",
+      "evidence": [
+        {
+          "resource": "repo://src/coding_tutor/evaluation/persistence.py#L9-L39",
+          "version": "repo-lines-v1:sha256:17ddaa0998335d71c233d1c39f66bb4009a8bb28b68f0f591fa859e2e02fdefe:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1ZGUxYjNiZjgyOWQ2NDc5ZDA4MmZlZjYzNGQxM2FmNjFjMzM0MTQwZDVkMzY3YzYzZmQ3ZThlYWYxYjE3MjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiYmMwNDJiMWI2MjliNjkyZjg3MDNhZDM2MDg5ZTA1NGVjOTJhOWRjODllYmQyYzg3N2RmMWZlZWU4NjU4NzMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNhNzFjZDI3MjJjMDVhYTE1ZDAzZDBmYmE0NmY2MzAyOGRmMTI0NTUxNjBlZDgwYTU0ZGYyODcwN2I2ZjgxZTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM4Yzc5NDBlM2YyYWZjMzk4NGQ4OWZmODQwYTdiYzNhMjI0MjY1MmJkMjhjMDAxN2FhZGQzMjE4MTUxOGNlNDkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_db4bfd03ebeb4efe989278947880af5b",
+      "statement": "Tests verify distinct repeated attempts retaining submitted code and not_run status, provider errors being persisted, and blank quiz coding answers scoring zero without an AI assessment call.",
+      "evidence": [
+        {
+          "resource": "repo://tests/test_progress.py#L20-L37",
+          "version": "repo-lines-v1:sha256:596f5df80e48b248dbd8a25071d625ba83af6ec932c4e2539a097024c67da90e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyZTljOTM5YmZiNmM4ODU3MDcxYWFkMGQwOGY3N2RiZTMxNjIzZDQwNDQ0Y2FhNDEyMTEyOTZjZjg4NmQ4ZmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFmZTNlOTliY2U1MzMwZDk0OGZjYzJjZWE3YmIxMmM4ZjBmMDUwNmUxMGMyOWZlOTgyMTIxYWRhZDQyMWE3YmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY1YjgxMjIyNjdhOTMwY2I5ZTg3NGY1NTU5MjFhMzFjN2FmZmI5MDY4Mzc0NWRiYzRmY2U0YzkwZTIzMDY5ODEifQ"
+        },
+        {
+          "resource": "repo://tests/test_progress.py#L39-L79",
+          "version": "repo-lines-v1:sha256:a1f94e785ce31e8ac3ff06d52436d63ae3a3bcd2f3a86973a8f015298d95f0ad:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJlYTMyNjEyZGExMTNjM2NkNTdiNTFlMDlkZDA2NGIxYzk1YWRkMjg3YWZjZDU4NDY1Zjk0NmQ0YTEzNTE1MDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlYjcwMjU3NTkzZGEwNmY2ODJhM2RkZGE1NGE5ZDI2MGQ0ZmM1MTRmNjQ1MjM3ZjVjYTc0YjA4ZjhkYTYxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJkNzc5NmEyZDBhNDA3NGM5NmNhNDVlNDY2ZjNlOTZiN2RhYmNhOWU1YmI1ZjBmMTRiMmRiYzlhNDZjZGY4MTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJjNWU1YmM2YmE3MWU5NGZmNDllNDdkNzFkY2UxMDlmMzI1Yzg0YTJiNDBkY2IyYmJmM2FiNDc5YTdlZjM4OTEifQ"
+        },
+        {
+          "resource": "repo://tests/test_quiz.py#L190-L210",
+          "version": "repo-lines-v1:sha256:ff113176368b527aa8ba97ebd8d274fea9e2097cadc0e37083daf35680709697:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyZmRkZjNjMzQwNTRjMjE2MjM1OWI1NWUzMzc2MzA1ZGQ0OTE4ZDA0MWUyMDcxZmY1MDE3YjI4NTcwYTM4OGMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiYWQyMWNjOWY1MTI0Y2Q4YWE3NTYyOGY3ZjRkYzY4MzkxMGI4YTI3OGM3NWI3MzNlYzhjMmM3MDAzMmY1YzMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFlZWE2NGVkZmRmNGQ3ZDI1ZDg2YTczNzU0OTAwMTBkN2Q4NjFlZjlhYzdlYmMzODI4ODkwYjExZGY1YjYyOTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMyNmE1OWY3MjVkY2IzMTczM2I4NjdiYTJmOTdkNmNmOGZmYzVhNWI2ZGZmOThmZDg5MzNlZThmNzY4OGVmMjUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7deaa13fb4b0437a8dabd36b08beb318",
+      "statement": "The privacy guide says provider-backed actions send selected question and learner context to the configured external provider.",
+      "evidence": [
+        {
+          "resource": "repo://docs/SECURITY_AND_PRIVACY.md#L9-L13",
+          "version": "repo-lines-v1:sha256:f9698dd58bed3b5b444409697e9225ee62b5791e6fa6f76b12553696d0918653:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjBiNGVjNTcwN2NmNzIzYjY0MjVmNzFlOGViMmU0ZTcyYTQzMjI4MzkyYzQ3OTE2ODUwMDk0ZmNiNWZmYjI2ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTQxNTJiMDMzOTJiYmQwMGM4NTU5MWE2NDE4MzI3MWI5ZmRlZTE4ZDRkNzMwODFkYjI1YmVhM2NjYzhmMzFlZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDU1OWEzOTkzYzNkYzkwODc0NjhhMTYzNDIzZjg5OTMwMTlmYTczNWMxNjc0ZDdhYTVkNDdiYmE3OWU2YzlhZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGQ1ZWNlOGQ5NDdiNzRiZWFkNzQxMjFjZTkwZGE0YmZiYmM4ZGRmNWMyMjM1NWZkNmFmYThmZjRlMGM4MWVjYyJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.2",
+    "at": "2026-09-23T14:17:19.981Z"
+  }
+}
