@@ -3,16 +3,15 @@
   "diagram_type": "workflow",
   "meta": {
     "title": "Mermaid Diagram Production Playbook",
-    "subtitle": "A validated authoring loop with diagram selection, code-analysis guidance, templates, and delivery rules",
+    "subtitle": "Choose, author, validate, and deliver Mermaid diagrams",
     "visual_preset": "blueprint",
     "quality_profile": "showcase",
-    "viewBox": [920, 820]
+    "viewBox": [920, 466]
   },
   "lanes": [
     { "id": "authoring", "label": "Core Workflow" },
     { "id": "recovery", "label": "Validation Recovery", "variant": "exception" },
-    { "id": "guidance", "label": "On-Demand Guidance" },
-    { "id": "delivery", "label": "Delivery Contract" }
+    { "id": "guidance", "label": "On-Demand Guidance" }
   ],
   "phases": [
     { "id": "scope", "label": "Scope", "fromCol": 0, "toCol": 1 },
@@ -39,7 +38,7 @@
     { "id": "build-save", "from": "build_source", "to": "save_file", "role": "main", "variant": "emphasis" },
     { "id": "save-check", "from": "save_file", "to": "validate_cli", "role": "main", "variant": "security", "route": "straight" },
     { "id": "check-report", "from": "validate_cli", "to": "report_output", "role": "main", "variant": "emphasis" },
-    { "id": "check-error", "from": "validate_cli", "to": "read_error", "role": "error", "variant": "security" },
+    { "id": "check-error", "from": "validate_cli", "to": "read_error", "role": "error", "variant": "security", "fromSide": "bottom", "toSide": "right", "via": [[500,160],[466,160],[466,243]] },
     { "id": "error-fix", "from": "read_error", "to": "repair_source", "role": "branch", "variant": "security", "route": "straight" },
     { "id": "fix-recheck", "from": "repair_source", "to": "validate_cli", "role": "return", "variant": "dashed" },
     { "id": "examples-choose", "from": "examples", "to": "choose_type", "role": "async", "variant": "dashed" },
@@ -50,39 +49,28 @@
       "dot": "cyan",
       "title": "Supported families",
       "items": [
-        "Basic: flowchart, sequence, class, state, and entity relationship.",
-        "Planning: Gantt, journey, timeline, and Kanban.",
-        "Data: pie, XY, quadrant, Sankey, radar, and treemap.",
-        "Technical and organizational: Git, C4, requirements, architecture, block, packet, mindmap, and ZenUML."
+        "Core: flowchart, sequence, class, state, ER, Gantt, journey, timeline, Kanban.",
+        "Data: pie, XY, quadrant, Sankey, radar, treemap.",
+        "Other: Git, C4, requirements, architecture, block, packet, mindmap, ZenUML."
       ]
     },
     {
       "dot": "violet",
       "title": "Code analysis mapping",
       "items": [
-        "Class diagrams extract types, members, inheritance, interfaces, and ownership.",
-        "Sequence diagrams trace calls, asynchronous work, APIs, and activation periods.",
-        "Flowcharts map branches, loops, entry points, and exits.",
-        "State diagrams derive states and event-driven transitions."
-      ]
-    },
-    {
-      "dot": "amber",
-      "title": "Readability guardrails",
-      "items": [
-        "Use meaningful identifiers, concise labels, subgraphs, and consistent class definitions.",
-        "Keep one direction, document complex sections, and split oversized diagrams.",
-        "Load only the example or common pattern required by the selected grammar."
+        "Class: types, members, inheritance, interfaces, ownership.",
+        "Sequence: calls, async work, APIs, activations.",
+        "Flowchart: branches, loops, entries, exits; state: event-driven transitions."
       ]
     },
     {
       "dot": "emerald",
-      "title": "Validation and output",
+      "title": "Readable, validated output",
       "items": [
-        "Validate every saved .mmd file with Mermaid CLI.",
-        "Read diagnostics, fix the reported line, and repeat until successful.",
-        "Render SVG, PNG, or PDF only when a preview or image is explicitly requested.",
-        "Return source and rendered paths with truthful validation status."
+        "Use clear IDs, labels, subgraphs, classes, and direction; split dense views.",
+        "Load relevant examples; explain complex sections.",
+        "Run Mermaid CLI on saved .mmd; repair and rerun until it passes.",
+        "Render SVG/PNG/PDF only on request; report paths and true status."
       ]
     }
   ]

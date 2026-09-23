@@ -2,22 +2,16 @@
   "schema_version": 1,
   "diagram_type": "workflow",
   "meta": {
-    "title": "Mermaid Class Diagram Authoring Map",
-    "subtitle": "Build a static structure model from class declarations through members, relationships, grouping, and presentation",
+    "title": "Mermaid Class Diagrams",
+    "subtitle": "Classes, members, relationships, grouping, and presentation",
     "animation": "none",
     "visual_preset": "blueprint",
     "quality_profile": "showcase",
-    "viewBox": [780, 1220]
+    "viewBox": [920, 466]
   },
   "lanes": [
-    { "id": "declaration", "label": "Declaration" },
-    { "id": "layout", "label": "Layout" },
-    { "id": "structure", "label": "Class Structure" },
-    { "id": "members", "label": "Members" },
-    { "id": "metadata", "label": "Metadata" },
-    { "id": "relations", "label": "Relationships" },
-    { "id": "grouping", "label": "Grouping" },
-    { "id": "presentation", "label": "Presentation" },
+    { "id": "core", "label": "Declare and Define" },
+    { "id": "details", "label": "Members and Relations" },
     { "id": "output", "label": "Rendered Model" }
   ],
   "phases": [
@@ -28,18 +22,12 @@
   "mainPath": [
     "declare",
     "direction",
-    "classes",
-    "members",
-    "annotations",
-    "relationships",
-    "namespaces",
-    "presentation",
-    "render"
+    "classes"
   ],
   "nodes": [
     {
       "id": "declare",
-      "lane": "declaration",
+      "lane": "core",
       "col": 0,
       "type": "frontend",
       "label": "Declare",
@@ -47,56 +35,62 @@
     },
     {
       "id": "direction",
-      "lane": "layout",
-      "col": 1,
+      "lane": "core",
+      "col": 2,
+      "width": 72,
       "type": "backend",
       "label": "Direction",
       "sublabel": "TB · BT · LR · RL"
     },
     {
       "id": "classes",
-      "lane": "structure",
-      "col": 2,
+      "lane": "core",
+      "col": 4,
+      "width": 64,
       "type": "database",
       "label": "Classes",
       "sublabel": "names + labels"
     },
     {
       "id": "members",
-      "lane": "members",
-      "col": 3,
+      "lane": "details",
+      "col": 4,
+      "width": 70,
       "type": "backend",
       "label": "Members",
       "sublabel": "fields + methods"
     },
     {
       "id": "annotations",
-      "lane": "metadata",
-      "col": 3,
+      "lane": "details",
+      "col": 2,
+      "width": 74,
       "type": "security",
       "label": "Annotations",
       "sublabel": "stereotypes"
     },
     {
       "id": "relationships",
-      "lane": "relations",
-      "col": 4,
+      "lane": "details",
+      "col": 0,
+      "width": 80,
       "type": "messagebus",
       "label": "Relations",
       "sublabel": "type + multiplicity"
     },
     {
       "id": "namespaces",
-      "lane": "grouping",
-      "col": 4,
+      "lane": "output",
+      "col": 0,
+      "width": 85,
       "type": "cloud",
       "label": "Namespaces",
       "sublabel": "group related classes"
     },
     {
       "id": "presentation",
-      "lane": "presentation",
-      "col": 5,
+      "lane": "output",
+      "col": 2,
       "type": "frontend",
       "label": "Present",
       "sublabel": "style + notes"
@@ -104,7 +98,7 @@
     {
       "id": "render",
       "lane": "output",
-      "col": 5,
+      "col": 4,
       "type": "cloud",
       "label": "Render",
       "sublabel": "static structure model"
@@ -112,7 +106,7 @@
   ],
   "edges": [
     { "id": "declare_direction", "from": "declare", "to": "direction", "role": "main" },
-    { "id": "direction_classes", "from": "direction", "to": "classes", "role": "main", "route": "drop", "fromSide": "bottom", "toSide": "top" },
+    { "id": "direction_classes", "from": "direction", "to": "classes", "role": "main", "route": "straight" },
     { "id": "classes_members", "from": "classes", "to": "members", "role": "main", "variant": "emphasis" },
     { "id": "members_annotations", "from": "members", "to": "annotations", "role": "main" },
     { "id": "annotations_relations", "from": "annotations", "to": "relationships", "role": "main", "variant": "emphasis" },
@@ -123,20 +117,12 @@
   "cards": [
     {
       "dot": "violet",
-      "title": "Class Definition",
+      "title": "Classes and members",
       "items": [
-        "Classes may be declared explicitly or introduced by a relationship",
-        "Attributes omit parentheses; methods include parentheses",
-        "Generic types use tilde delimiters; return types follow the closing parenthesis"
-      ]
-    },
-    {
-      "dot": "amber",
-      "title": "Visibility + Classifiers",
-      "items": [
-        "Public +, private -, protected #, package/internal ~",
-        "Abstract methods end with an asterisk",
-        "Static fields and methods end with a dollar sign"
+        "Declare classes or introduce them by relation; attributes omit (), methods include ().",
+        "Generic types use ~ delimiters; return types follow the closing ).",
+        "Visibility: public +, private -, protected #, package/internal ~.",
+        "Abstract methods end with *; static members end with $."
       ]
     },
     {

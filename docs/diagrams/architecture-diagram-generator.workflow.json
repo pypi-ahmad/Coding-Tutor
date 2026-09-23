@@ -6,7 +6,7 @@
     "subtitle": "Project evidence becomes one of four maintainable Mermaid views",
     "visual_preset": "signal-flow",
     "quality_profile": "showcase",
-    "viewBox": [920, 760]
+    "viewBox": [920, 466]
   },
   "lanes": [
     { "id": "pipeline", "label": "Generation Pipeline" },
@@ -55,18 +55,10 @@
     },
     {
       "dot": "violet",
-      "title": "Data flow",
+      "title": "Data flow + dependencies",
       "items": [
-        "Trace request and response paths through actual handlers, services, persistence, and integrations.",
-        "Show important transformations and side effects along the path."
-      ]
-    },
-    {
-      "dot": "amber",
-      "title": "Dependency graph",
-      "items": [
-        "Derive module and package relationships from imports and dependency configuration.",
-        "Separate internal ownership from third-party dependencies."
+        "Trace request and response paths through verified handlers, services, persistence, and integrations, including key transformations and side effects.",
+        "Derive module and package links from imports and dependency configuration; distinguish internal from third-party dependencies."
       ]
     },
     {

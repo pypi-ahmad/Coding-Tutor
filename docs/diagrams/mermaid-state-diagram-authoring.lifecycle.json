@@ -2,12 +2,12 @@
   "schema_version": 1,
   "diagram_type": "lifecycle",
   "meta": {
-    "title": "Mermaid State Diagram Authoring Map",
-    "subtitle": "Define finite states, connect transitions, add hierarchical behavior, and finish with readable presentation",
+    "title": "Mermaid State Diagrams",
+    "subtitle": "States, transitions, hierarchy, and presentation",
     "animation": "none",
     "visual_preset": "signal-flow",
     "quality_profile": "showcase",
-    "viewBox": [980, 900]
+    "viewBox": [980, 566]
   },
   "lanes": [
     { "id": "main", "label": "Core state model" },
@@ -116,39 +116,25 @@
       "dot": "violet",
       "title": "Core Syntax",
       "items": [
-        "Use [*] as the initial or terminal marker",
-        "Transitions use arrows and may include event or guard labels",
-        "A description may follow the state keyword or a state ID and colon",
-        "Direction can be set globally and inside composite states"
+        "[*] marks start or end; arrows may carry events or guards.",
+        "Describe a state after state or ID:; set direction globally or in composites."
       ]
     },
     {
       "dot": "cyan",
       "title": "Hierarchical Behavior",
       "items": [
-        "Composite states contain their own initial, active, and terminal states",
-        "Choice nodes express guarded alternatives",
-        "Fork and join nodes model parallel paths",
-        "Double-dash separators define concurrent regions"
+        "Composites hold their own start, active, and end states.",
+        "Choices guard branches; fork/join and -- separators model concurrency."
       ]
     },
     {
       "dot": "rose",
-      "title": "Important Constraints",
+      "title": "Constraints and presentation",
       "items": [
-        "Internal states in different composite states cannot connect directly",
-        "classDef styles cannot target initial or terminal states",
-        "classDef styles cannot be applied to or within composite states"
-      ]
-    },
-    {
-      "dot": "amber",
-      "title": "Presentation",
-      "items": [
-        "Notes may appear to the left or right of a state",
-        "Use class statements or the triple-colon shorthand for styles",
-        "Use stable state IDs when display descriptions contain spaces",
-        "Comments begin with a double-percent prefix"
+        "No direct links between states in separate composites.",
+        "classDef cannot style start/end or composite states and interiors.",
+        "Notes go left/right; use class or :::, stable IDs, and %% comments."
       ]
     }
   ]

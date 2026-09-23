@@ -6,7 +6,7 @@
     "subtitle": "From a feature or file request to an evidence-backed execution trace",
     "visual_preset": "editorial",
     "quality_profile": "showcase",
-    "viewBox": [920, 780]
+    "viewBox": [920, 466]
   },
   "lanes": [
     { "id": "trace", "label": "Execution Trace" },
@@ -45,29 +45,20 @@
   "cards": [
     {
       "dot": "cyan",
-      "title": "Entry-point proof",
+      "title": "Entry point + hidden behavior",
       "items": [
-        "Locate the actual route, listener, CLI command, lifecycle hook, or callable.",
-        "Record the file, line, symbol, trigger, and initial input.",
-        "Do not infer execution from filenames alone."
+        "Prove the route, listener, CLI command, or hook with file:line, symbol, trigger, and input.",
+        "Trace middleware, decorators, handlers, dispatch, and DTO/model/row/response paths.",
+        "Never infer behavior from names; quote source only for key transitions."
       ]
     },
     {
       "dot": "violet",
       "title": "Verified forward trace",
       "items": [
-        "Read every implementation file in the call chain before explaining it.",
-        "Describe validation, transformations, external calls, returns, exceptions, and side effects.",
-        "Document every meaningful condition and both sides of each branch."
-      ]
-    },
-    {
-      "dot": "amber",
-      "title": "Hidden behavior",
-      "items": [
-        "Include middleware, decorators, hooks, handlers, and framework dispatch.",
-        "Track request data through DTOs, domain models, persistence rows, and responses.",
-        "Use short source excerpts only where they clarify a key transition."
+        "Read each implementation file in the call chain.",
+        "Cover validation, transforms, external calls, returns, errors, and side effects.",
+        "Explain every meaningful condition and both sides of each branch."
       ]
     },
     {
@@ -76,7 +67,7 @@
       "items": [
         "Overview, entry point, execution flow, and numbered trace.",
         "Data flow, key files with line numbers, and side effects.",
-        "Database operations, external APIs, emitted events, file changes, and logs."
+        "Database writes, external APIs, events, file changes, and logs."
       ]
     }
   ]

@@ -2,22 +2,16 @@
   "schema_version": 1,
   "diagram_type": "workflow",
   "meta": {
-    "title": "Mermaid ER Diagram Authoring Map",
-    "subtitle": "Model a domain through singular entities, meaningful attributes, crow's-foot relationships, and logical grouping",
+    "title": "Mermaid ER Diagrams",
+    "subtitle": "Entities, attributes, cardinality, and grouping",
     "animation": "none",
     "visual_preset": "editorial",
     "quality_profile": "showcase",
-    "viewBox": [780, 1220]
+    "viewBox": [920, 466]
   },
   "lanes": [
-    { "id": "declaration", "label": "Declaration" },
-    { "id": "layout", "label": "Layout" },
-    { "id": "entities", "label": "Entities" },
-    { "id": "attributes", "label": "Attributes" },
-    { "id": "relationships", "label": "Relationships" },
-    { "id": "cardinality", "label": "Cardinality + Identity" },
-    { "id": "grouping", "label": "Logical Grouping" },
-    { "id": "presentation", "label": "Presentation" },
+    { "id": "core", "label": "Declare and Define" },
+    { "id": "details", "label": "Attributes and Relations" },
     { "id": "output", "label": "Rendered ER Model" }
   ],
   "phases": [
@@ -28,18 +22,12 @@
   "mainPath": [
     "declare",
     "layout",
-    "entities",
-    "attributes",
-    "relationships",
-    "cardinality",
-    "subgraphs",
-    "presentation",
-    "render"
+    "entities"
   ],
   "nodes": [
     {
       "id": "declare",
-      "lane": "declaration",
+      "lane": "core",
       "col": 0,
       "type": "frontend",
       "label": "Declare",
@@ -47,56 +35,59 @@
     },
     {
       "id": "layout",
-      "lane": "layout",
-      "col": 1,
+      "lane": "core",
+      "col": 2,
+      "width": 72,
       "type": "backend",
       "label": "Layout",
       "sublabel": "TB · BT · LR · RL"
     },
     {
       "id": "entities",
-      "lane": "entities",
-      "col": 2,
+      "lane": "core",
+      "col": 4,
       "type": "database",
       "label": "Entities",
       "sublabel": "names + aliases"
     },
     {
       "id": "attributes",
-      "lane": "attributes",
-      "col": 3,
+      "lane": "details",
+      "col": 4,
+      "width": 86,
       "type": "backend",
       "label": "Attributes",
       "sublabel": "type + name + keys"
     },
     {
       "id": "relationships",
-      "lane": "relationships",
-      "col": 4,
+      "lane": "details",
+      "col": 2,
+      "width": 82,
       "type": "messagebus",
       "label": "Relations",
       "sublabel": "two entities + label"
     },
     {
       "id": "cardinality",
-      "lane": "cardinality",
-      "col": 4,
+      "lane": "details",
+      "col": 0,
       "type": "security",
       "label": "Cardinality",
       "sublabel": "range + identity"
     },
     {
       "id": "subgraphs",
-      "lane": "grouping",
-      "col": 5,
+      "lane": "output",
+      "col": 0,
       "type": "cloud",
       "label": "Subgraphs",
       "sublabel": "logical domains"
     },
     {
       "id": "presentation",
-      "lane": "presentation",
-      "col": 5,
+      "lane": "output",
+      "col": 2,
       "type": "frontend",
       "label": "Present",
       "sublabel": "styles + classes"
@@ -104,7 +95,7 @@
     {
       "id": "render",
       "lane": "output",
-      "col": 5,
+      "col": 4,
       "type": "cloud",
       "label": "Render",
       "sublabel": "Dagre or ELK"
@@ -112,7 +103,7 @@
   ],
   "edges": [
     { "id": "declare_layout", "from": "declare", "to": "layout", "role": "main" },
-    { "id": "layout_entities", "from": "layout", "to": "entities", "role": "main", "route": "drop", "fromSide": "bottom", "toSide": "top" },
+    { "id": "layout_entities", "from": "layout", "to": "entities", "role": "main", "route": "straight" },
     { "id": "entities_attributes", "from": "entities", "to": "attributes", "role": "main", "variant": "emphasis" },
     { "id": "attributes_relations", "from": "attributes", "to": "relationships", "role": "main" },
     { "id": "relations_cardinality", "from": "relationships", "to": "cardinality", "role": "main", "variant": "emphasis" },
@@ -133,20 +124,11 @@
     },
     {
       "dot": "cyan",
-      "title": "Crow's-Foot Cardinality",
+      "title": "Cardinality and identity",
       "items": [
-        "Zero or one, exactly one, zero or more, and one or more",
-        "Each endpoint combines a minimum marker with a maximum marker",
-        "Relationship labels read from the first entity's perspective"
-      ]
-    },
-    {
-      "dot": "amber",
-      "title": "Relationship Identity",
-      "items": [
-        "A solid line represents an identifying relationship",
-        "A dashed line represents a non-identifying relationship",
-        "Use identifying links when a child cannot exist independently"
+        "Endpoints combine minimum and maximum: 0..1, 1, 0..*, or 1..*.",
+        "Read labels from the first entity's perspective.",
+        "Solid links identify dependent children; dashed links are non-identifying."
       ]
     },
     {

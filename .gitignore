@@ -63,3 +63,7 @@ skills-lock.json
 
 # Generated knowledge-graph output (graphify)
 graphify-out/
+
+# Archify visual QA sidecars (machine-specific receipts and screenshots)
+docs/diagrams/*.visual-check.*
+docs/diagrams/archive/*.visual-check.*

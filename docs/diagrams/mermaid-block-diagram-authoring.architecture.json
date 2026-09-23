@@ -3,11 +3,11 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Mermaid Block Diagram Authoring Map",
-    "subtitle": "Author-controlled placement through columns, spans, nested blocks, explicit spacing, connectors, and styles",
+    "subtitle": "Columns, spans, nested blocks, connectors, and styles",
     "animation": "none",
     "visual_preset": "blueprint",
     "quality_profile": "showcase",
-    "viewBox": [960, 930]
+    "viewBox": [960, 460]
   },
   "components": [
     {
@@ -31,7 +31,7 @@
       "type": "cloud",
       "label": "Column Spans",
       "sublabel": "block:N and space:N",
-      "pos": [80, 410],
+      "pos": [80, 365],
       "size": [175, 72]
     },
     {
@@ -63,7 +63,7 @@
       "type": "external",
       "label": "Space Blocks",
       "sublabel": "intentional empty cells",
-      "pos": [705, 410],
+      "pos": [705, 365],
       "size": [175, 72]
     },
     {
@@ -71,7 +71,7 @@
       "type": "frontend",
       "label": "Styling",
       "sublabel": "style + classDef",
-      "pos": [400, 535],
+      "pos": [400, 365],
       "size": [160, 72]
     }
   ],
@@ -89,10 +89,8 @@
       "dot": "violet",
       "title": "Placement Model",
       "items": [
-        "The author chooses the number of columns",
-        "Blocks fill cells in declaration order and wrap into new rows",
-        "A numeric suffix spans multiple columns",
-        "Column width follows the widest content in that column"
+        "Choose columns; blocks fill cells in declaration order and wrap by row.",
+        "A numeric suffix spans columns; the widest block sets each column width."
       ]
     },
     {
@@ -106,21 +104,12 @@
     },
     {
       "dot": "amber",
-      "title": "Visual Vocabulary",
+      "title": "Shapes and upkeep",
       "items": [
-        "Rectangles, rounded blocks, stadiums, subroutines, cylinders, circles, decisions, and more",
-        "Block arrows show right, left, up, down, or compound direction",
-        "Edges may be directed, open, or labeled"
-      ]
-    },
-    {
-      "dot": "rose",
-      "title": "Maintenance Rules",
-      "items": [
-        "Use classes for repeated styling and style for isolated emphasis",
-        "Keep complex diagrams modular with nested blocks",
-        "Use comments to explain non-obvious placement",
-        "Incorrect links or malformed CSS property syntax can break rendering"
+        "Use rectangles, stadiums, subroutines, cylinders, circles, decisions, and other shapes.",
+        "Block arrows show direction; edges can be directed, open, or labeled.",
+        "Use classes for repeated styles, style for emphasis, and nested blocks for modularity.",
+        "Comment non-obvious placement; malformed links or CSS properties break rendering."
       ]
     }
   ]

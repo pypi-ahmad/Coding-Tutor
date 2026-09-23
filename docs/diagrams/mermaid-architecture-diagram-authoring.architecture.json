@@ -3,10 +3,10 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Mermaid Architecture Diagram Authoring Map",
-    "subtitle": "Groups, services, port-aware edges, junctions, alignment, layout controls, and icon sources",
+    "subtitle": "Groups, services, ports, layout, and icon sources",
     "visual_preset": "blueprint",
     "quality_profile": "showcase",
-    "viewBox": [960, 720]
+    "viewBox": [960, 470]
   },
   "components": [
     {
@@ -62,7 +62,7 @@
       "type": "external",
       "label": "Layout Runtime",
       "sublabel": "fCoSE tuning and seed",
-      "pos": [670, 450],
+      "pos": [670, 370],
       "size": [150, 68]
     },
     {
@@ -70,7 +70,7 @@
       "type": "database",
       "label": "Icon Sources",
       "sublabel": "Built-in and custom packs",
-      "pos": [250, 450],
+      "pos": [250, 370],
       "size": [150, 68]
     }
   ],
@@ -111,20 +111,12 @@
     },
     {
       "dot": "amber",
-      "title": "Placement and rendering",
+      "title": "Placement, layout, icons",
       "items": [
-        "Align rows for vertical port pairs and columns for horizontal port pairs.",
-        "Combine row and column constraints for grids without contradictory ordering.",
-        "Use a nonzero seed for reproducible fCoSE placement."
-      ]
-    },
-    {
-      "dot": "emerald",
-      "title": "Icon support",
-      "items": [
-        "Built-ins are cloud, database, disk, internet, and server.",
-        "Register an icon pack before using a namespaced custom icon.",
-        "Keep labels short or increase iconSize when a label cannot wrap cleanly."
+        "Align rows for vertical ports and columns for horizontal ports; avoid contradictory grid ordering.",
+        "Use a nonzero fCoSE seed for reproducible placement.",
+        "Built-in icons: cloud, database, disk, internet, server; register custom packs first.",
+        "Keep labels short or increase iconSize when wrapping fails."
       ]
     }
   ]

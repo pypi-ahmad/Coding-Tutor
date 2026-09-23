@@ -7,7 +7,7 @@
     "animation": "none",
     "visual_preset": "editorial",
     "quality_profile": "showcase",
-    "viewBox": [940, 900]
+    "viewBox": [940, 470]
   },
   "components": [
     {
@@ -63,7 +63,7 @@
       "type": "messagebus",
       "label": "Layout",
       "sublabel": "default or tidy-tree",
-      "pos": [390, 520],
+      "pos": [390, 390],
       "size": [160, 72]
     }
   ],
@@ -80,10 +80,8 @@
       "dot": "violet",
       "title": "Hierarchy Rules",
       "items": [
-        "The first node is the root concept",
-        "Greater indentation creates children",
-        "Sibling nodes share an indentation level",
-        "Mermaid resolves ambiguous indentation to the nearest known parent"
+        "The first node is the root; indentation creates children and aligns siblings.",
+        "Ambiguous indentation resolves to the nearest known parent."
       ]
     },
     {
@@ -97,21 +95,11 @@
     },
     {
       "dot": "amber",
-      "title": "Host Responsibilities",
+      "title": "Host and runtime",
       "items": [
-        "The host must provide icon fonts before icon syntax can work",
-        "CSS classes referenced by nodes must be supplied by the host",
-        "Icon integration remains experimental"
-      ]
-    },
-    {
-      "dot": "rose",
-      "title": "Runtime Status",
-      "items": [
-        "Mindmaps use lazy asynchronous rendering",
-        "Mindmap support is bundled with Mermaid from version 9.4",
-        "The tidy-tree layout requires its corresponding layout registration",
-        "The feature remains experimental and may evolve"
+        "The host supplies icon fonts and referenced CSS classes; icons are experimental.",
+        "Mindmaps render lazily and asynchronously; Mermaid bundles them from version 9.4.",
+        "Tidy-tree needs layout registration; experimental behavior may evolve."
       ]
     }
   ]

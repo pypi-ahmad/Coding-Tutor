@@ -2,22 +2,17 @@
   "schema_version": 1,
   "diagram_type": "workflow",
   "meta": {
-    "title": "Mermaid Flowchart Authoring Map",
-    "subtitle": "From graph declaration to semantic nodes, relationships, composition, styling, and rendering",
+    "title": "Mermaid Flowcharts",
+    "subtitle": "Nodes, links, groups, styling, and rendering",
     "animation": "none",
     "visual_preset": "signal-flow",
     "quality_profile": "showcase",
-    "viewBox": [780, 1200]
+    "viewBox": [920, 466]
   },
   "lanes": [
-    { "id": "declaration", "label": "Declaration" },
-    { "id": "layout", "label": "Layout" },
-    { "id": "semantics", "label": "Node Semantics" },
-    { "id": "relationships", "label": "Relationships" },
-    { "id": "composition", "label": "Composition" },
-    { "id": "presentation", "label": "Presentation" },
-    { "id": "interaction", "label": "Interaction" },
-    { "id": "output", "label": "Rendered Diagram" }
+    { "id": "core", "label": "Declare and Define" },
+    { "id": "details", "label": "Links and Composition" },
+    { "id": "output", "label": "Interaction and Output" }
   ],
   "phases": [
     { "id": "foundation", "label": "Foundation", "fromCol": 0, "toCol": 1 },
@@ -27,17 +22,12 @@
   "mainPath": [
     "declare",
     "direction",
-    "nodes",
-    "edges",
-    "subgraphs",
-    "styles",
-    "interaction",
-    "render"
+    "nodes"
   ],
   "nodes": [
     {
       "id": "declare",
-      "lane": "declaration",
+      "lane": "core",
       "col": 0,
       "type": "frontend",
       "label": "Declare",
@@ -45,48 +35,48 @@
     },
     {
       "id": "direction",
-      "lane": "layout",
-      "col": 1,
+      "lane": "core",
+      "col": 2,
       "type": "backend",
       "label": "Direction",
       "sublabel": "TB · TD · BT · RL · LR"
     },
     {
       "id": "nodes",
-      "lane": "semantics",
-      "col": 2,
+      "lane": "core",
+      "col": 4,
       "type": "database",
       "label": "Nodes",
       "sublabel": "IDs, labels, and shapes"
     },
     {
       "id": "edges",
-      "lane": "relationships",
-      "col": 3,
+      "lane": "details",
+      "col": 4,
       "type": "messagebus",
       "label": "Edges",
       "sublabel": "links + labels"
     },
     {
       "id": "subgraphs",
-      "lane": "composition",
-      "col": 4,
+      "lane": "details",
+      "col": 2,
       "type": "cloud",
       "label": "Subgraphs",
       "sublabel": "group related topology"
     },
     {
       "id": "styles",
-      "lane": "presentation",
-      "col": 4,
+      "lane": "details",
+      "col": 0,
       "type": "frontend",
       "label": "Style",
       "sublabel": "classDef and curves"
     },
     {
       "id": "interaction",
-      "lane": "interaction",
-      "col": 5,
+      "lane": "output",
+      "col": 0,
       "type": "external",
       "label": "Interaction",
       "sublabel": "clicks + tooltips"
@@ -94,7 +84,7 @@
     {
       "id": "render",
       "lane": "output",
-      "col": 5,
+      "col": 2,
       "type": "cloud",
       "label": "Render",
       "sublabel": "Dagre or ELK"
@@ -102,7 +92,7 @@
   ],
   "edges": [
     { "id": "declare_direction", "from": "declare", "to": "direction", "role": "main" },
-    { "id": "direction_nodes", "from": "direction", "to": "nodes", "role": "main", "route": "drop", "fromSide": "bottom", "toSide": "top" },
+    { "id": "direction_nodes", "from": "direction", "to": "nodes", "role": "main", "route": "straight" },
     { "id": "nodes_edges", "from": "nodes", "to": "edges", "role": "main", "variant": "emphasis" },
     { "id": "edges_subgraphs", "from": "edges", "to": "subgraphs", "role": "main" },
     { "id": "subgraphs_styles", "from": "subgraphs", "to": "styles", "role": "main" },
@@ -131,22 +121,12 @@
     },
     {
       "dot": "amber",
-      "title": "Composition + Presentation",
+      "title": "Composition and guardrails",
       "items": [
-        "Subgraphs group nodes and may define local direction",
-        "Classes are the reliable way to apply reusable node styles",
-        "Markdown strings wrap and format labels",
-        "Interactions require a compatible security level"
-      ]
-    },
-    {
-      "dot": "rose",
-      "title": "Parser Guardrails",
-      "items": [
-        "Do not use lowercase end as a flowchart node label",
-        "Avoid an unspaced lowercase o or x immediately after a link",
-        "Quote labels containing punctuation or syntax-sensitive characters",
-        "Use comments on their own lines with a double-percent prefix"
+        "Subgraphs may set direction; classes style nodes; Markdown formats labels.",
+        "Interactions need compatible security settings.",
+        "Avoid lowercase end and unspaced o/x after links; quote syntax-sensitive labels.",
+        "Put %% comments on their own lines."
       ]
     }
   ]
